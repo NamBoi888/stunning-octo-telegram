@@ -16,6 +16,7 @@ export function initUI(sims, onSelect) {
   for (const sim of sims) {
     const name = document.createElement("div");
     name.className = "nametag";
+    name.dir = "auto";
     name.textContent = sim.def.name;
     labelLayer.appendChild(name);
     tags.set(sim, { name, bubble: null });
@@ -23,7 +24,7 @@ export function initUI(sims, onSelect) {
     const chip = document.createElement("div");
     chip.className = "chip";
     chip.innerHTML = `<div class="dot" style="background:#${sim.def.shirt.toString(16).padStart(6, "0")}"></div>
-      <span class="nm">${sim.def.name}</span><span class="ty">${sim.def.mbti}</span><span class="mood"></span>`;
+      <span class="nm" dir="auto">${sim.def.name}</span><span class="ty">${sim.def.mbti}</span><span class="mood"></span>`;
     chip.addEventListener("click", () => onSelect(sim));
     rosterEl.appendChild(chip);
     chips.set(sim, chip);
@@ -59,6 +60,7 @@ export function updateUI(sims, selected, camera) {
       if (!t.bubble) {
         t.bubble = document.createElement("div");
         t.bubble.className = "bubble";
+        t.bubble.dir = "auto";
         labelLayer.appendChild(t.bubble);
       }
       t.bubble.textContent = sim.bubbleText;
@@ -83,11 +85,17 @@ export function updateUI(sims, selected, camera) {
   panel.classList.add("open");
   panel.querySelector(".portrait").style.background = `#${selected.def.shirt.toString(16).padStart(6, "0")}`;
   panel.querySelector(".portrait").textContent = selected.def.emoji;
-  panel.querySelector(".name").textContent = selected.def.name;
+  const nameEl = panel.querySelector(".name");
+  nameEl.dir = "auto";
+  nameEl.textContent = `${selected.def.name} (${selected.def.latin || ""})`;
   panel.querySelector(".mbti").textContent = selected.def.mbti + "  " + selected.mood();
-  panel.querySelector(".doing").textContent = selected.doingLabel();
+  const doingEl = panel.querySelector(".doing");
+  doingEl.dir = "auto";
+  doingEl.textContent = selected.doingLabel();
   const bestie = selected.bestie(sims);
-  panel.querySelector(".bestie").textContent = bestie ? `Bestie: ${bestie.def.name}` : "Bestie: (making friends...)";
+  const bestieEl = panel.querySelector(".bestie");
+  bestieEl.dir = "auto";
+  bestieEl.textContent = bestie ? `Bestie: ${bestie.def.name}` : "Bestie: (making friends...)";
   for (const n of ["hunger", "energy", "fun", "social"]) {
     const fill = panel.querySelector(`.fill[data-need="${n}"]`);
     const val = selected.needs[n];

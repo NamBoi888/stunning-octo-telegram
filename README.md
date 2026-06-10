@@ -1,13 +1,15 @@
-# MBTI House 🏠✨
+# MBTI House — بيت الشلة 🏠✨
 
-A tiny Sims-style 3D life sim starring an MBTI friend group, built with
-[Three.js](https://threejs.org/) — no build step, no dependencies to install.
+A tiny Sims-style 3D life sim starring **the** MBTI friend group (from the
+original Claude conversation), built with [Three.js](https://threejs.org/) —
+no build step, no dependencies to install.
 
 The friends live together on one lot. They get hungry, tired, bored and
 lonely; they autonomously raid the fridge, nap, dance at the stereo, bounce
 on the trampoline, paint, swim, and wander over to each other for
-personality-flavored conversations (the ENTP *will* pick a fight with the
-ISTJ about the spice rack).
+personality-true conversations in their own dialect — وليد provokes,
+نامبوي ends debates in one sentence, بدر checks on everyone, and سعود
+quietly brings you coffee because you looked like you needed it.
 
 ## Run it
 
@@ -38,18 +40,23 @@ Left alone, everyone takes care of themselves — how efficiently depends on
 their personality. Watch the speech bubbles: each pair of friends with a
 signature dynamic has their own running bits.
 
-## The cast
+## The cast — الشلة
 
-| Name  | Type | Vibe |
-|-------|------|------|
-| Nova  | ENFP | chaotic spark, seven hobbies a day |
-| Atlas | INTJ | has already planned this conversation |
-| Sage  | INFJ | the group's resident mystic-therapist |
-| Rex   | ESTP | trampoline. pool. now. |
-| June  | ISTJ | the schedule IS the friendship |
-| Ziggy | ENTP | devil's advocate at breakfast |
-| Dot   | ISFP | quietly painting everyone |
-| Mara  | ESFJ | mom friend, muffins mandatory |
+| Name | Type | Role |
+|------|------|------|
+| نامبوي (Namboy) | INTJ-A | المهندس المعماري والمحكّم — rarely speaks; when he does, everyone goes quiet |
+| بدر (Badr) | ENFJ-T | البطل والغراء — feels everyone's mood before they speak, holds the group together |
+| وليد (Waleed) | ENTP-T | المحرك والشرارة — opens a debate out of thin air, starts projects, abandons projects |
+| أحمد (Ahmed) | ENFP-T | قلب دافئ خلف قناع فكري — looks analytical, runs on feelings |
+| لوفاتو (Lovato) | INFJ-T | reads the room in silence, then says one sentence that lands in the heart |
+| عمر (Omar) | ISFP-T | lives in the moment by day, replays every word at night — "أنا بخير... يمكن" |
+| سعود (Saud) | ISFP-A | الصخرة الهادئة — won't argue, won't budge, shows love through small details |
+| عبدالله (Abdullah) | INTJ-A | صديق المجموعة — outside the circle yet inside it; نامبوي's mirror |
+
+Signature pair dynamics from the original chat are in the game too:
+الشرارة والبرود (وليد × نامبوي), المختبر الفكري (أحمد × وليد),
+الدفء والجليد (بدر × نامبوي), نفس الدم (عمر × سعود), المرآة
+(عبدالله × نامبوي), and more — watch the speech bubbles when pairs meet.
 
 ## Customize the cast
 

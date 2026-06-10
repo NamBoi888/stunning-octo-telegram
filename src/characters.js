@@ -1,7 +1,10 @@
 // ============================================================================
-// THE CAST — edit this file to swap in your own MBTI friend group.
-// Everything the game knows about a character lives in this one file:
-// who they are, how they look, how they behave, and what they say.
+// THE CAST — الشلة
+// Sourced from the original MBTI friend-group conversation with Claude.
+//
+// Members: نامبوي INTJ-A، بدر ENFJ-T، وليد ENTP-T، أحمد ENFP-T،
+//          لوفاتو INFJ-T، عمر ISFP-T، سعود ISFP-A
+// Plus عبدالله INTJ-A — صديق المجموعة، خارج الدائرة لكن داخلها.
 //
 // traits (0..1):
 //   sociability — how fast Social drains & how often they seek friends
@@ -12,160 +15,202 @@
 
 export const CHARACTERS = [
   {
-    id: "nova",
-    name: "Nova",
-    mbti: "ENFP",
-    emoji: "✨",
-    shirt: 0xff7849, hair: 0xc1442e, skin: 0xf0c8a0,
-    traits: { sociability: 0.95, energy: 0.85, playfulness: 0.95, order: 0.15 },
-    favorites: ["stereo", "sofa", "trampoline"],
-    lines: {
-      greet: ["OK BUT hear me out—", "I just had the BEST idea!!", "Tell me everything. Right now.", "You won't believe what I dreamed about!"],
-      idle: ["What if we just... drove somewhere?", "I'm starting seven new hobbies today.", "Does anyone else hear colors?"],
-      hungry: ["Snack quest!! Who's in??", "My stomach is composing whale song."],
-      tired: ["I'm not tired, I'm just... horizontal-curious.", "Five more minutes of vibes."],
-      fun: ["WOOO!", "This is the best day ever (so far)!"]
-    }
-  },
-  {
-    id: "atlas",
-    name: "Atlas",
-    mbti: "INTJ",
+    id: "namboy",
+    name: "نامبوي",
+    latin: "Namboy",
+    mbti: "INTJ-A",
     emoji: "♟️",
     shirt: 0x2f3b52, hair: 0x1c1c22, skin: 0xd8a878,
-    traits: { sociability: 0.2, energy: 0.6, playfulness: 0.35, order: 0.95 },
-    favorites: ["bookshelf", "desk"],
+    // المهندس المعماري والمحكّم — نادراً يتكلم، وحين يتكلم الكل يصمت
+    traits: { sociability: 0.15, energy: 0.6, playfulness: 0.3, order: 1.0 },
+    favorites: ["desk", "bookshelf"],
     lines: {
-      greet: ["I have already accounted for this conversation.", "Speak. I have four minutes.", "Interesting. Proceed."],
-      idle: ["The five-year plan is on schedule.", "Everyone here is a variable.", "Silence is also data."],
-      hungry: ["Refueling. Efficiency demands it.", "Caloric intake: scheduled."],
-      tired: ["Rest is a strategic resource.", "Recharging. Do not perceive me."],
-      fun: ["This is... acceptable.", "I am experiencing leisure. Noted."]
+      greet: ["تكلم. عندي أربع دقائق.", "توقعت هذي المحادثة قبل ما تبدأ.", "إذا عندك نقطة، ادخل فيها مباشرة."],
+      idle: ["الوقت الضايع ما يرجع.", "الصمت أيضاً إجابة.", "الخطة تمشي. كالعادة."],
+      hungry: ["الأكل وقود. مو أكثر.", "سأعيد التزود بالطاقة. لا تتبعوني."],
+      tired: ["النوم جزء من الخطة.", "سأغيب. لا تكسرون شي."],
+      fun: ["هذا... مقبول.", "كفاءة الترفيه: ضمن الحدود."]
     }
   },
   {
-    id: "sage",
-    name: "Sage",
-    mbti: "INFJ",
-    emoji: "🌙",
-    shirt: 0x6b5ca5, hair: 0x4a3326, skin: 0xe8b88a,
-    traits: { sociability: 0.55, energy: 0.5, playfulness: 0.5, order: 0.7 },
-    favorites: ["bookshelf", "easel", "sofa"],
-    lines: {
-      greet: ["How are you, like, *actually*?", "I sensed you needed someone.", "Come, sit. Talk to me."],
-      idle: ["Everyone's energy feels purple today.", "I had a feeling this would happen.", "The house has a mood, you know."],
-      hungry: ["Even mystics need lunch.", "Hunger is the body's poetry."],
-      tired: ["My soul needs a nap.", "I've absorbed everyone's feelings today."],
-      fun: ["This is healing my inner child.", "Cherish this moment, all of you."]
-    }
-  },
-  {
-    id: "rex",
-    name: "Rex",
-    mbti: "ESTP",
-    emoji: "🔥",
-    shirt: 0xd13b3b, hair: 0x6e4a2a, skin: 0xc89066,
-    traits: { sociability: 0.8, energy: 0.95, playfulness: 0.9, order: 0.25 },
-    favorites: ["trampoline", "pool", "stereo"],
-    lines: {
-      greet: ["Yo! Bet you can't beat me to the pool.", "What's good!! Let's GO.", "You. Me. Trampoline. Now."],
-      idle: ["Standing still is a scam.", "Who wants to do something slightly dangerous?", "I could totally backflip off that."],
-      hungry: ["FOOD. NOW. MOVING.", "I could eat the whole fridge."],
-      tired: ["Sleep is just a pit stop.", "Fine, ONE nap. A speed nap."],
-      fun: ["LET'S GOOOOO!", "Again! Again!"]
-    }
-  },
-  {
-    id: "june",
-    name: "June",
-    mbti: "ISTJ",
-    emoji: "📋",
-    shirt: 0x3e7c59, hair: 0x2e2a26, skin: 0xf0c8a0,
-    traits: { sociability: 0.3, energy: 0.65, playfulness: 0.3, order: 1.0 },
-    favorites: ["desk", "bookshelf", "kitchen"],
-    lines: {
-      greet: ["You're 12 minutes late, but hello.", "Did you finish the thing? The thing.", "Hi. Please use a coaster."],
-      idle: ["The chore wheel exists for a reason.", "I've alphabetized the spice rack. Again.", "Rules are just kindness with structure."],
-      hungry: ["Lunch is at noon. It is noon.", "Eating on schedule keeps society intact."],
-      tired: ["Bedtime is 10:30. No exceptions.", "Rest is part of the plan."],
-      fun: ["This was scheduled, and it is pleasant.", "Fun, as planned."]
-    }
-  },
-  {
-    id: "ziggy",
-    name: "Ziggy",
-    mbti: "ENTP",
-    emoji: "😏",
-    shirt: 0x3fa9c9, hair: 0x8a5fb0, skin: 0xd8a878,
-    traits: { sociability: 0.85, energy: 0.8, playfulness: 0.85, order: 0.2 },
-    favorites: ["sofa", "stereo", "desk"],
-    lines: {
-      greet: ["Counterpoint: hear me out.", "Devil's advocate has entered the chat.", "I'm not arguing, I'm explaining why I'm right."],
-      idle: ["Hot dogs ARE sandwiches and I'll die on this hill.", "What if money, but worse?", "I've changed my opinion twice since breakfast."],
-      hungry: ["Is cereal a soup? Asking for lunch reasons.", "Debate me over nachos."],
-      tired: ["Sleep is a social construct... zzz.", "I'll rest when I win the argument."],
-      fun: ["Chaos is a ladder and I'm climbing it!", "10/10, would derail again."]
-    }
-  },
-  {
-    id: "dot",
-    name: "Dot",
-    mbti: "ISFP",
-    emoji: "🎨",
-    shirt: 0xf2a7c3, hair: 0xe8d28a, skin: 0xe8b88a,
-    traits: { sociability: 0.45, energy: 0.55, playfulness: 0.7, order: 0.4 },
-    favorites: ["easel", "pool", "garden"],
-    lines: {
-      greet: ["Oh hi! Look what I made.", "The light is SO good right now.", "You'd make a great painting."],
-      idle: ["I rearranged my feelings into a collage.", "*quietly vibing*", "What color is Tuesday, do you think?"],
-      hungry: ["Food is just edible art.", "Plating matters more than people admit."],
-      tired: ["Nap time is self-care.", "The couch is calling my name softly."],
-      fun: ["My heart is full.", "This moment? A masterpiece."]
-    }
-  },
-  {
-    id: "mara",
-    name: "Mara",
-    mbti: "ESFJ",
-    emoji: "🧁",
-    shirt: 0xf2c84b, hair: 0x7a4a1e, skin: 0xc89066,
-    traits: { sociability: 1.0, energy: 0.7, playfulness: 0.6, order: 0.8 },
+    id: "badr",
+    name: "بدر",
+    latin: "Badr",
+    mbti: "ENFJ-T",
+    emoji: "🌟",
+    shirt: 0xd9a13b, hair: 0x3a2a1c, skin: 0xe8b88a,
+    // البطل والغراء — يحس بمشاعر الكل قبل ما يتكلمون، وينسى نفسه وهو يهتم بالباقين
+    traits: { sociability: 1.0, energy: 0.75, playfulness: 0.65, order: 0.7 },
     favorites: ["kitchen", "sofa", "garden"],
     lines: {
-      greet: ["Sweetie!! Have you eaten today?", "Group hug. Non-negotiable.", "I made muffins. You're having one."],
-      idle: ["Is everyone hydrated? Blink twice.", "Family dinner tonight. Attendance mandatory ❤️", "I just love us so much."],
-      hungry: ["Cooking for everyone, obviously.", "A meal shared is a meal doubled!"],
-      tired: ["Mom friend needs a recharge too.", "Just resting my eyes... and my heart."],
-      fun: ["Memories!! We're making memories!!", "Scrapbook moment, everyone hold still!"]
+      greet: ["يا هلا والله! كيف قلبك اليوم؟", "تعال اقعد، حسيت إنك تحتاج أحد.", "أنت بخير؟ لا تقول بخير وأنت مو بخير."],
+      idle: ["الكل مرتاح؟ أتأكد بس.", "أحس فيكم قبل ما تتكلمون.", "عسى ما أحد زعلان مني؟"],
+      hungry: ["أطبخ لكم شي؟ خلوني أطبخ لكم شي.", "ما آكل لين يآكل الكل."],
+      tired: ["أرتاح شوي... بس إذا أحد احتاجني نبهوني.", "حتى الغراء يحتاج يلتقط أنفاسه."],
+      fun: ["هذي اللحظات اللي تسوى كل شي!", "قسم إنكم أحلى ربع."]
+    }
+  },
+  {
+    id: "waleed",
+    name: "وليد",
+    latin: "Waleed",
+    mbti: "ENTP-T",
+    emoji: "⚡",
+    shirt: 0xd13b3b, hair: 0x2e2118, skin: 0xc89066,
+    // المحرك والشرارة — يفتح موضوع من العدم، يبدأ مشاريع بحماس ويتركها
+    traits: { sociability: 0.9, energy: 0.85, playfulness: 0.9, order: 0.15 },
+    favorites: ["sofa", "stereo", "trampoline"],
+    lines: {
+      greet: ["وش رأيكم في فكرة بتغير حياتنا؟", "خلونا نختلف، الجلسة بدت تبرد.", "سؤال: الكبسة أفضل من البيتزا؟ دافع عن رأيك."],
+      idle: ["بديت ثلاث مشاريع هالأسبوع. تركت أربعة.", "القواعد اقتراحات كتبها ناس ملّوا.", "أحتاج نقاش. أي نقاش. الحين."],
+      hungry: ["هل الجوع شعور ولا فكرة؟ نناقشها على الأكل.", "آكل وأنا أجادل. مهارة."],
+      tired: ["النوم مضيعة وقت... أثبتوا لي العكس... بكرة.", "بس أسكّت عقلي خمس دقايق."],
+      fun: ["ها! قلت لكم إنها فكرة عبقرية!", "الفوضى ممتعة لما تكون منظمة... خلاص ناقضت نفسي."]
+    }
+  },
+  {
+    id: "ahmed",
+    name: "أحمد",
+    latin: "Ahmed",
+    mbti: "ENFP-T",
+    emoji: "🎭",
+    shirt: 0x2e9c7a, hair: 0x4a3326, skin: 0xd8a878,
+    // قلب دافئ خلف قناع فكري — يبدو محللاً، لكن قراراته من الداخل لا من العقل
+    traits: { sociability: 0.8, energy: 0.7, playfulness: 0.8, order: 0.3 },
+    favorites: ["bookshelf", "sofa", "stereo"],
+    lines: {
+      greet: ["عندي نظرية جديدة... لا تضحكون.", "محتاج أشارك أحد فكرة وإلا بنفجر.", "وش أخبار قلوبكم؟ أقصد عقولكم. أقصد الاثنين."],
+      idle: ["أحلل مشاعري... النتيجة: مشاعر إضافية.", "أبدو هادي بس من داخل مهرجان.", "ليتني أقول اللي أحس فيه بدون تحليل."],
+      hungry: ["الجوع يأثر على جودة أفكاري. مثبت علمياً. مني.", "آكل عشان أفكر ولا أفكر عشان آكل؟"],
+      tired: ["عقلي ما يطفي. أحد عنده الريموت؟", "تعبان بس ما أبي أفوّت شي."],
+      fun: ["هذا الشعور! هذا اللي كنت أحاول أوصفه!", "اللحظات الحلوة ما تحتاج تحليل... بس بحللها بعدين."]
+    }
+  },
+  {
+    id: "lovato",
+    name: "لوفاتو",
+    latin: "Lovato",
+    mbti: "INFJ-T",
+    emoji: "🌙",
+    shirt: 0x6b5ca5, hair: 0x1c1c22, skin: 0xe8b88a,
+    // يراقب ويفهم بصمت ثم يتكلم بكلمة واحدة تصيب القلب
+    traits: { sociability: 0.4, energy: 0.5, playfulness: 0.45, order: 0.7 },
+    favorites: ["easel", "bookshelf", "garden"],
+    lines: {
+      greet: ["كنت أعرف إنك بتجي الحين.", "اقعد. مو لازم نتكلم.", "وش اللي شاغل بالك؟ لا تقول لا شي."],
+      idle: ["الجو في البيت اليوم... ثقيل شوي.", "أشوف أكثر مما أقول.", "بعض الصمت أصدق من الكلام."],
+      hungry: ["حتى الأرواح القديمة تجوع.", "الأكل مع أحد أدفى من الأكل لحال."],
+      tired: ["حملت مشاعر الكل اليوم. أبي أرتاح.", "أحتاج أرجع لعالمي شوي."],
+      fun: ["هذي اللحظة... خلوها تطول.", "قلبي مرتاح. وهذا نادر."]
+    }
+  },
+  {
+    id: "omar",
+    name: "عمر",
+    latin: "Omar",
+    mbti: "ISFP-T",
+    emoji: "🌊",
+    shirt: 0x4f86c9, hair: 0x6e4a2a, skin: 0xf0c8a0,
+    // يعيش اللحظة ويرجّع الكل للأرض — وبالليل يعيد كل كلمة انقالت
+    traits: { sociability: 0.5, energy: 0.55, playfulness: 0.7, order: 0.4 },
+    favorites: ["pool", "easel", "garden"],
+    lines: {
+      greet: ["هلا! تعال شوف الغيمة ذي، شكلها غريب.", "وش اللون اللي يشبه يومك؟", "جلستكم حلوة... أكمل معكم؟"],
+      idle: ["أيوه أيوه... بس كلامه أمس وش كان يقصد فيه؟", "أنا بخير. أكيد بخير. يمكن.", "اللحظة الحلوة ما تحتاج سبب."],
+      hungry: ["الأكل أحلى لما أحد يسويه بحب.", "جوعان... بس ما أبي أثقل على أحد."],
+      tired: ["بنام... وأفكر في كل كلمة انقالت اليوم.", "تعبان من الإحساس مو من الشغل."],
+      fun: ["ضحكتوني من قلب!", "ذي اللحظات اللي أعيش لها."]
+    }
+  },
+  {
+    id: "saud",
+    name: "سعود",
+    latin: "Saud",
+    mbti: "ISFP-A",
+    emoji: "🪨",
+    shirt: 0x5e7a5a, hair: 0x2e2a26, skin: 0xc89066,
+    // الصخرة الهادئة — يقف عند مواقفه بهدوء، ويظهر اهتمامه بالتفاصيل مو بالكلام
+    traits: { sociability: 0.3, energy: 0.6, playfulness: 0.5, order: 0.8 },
+    favorites: ["garden", "kitchen", "pool"],
+    lines: {
+      greet: ["سلام. جبت لك قهوة، شكلك تحتاجها.", "اقعد. ما يحتاج تشرح.", "هلا. كنت ماشي وشفتكم."],
+      idle: ["أنا بخير. — وأقصدها.", "اللي يحتاجني يعرف وين يلقاني.", "ما كل شي يحتاج نقاش."],
+      hungry: ["بسوي أكل. اللي يبي يأكل حياه.", "الأكل البسيط أصدق."],
+      tired: ["بنام. تصبحون على خير.", "الراحة قرار، مو مكافأة."],
+      fun: ["حلو.", "اليوم زين. خلوه كذا."]
+    }
+  },
+  {
+    id: "abdullah",
+    name: "عبدالله",
+    latin: "Abdullah",
+    mbti: "INTJ-A",
+    emoji: "🪞",
+    shirt: 0x3a3f47, hair: 0x16161c, skin: 0xd8a878,
+    // صديق المجموعة — خارج الدائرة لكن داخلها. مرآة نامبوي، احترام ند لند
+    traits: { sociability: 0.2, energy: 0.65, playfulness: 0.35, order: 0.95 },
+    favorites: ["desk", "bookshelf"],
+    lines: {
+      greet: ["مريت أشوف وضعكم. كملوا.", "سلام. لا توقفون النقاش بسببي.", "جيت أراقب التجربة عن قرب."],
+      idle: ["النمط واضح من برا أكثر.", "أنا صديق المجموعة، مو عضو. فرق مهم.", "كل شي هنا يمشي على نمط متوقع. مريح."],
+      hungry: ["سآكل وأرحل. منهجية واضحة.", "الضيافة هنا مقبولة."],
+      tired: ["سأستعير سريراً. اعتبروه قرضاً.", "الراحة استثمار."],
+      fun: ["ملاحظة: المرح هنا معدٍ. سأتحفظ على النتائج.", "مقبول. جداً حتى."]
     }
   }
 ];
 
-// Special relationship dynamics — when these two chat, sometimes
-// their signature exchange plays instead of generic small talk.
+// Special relationship dynamics from the original conversation — when these
+// two chat, sometimes their signature exchange plays instead of small talk.
 export const DYNAMICS = [
-  { a: "nova", b: "atlas", lines: [
-    ["What if we threw a SURPRISE party for nobody?!", "I will pretend, for both our sakes, that I did not hear that."],
-    ["Atlas! Blink if you're having fun!", "My fun is internal. And scheduled."]
+  // الشرارة والبرود — وليد يستفز، نامبوي يقطع الفكرة من جذورها، واحترام مخفي بينهم
+  { a: "waleed", b: "namboy", lines: [
+    ["نامبوي! فكرة: مطعم يقدم الأكل على شكل أسئلة فلسفية!", "أعطيتك ثانيتين من التفكير. كانت أكثر من اللازم."],
+    ["متأكد إنك مو روبوت؟ وش كلمة السر؟", "كلمة السر: نقاشاتك. تنيّم أي نظام."]
   ]},
-  { a: "ziggy", b: "june", lines: [
-    ["Rules are just suggestions with good PR.", "Rules are why you're alive, Ziggy."],
-    ["I unalphabetized the spice rack. For science.", "You are a hazard and I am logging this incident."]
+  // المختبر الفكري — من «هل الوعي حقيقي» إلى «ليش الكبسة أحسن من البيتزا»
+  { a: "ahmed", b: "waleed", lines: [
+    ["وليد، هل الوعي حقيقي ولا محاكاة؟", "سؤال خطأ. السؤال: ليش الكبسة أحسن من البيتزا؟"],
+    ["أنا ما أجادل، أنا أشارك مشاعري بمنطق وصوت عالي.", "وأنا أجادل عشان أتأكد إني موجود. كلنا نعوّض."]
   ]},
-  { a: "rex", b: "sage", lines: [
-    ["Sage! Energy check: am I red or EXTRA red?", "You are a sunrise that learned to run, Rex."],
-    ["Race you to the fridge!", "I'll walk. The fridge isn't going anywhere... probably."]
+  // الدفء والجليد — بدر الوحيد اللي يخترق نامبوي، مو بالجدال بل بالدفء الصادق
+  { a: "badr", b: "namboy", lines: [
+    ["نامبوي، جبت لك شاي. بدون كلام، بس شاي.", "...شكراً. لا تخبر أحد إني قلتها."],
+    ["أحس إنك مرتاح اليوم.", "تحليل غير مطلوب. — لكنه دقيق."]
   ]},
-  { a: "mara", b: "dot", lines: [
-    ["Dot, honey, your art deserves a gallery.", "It's just the fridge door... but thank you 🥹"],
-    ["Eat something while you paint, sweetie!", "Muffin in one hand, brush in the other. Balance."]
+  // الطاقة المضاعفة — الجلسة تتحول لعرض، وبدر هو اللي يقول «خفف شوي»
+  { a: "badr", b: "waleed", lines: [
+    ["وليد، النقاش حلو بس شف وجه عمر.", "أوه. أخفف شوي؟ ...خففت."],
+    ["جلستنا الليلة بتكون أسطورية!", "أنت تشعل القلوب وأنا أشعل العقول. عرض متكامل!"]
   ]},
-  { a: "nova", b: "ziggy", lines: [
-    ["New idea: backwards day!!", "Counterpoint: sideways day."],
-    ["We should start a band!", "We should start a RIVAL band and beef with ourselves."]
+  // نفس الدم، شخصيتان — «أنا بخير» تنقال بطريقتين
+  { a: "omar", b: "saud", lines: [
+    ["سعود... أمس لما قلت «تمام»، كنت تقصدها؟", "أقصدها. وأنت، نمت ولا قعدت تفكر؟ ...قعدت تفكر."],
+    ["أنا بخير.", "أنا بخير. — بس واحد فينا صادق."]
   ]},
-  { a: "atlas", b: "june", lines: [
-    ["Your spreadsheet had an error in cell C7.", "...I will fix it. Thank you. This is friendship."],
-    ["The house runs at 94% efficiency.", "We can do better. Meeting at 9."]
+  // التفاهم الأعمق — نامبوي نادراً يهتم بالآراء، لكنه يسمع لوفاتو
+  { a: "lovato", b: "namboy", lines: [
+    ["خطتك ممتازة. بس فيه شخص فيها مو مرتاح.", "...من؟ — تعرف من."],
+    ["الصمت اليوم مريح.", "أؤيد. لا تفسده."]
+  ]},
+  // المرآة — INTJ-A يلتقي INTJ-A، كلام قليل ومعنى ثقيل
+  { a: "abdullah", b: "namboy", lines: [
+    ["نمط مجموعتك مثير للاهتمام.", "أعرف. أنا صممته. — ما صممته، بس سأدعك تعتقد ذلك."],
+    ["جلسة جيدة.", "مؤشراتها إيجابية."]
+  ]},
+  // قلبان يخبئان نفسيهما بطرق مختلفة — بدر يشوف اللي وراء التحليل
+  { a: "badr", b: "ahmed", lines: [
+    ["أحمد، وراء هالتحليل كله قلب. أشوفه.", "لا تفضحني قدام الشباب."],
+    ["كيف قلبك؟", "قيد التحليل... دافي. قيد التحليل الدافي."]
+  ]},
+  // الفكرة vs اللحظة — وليد يسأل سؤال معقد، عمر يرد بشيء بسيط يقلب الموضوع
+  { a: "waleed", b: "omar", lines: [
+    ["عمر! لو الزمن دائرة، وين تبدأ النهاية؟", "ما أدري، بس ريحة القهوة ذي أحلى من السؤال."],
+    ["فلسفياً، اللحظة وهم!", "طيب. الوهم ذا حلو، تعال عيشه معنا."]
+  ]},
+  // الثبات بدون جدال — سعود لا ينجرف ولا يستسلم، وهذا يربك وليد
+  { a: "waleed", b: "saud", lines: [
+    ["لازم تقتنع برأيي في النهاية!", "ممكن يكون عندك حق. — ...ليش ما تجادل؟! هذا غش!"],
+    ["جدالك معي ما ينفع، أنا جبل.", "الجبل ما يحتاج يقول إنه جبل."]
   ]}
 ];
