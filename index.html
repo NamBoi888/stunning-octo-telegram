@@ -2,153 +2,228 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MBTI House — a tiny Sims-like</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Diriyah Explorer — مستكشف الدرعية</title>
 <style>
   :root {
-    --panel-bg: rgba(18, 22, 34, 0.88);
-    --panel-border: rgba(255, 255, 255, 0.12);
-    --accent: #4be38a;
+    --sand: #f2e3c4;
+    --ink: #3a2a17;
+    --gold: #d8a24a;
+    --gold-deep: #a9762a;
+    --panel: rgba(58, 40, 22, 0.9);
+    --panel-soft: rgba(247, 235, 210, 0.96);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; overflow: hidden; background: #0c0f18; }
-  body { font-family: "Segoe UI", system-ui, sans-serif; color: #eef1f8; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; background: #e9cf9d; }
+  body {
+    font-family: "Segoe UI", system-ui, "Noto Naskh Arabic", sans-serif;
+    color: var(--ink); touch-action: none;
+  }
   #game { position: fixed; inset: 0; display: block; }
-
   .hud { position: fixed; z-index: 10; user-select: none; }
 
-  #clock {
-    top: 14px; left: 14px;
-    background: var(--panel-bg);
-    border: 1px solid var(--panel-border);
-    border-radius: 12px;
-    padding: 10px 14px;
-    display: flex; align-items: center; gap: 12px;
+  /* top-left counters */
+  #stats {
+    top: 12px; left: 12px; display: flex; gap: 8px;
   }
-  #clock .time { font-size: 20px; font-weight: 700; letter-spacing: 1px; }
-  #clock .day { font-size: 12px; opacity: 0.75; }
-  #clock button {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid var(--panel-border);
-    color: #eef1f8; border-radius: 8px;
-    padding: 4px 10px; cursor: pointer; font-size: 13px;
+  #stats .pill {
+    background: var(--panel); color: #fbeccb;
+    border: 1.5px solid var(--gold); border-radius: 999px;
+    padding: 7px 14px; font-weight: 800; font-size: 15px;
+    display: flex; align-items: center; gap: 7px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.2);
   }
-  #clock button.active { background: var(--accent); color: #08130c; font-weight: 700; }
+  #stats .pill .ico { font-size: 17px; }
 
-  #roster {
-    top: 14px; right: 14px;
-    display: flex; flex-direction: column; gap: 6px;
+  /* top-right controls */
+  #topright { top: 12px; right: 12px; display: flex; gap: 8px; align-items: center; }
+  #muteBtn {
+    background: var(--panel); border: 1.5px solid var(--gold); color: #fbeccb;
+    width: 40px; height: 40px; border-radius: 50%; font-size: 18px; cursor: pointer;
   }
-  #roster .chip {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--panel-bg);
-    border: 1px solid var(--panel-border);
-    border-radius: 999px;
-    padding: 5px 12px 5px 6px;
-    cursor: pointer;
-    transition: transform 0.08s ease;
-  }
-  #roster .chip:hover { transform: translateX(-3px); }
-  #roster .chip.selected { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-  #roster .chip .dot { width: 18px; height: 18px; border-radius: 50%; flex: none; }
-  #roster .chip .nm { font-size: 13px; font-weight: 600; }
-  #roster .chip .ty { font-size: 10px; opacity: 0.65; margin-left: 2px; }
-  #roster .chip .mood { margin-left: auto; font-size: 13px; }
 
-  #panel {
-    left: 50%; bottom: 14px; transform: translateX(-50%);
-    width: min(680px, calc(100vw - 28px));
-    background: var(--panel-bg);
-    border: 1px solid var(--panel-border);
-    border-radius: 16px;
-    padding: 12px 16px;
-    display: none;
-    gap: 16px;
-    align-items: center;
+  /* guidance compass */
+  #compass {
+    top: 64px; right: 12px; width: 92px;
+    background: var(--panel); border: 1.5px solid var(--gold);
+    border-radius: 14px; padding: 9px 6px 7px; text-align: center;
+    color: #fbeccb; transition: opacity 0.4s; box-shadow: 0 3px 12px rgba(0,0,0,0.2);
   }
-  #panel.open { display: flex; }
-  #panel .portrait {
-    width: 58px; height: 58px; border-radius: 50%;
-    flex: none; display: flex; align-items: center; justify-content: center;
-    font-size: 26px; border: 3px solid rgba(255,255,255,0.25);
-  }
-  #panel .who .name { font-size: 17px; font-weight: 700; }
-  #panel .who .mbti { font-size: 11px; color: var(--accent); font-weight: 700; letter-spacing: 1px; }
-  #panel .who .doing { font-size: 12px; opacity: 0.8; margin-top: 2px; max-width: 170px; }
-  #panel .who .bestie { font-size: 11px; opacity: 0.6; margin-top: 2px; }
-  #panel .needs { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; }
-  .need { display: flex; align-items: center; gap: 8px; }
-  .need label { font-size: 11px; width: 52px; opacity: 0.8; text-align: right; }
-  .need .bar { flex: 1; height: 9px; border-radius: 5px; background: rgba(255,255,255,0.1); overflow: hidden; }
-  .need .fill { height: 100%; border-radius: 5px; background: var(--accent); transition: width 0.3s; }
-  .need .fill.low { background: #f2c84b; }
-  .need .fill.crit { background: #ee5d6c; }
+  #compass .lbl { font-size: 9.5px; letter-spacing: 1px; opacity: 0.8; text-transform: uppercase; }
+  #compassArrow { font-size: 30px; line-height: 1.1; display: inline-block; color: var(--gold); }
+  #compassDist { font-size: 12px; font-weight: 800; }
 
+  /* bottom hint */
   #hint {
-    bottom: 14px; left: 14px;
-    background: var(--panel-bg);
-    border: 1px solid var(--panel-border);
-    border-radius: 10px; padding: 8px 12px;
-    font-size: 11.5px; opacity: 0.85; line-height: 1.5; max-width: 240px;
+    bottom: 12px; left: 50%; transform: translateX(-50%);
+    background: var(--panel); color: #f1e0bd;
+    border: 1px solid var(--gold-deep); border-radius: 12px;
+    padding: 8px 14px; font-size: 12px; text-align: center; max-width: 92vw;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+  }
+  #hint b { color: var(--gold); }
+
+  /* toast */
+  #toast {
+    bottom: 64px; left: 50%; transform: translateX(-50%) translateY(8px);
+    background: var(--gold); color: #3a2a17; font-weight: 800;
+    padding: 9px 18px; border-radius: 999px; font-size: 15px;
+    opacity: 0; transition: opacity 0.25s, transform 0.25s; z-index: 20;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* touch joystick */
+  #joy {
+    display: none; position: fixed; left: 26px; bottom: 26px;
+    width: 116px; height: 116px; border-radius: 50%;
+    background: rgba(58,40,22,0.28); border: 2px solid rgba(216,162,74,0.6);
+    z-index: 15; touch-action: none;
+  }
+  #joy.show { display: block; }
+  #joyStick {
+    position: absolute; left: 50%; top: 50%; width: 50px; height: 50px;
+    margin: -25px 0 0 -25px; border-radius: 50%;
+    background: var(--gold); border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
 
-  #labels { position: fixed; inset: 0; pointer-events: none; z-index: 5; overflow: hidden; }
-  .nametag {
-    position: absolute; transform: translate(-50%, -100%);
-    font-size: 11px; font-weight: 700;
-    color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-    white-space: nowrap;
+  /* culture card + win modal */
+  .modal {
+    position: fixed; inset: 0; z-index: 30; display: none;
+    align-items: center; justify-content: center; padding: 18px;
+    background: rgba(40,26,12,0.55); backdrop-filter: blur(3px);
   }
-  .bubble {
-    position: absolute; transform: translate(-50%, -100%);
-    background: #fff; color: #1a1d29;
-    border-radius: 12px; padding: 7px 11px;
-    font-size: 12px; max-width: 200px; line-height: 1.35;
-    box-shadow: 0 3px 14px rgba(0,0,0,0.35);
-    animation: pop 0.15s ease;
+  .modal.open { display: flex; }
+  .sheet {
+    background: var(--panel-soft); color: var(--ink);
+    border: 2px solid var(--gold); border-radius: 20px;
+    max-width: 460px; width: 100%; padding: 22px 22px 18px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.4); position: relative;
+    max-height: 88vh; overflow-y: auto;
+    background-image:
+      radial-gradient(circle at 12px 12px, rgba(216,162,74,0.18) 2px, transparent 3px);
+    background-size: 26px 26px;
   }
-  .bubble::after {
-    content: ""; position: absolute; left: 50%; bottom: -6px;
-    transform: translateX(-50%);
-    border: 7px solid transparent; border-top-color: #fff; border-bottom: 0;
+  #cardIcon { font-size: 44px; text-align: center; }
+  #cardAr { font-size: 26px; font-weight: 800; text-align: center; margin-top: 4px; }
+  #cardEn { font-size: 16px; text-align: center; opacity: 0.85; }
+  #cardTag {
+    display: inline-block; margin: 10px auto 0; left: 50%; position: relative; transform: translateX(-50%);
+    background: var(--gold); color: #3a2a17; font-weight: 800; font-size: 11.5px;
+    padding: 4px 12px; border-radius: 999px; letter-spacing: 0.5px;
   }
-  @keyframes pop { from { transform: translate(-50%, -90%) scale(0.7); opacity: 0; } }
+  #cardBody { margin-top: 14px; font-size: 14.5px; line-height: 1.6; white-space: pre-line; }
+  #cardFact, .factbox {
+    margin-top: 14px; font-size: 13.5px; line-height: 1.55;
+    background: rgba(216,162,74,0.16); border-left: 3px solid var(--gold);
+    padding: 10px 12px; border-radius: 8px;
+  }
+  .btn {
+    display: block; width: 100%; margin-top: 18px;
+    background: linear-gradient(180deg, var(--gold), var(--gold-deep));
+    color: #2a1d0e; font-weight: 800; font-size: 15px; border: none;
+    padding: 12px; border-radius: 12px; cursor: pointer;
+  }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+
+  /* loading / intro veil */
+  #veil {
+    position: fixed; inset: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    background: radial-gradient(circle at 50% 30%, #f3dcab, #d9b878 70%, #c69e5f);
+    transition: opacity 0.7s; text-align: center;
+  }
+  #veil.gone { opacity: 0; pointer-events: none; }
+  #veil .inner { max-width: 480px; }
+  #veil h1 { font-size: 34px; color: #5a3d18; letter-spacing: 0.5px; }
+  #veil .ar-title { font-size: 22px; color: var(--gold-deep); font-weight: 800; margin-top: 2px; }
+  #veilWisdom {
+    margin-top: 18px; font-size: 14px; color: #6a4d23; min-height: 48px;
+    line-height: 1.5; font-style: italic;
+  }
+  #veilIntro { display: none; }
+  #introAr { font-size: 26px; font-weight: 800; color: var(--gold-deep); }
+  #introEn { font-size: 17px; color: #6a4d23; margin-bottom: 10px; }
+  #introBody { font-size: 14px; line-height: 1.6; color: #4a341a; white-space: pre-line; text-align: left;
+    background: rgba(255,255,255,0.4); border-radius: 12px; padding: 14px; }
+  #introTip { margin-top: 10px; font-size: 12px; color: #6a4d23; }
+  .spinner {
+    width: 42px; height: 42px; margin: 4px auto 0; border-radius: 50%;
+    border: 5px solid rgba(169,118,42,0.25); border-top-color: var(--gold-deep);
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .credit { margin-top: 14px; font-size: 11px; color: #7a5b2e; opacity: 0.85; }
+  #winEmoji { font-size: 52px; text-align: center; }
 </style>
 </head>
 <body>
 <canvas id="game"></canvas>
-<div id="labels"></div>
 
-<div id="clock" class="hud">
-  <div>
-    <div class="time">8:00 AM</div>
-    <div class="day">Day 1</div>
-  </div>
-  <button data-speed="0">⏸</button>
-  <button data-speed="1" class="active">▶</button>
-  <button data-speed="3">▶▶</button>
+<!-- HUD -->
+<div id="stats" class="hud">
+  <div class="pill"><span class="ico">🌴</span><span id="hudDates">0</span></div>
+  <div class="pill"><span class="ico">🏛️</span><span id="hudMarks">0 / 0</span></div>
 </div>
-
-<div id="roster" class="hud"></div>
-
-<div id="panel" class="hud">
-  <div class="portrait"></div>
-  <div class="who">
-    <div class="name"></div>
-    <div class="mbti"></div>
-    <div class="doing"></div>
-    <div class="bestie"></div>
-  </div>
-  <div class="needs">
-    <div class="need"><label>Hunger</label><div class="bar"><div class="fill" data-need="hunger"></div></div></div>
-    <div class="need"><label>Energy</label><div class="bar"><div class="fill" data-need="energy"></div></div></div>
-    <div class="need"><label>Fun</label><div class="bar"><div class="fill" data-need="fun"></div></div></div>
-    <div class="need"><label>Social</label><div class="bar"><div class="fill" data-need="social"></div></div></div>
-  </div>
+<div id="topright" class="hud">
+  <button id="muteBtn" title="sound">🔊</button>
 </div>
-
+<div id="compass" class="hud" style="opacity:0">
+  <div class="lbl">Next site</div>
+  <div id="compassArrow">⬆️</div>
+  <div id="compassDist"></div>
+</div>
 <div id="hint" class="hud">
-  <b>Click a friend</b> to select them · <b>click the ground</b> to send them walking · <b>click furniture</b> to make them use it · drag to orbit, scroll to zoom
+  <b>Move</b> WASD / arrows · <b>look</b> drag · <b>zoom</b> scroll · find the <b>golden beacons</b> 🔆
+</div>
+<div id="toast" class="hud"></div>
+
+<!-- touch joystick -->
+<div id="joy" class="hud"><div id="joyStick"></div></div>
+
+<!-- culture card -->
+<div id="card" class="modal">
+  <div class="sheet">
+    <div id="cardIcon">🏛️</div>
+    <div id="cardAr"></div>
+    <div id="cardEn"></div>
+    <div id="cardTag"></div>
+    <div id="cardBody"></div>
+    <div id="cardFact"></div>
+    <button id="cardClose" class="btn">متابعة الاستكشاف · Continue</button>
+  </div>
+</div>
+
+<!-- win -->
+<div id="win" class="modal">
+  <div class="sheet">
+    <div id="winEmoji">🎉🕌🌴</div>
+    <div style="font-size:24px;font-weight:800;text-align:center;color:var(--gold-deep)">أحسنت! اكتشفت الدرعية</div>
+    <div style="text-align:center;margin-top:4px">You discovered every landmark of historic Diriyah!</div>
+    <div class="factbox" style="text-align:center">You also gathered <b><span id="winDates">0</span></b> golden dates 🌴 along the way. The story of the first Saudi State, kept alive in mud brick and palm.</div>
+    <button id="winClose" class="btn">Keep exploring</button>
+  </div>
+</div>
+
+<!-- loading / intro veil -->
+<div id="veil">
+  <div class="inner">
+    <div id="veilLoading">
+      <h1>Diriyah Explorer</h1>
+      <div class="ar-title">مستكشف الدرعية</div>
+      <div class="spinner"></div>
+      <div id="veilWisdom"></div>
+      <div class="credit">Building the city from OpenStreetMap data…</div>
+    </div>
+    <div id="veilIntro">
+      <div id="introAr"></div>
+      <div id="introEn"></div>
+      <div id="introBody"></div>
+      <div id="introTip"></div>
+      <button id="startBtn" class="btn" disabled>ابدأ الرحلة · Start exploring</button>
+      <div class="credit">Map data © OpenStreetMap contributors · Built with Three.js</div>
+    </div>
+  </div>
 </div>
 
 <script type="importmap">
@@ -159,6 +234,6 @@
   }
 }
 </script>
-<script type="module" src="./src/main.js"></script>
+<script type="module" src="./src/diriyah/game.js"></script>
 </body>
 </html>

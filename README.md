@@ -1,15 +1,15 @@
-# MBTI House — بيت الشلة 🏠✨
+# Diriyah Explorer — مستكشف الدرعية 🏛️🌴
 
-A tiny Sims-style 3D life sim starring **the** MBTI friend group (from the
-original Claude conversation), built with [Three.js](https://threejs.org/) —
-no build step, no dependencies to install.
+A fun, cartoony 3D exploration game set in the **historic At-Turaif district of
+Diriyah (الدرعية)** — the mud-brick birthplace of the first Saudi State and a
+UNESCO World Heritage Site on the banks of Wadi Hanifah.
 
-The friends live together on one lot. They get hungry, tired, bored and
-lonely; they autonomously raid the fridge, nap, dance at the stereo, bounce
-on the trampoline, paint, swim, and wander over to each other for
-personality-true conversations in their own dialect — وليد provokes,
-نامبوي ends debates in one sentence, بدر checks on everyone, and سعود
-quietly brings you coffee because you looked like you needed it.
+The entire town you walk through is generated from **real
+[OpenStreetMap](https://www.openstreetmap.org/) data** — its 535 building
+footprints, streets, the wadi, and palm groves — then rebuilt in a warm,
+low-poly Najdi style: sun-baked ochre walls crowned with the region's iconic
+triangular crenellations. Built with [Three.js](https://threejs.org/), no build
+step and no dependencies to install.
 
 ## Run it
 
@@ -21,51 +21,63 @@ npx serve .
 python3 -m http.server 8000
 ```
 
-Then open the printed URL (e.g. http://localhost:8000) in a browser.
-Three.js loads from a CDN via an import map, so you need an internet
-connection the first time.
+Then open the printed URL (e.g. http://localhost:8000) in a browser. Three.js is
+vendored locally, so no internet connection is required to play.
 
 ## How to play
 
-- **Click a friend** (or their roster chip, top right) to select them — a
-  green plumbob appears over their head and their needs panel opens.
-- **Click the ground** to send the selected friend walking there.
-- **Click furniture** (fridge, beds, sofa, stereo, trampoline, pool, easel,
-  bookshelf, computer, garden) to make them use it.
-- **Drag** to orbit the camera, **scroll** to zoom.
-- **⏸ / ▶ / ▶▶** (top left) pause or speed up time. There's a full
-  day/night cycle.
+You play a young explorer in a thobe and red-checked ghutra, wandering the
+restored alleys of old Diriyah.
 
-Left alone, everyone takes care of themselves — how efficiently depends on
-their personality. Watch the speech bubbles: each pair of friends with a
-signature dynamic has their own running bits.
+- **Move** with `WASD` / arrow keys — or drag the on-screen joystick on touch.
+- **Look** by dragging to orbit the camera; **scroll** to zoom.
+- **Find the golden beacons** 🔆 hovering over the landmarks. Walk up to one to
+  uncover its real story — a bilingual (Arabic + English) culture card with the
+  history of the site and a "did you know" fact.
+- **Collect golden dates** (تمر 🌴) scattered through the streets.
+- The **compass** (top-right) always points to the nearest site you haven't
+  discovered yet, with its distance.
 
-## The cast — الشلة
+**Goal:** discover all **8 landmarks** to complete your journey through the
+birthplace of the nation.
 
-| Name | Type | Role |
-|------|------|------|
-| نامبوي (Namboy) | INTJ-A | المهندس المعماري والمحكّم — rarely speaks; when he does, everyone goes quiet |
-| بدر (Badr) | ENFJ-T | البطل والغراء — feels everyone's mood before they speak, holds the group together |
-| وليد (Waleed) | ENTP-T | المحرك والشرارة — opens a debate out of thin air, starts projects, abandons projects |
-| أحمد (Ahmed) | ENFP-T | قلب دافئ خلف قناع فكري — looks analytical, runs on feelings |
-| لوفاتو (Lovato) | INFJ-T | reads the room in silence, then says one sentence that lands in the heart |
-| عمر (Omar) | ISFP-T | lives in the moment by day, replays every word at night — "أنا بخير... يمكن" |
-| سعود (Saud) | ISFP-A | الصخرة الهادئة — won't argue, won't budge, shows love through small details |
-| عبدالله (Abdullah) | INTJ-A | صديق المجموعة — outside the circle yet inside it; نامبوي's mirror |
+## The landmarks — معالم الطريف
 
-Signature pair dynamics from the original chat are in the game too:
-الشرارة والبرود (وليد × نامبوي), المختبر الفكري (أحمد × وليد),
-الدفء والجليد (بدر × نامبوي), نفس الدم (عمر × سعود), المرآة
-(عبدالله × نامبوي), and more — watch the speech bubbles when pairs meet.
+Each is a real place pulled from the map, with curated cultural content:
 
-## Customize the cast
+| Site | الاسم | What it is |
+|------|-------|------------|
+| At-Turaif District | حي الطريف | The UNESCO-listed mud-brick royal quarter |
+| Salwa Palace | قصر سلوى | Seat of the ruling Al Saud imams |
+| Historic Mosque | مسجد الطريف | Centre of community and learning |
+| Thunayan bin Saud Palace | قصر ثنيان بن سعود | A historic Najdi family residence |
+| Arabian Horse Museum | متحف الخيل العربي | Heritage of the Najdi horse |
+| Trade & Treasury Museum | متحف التجارة والمال | Diriyah's caravan economy |
+| Moudhi Endowment | وقف موضي | A charitable *waqf* |
+| Visitor Centre | مركز الزوار | Gateway to today's Diriyah |
 
-Everything about the characters lives in **`src/characters.js`**:
+## How the city is built
 
-- `CHARACTERS` — name, MBTI, colors, personality `traits` (which drive the
-  AI: sociability, energy, playfulness, order), favorite objects, and the
-  speech-bubble lines for every situation.
-- `DYNAMICS` — signature two-person exchanges that play when specific
-  pairs of friends chat.
+`src/diriyah/map-data.json` is baked from a live
+[Overpass API](https://overpass-api.de/) query over the Diriyah / At-Turaif
+bounding box. Latitude/longitude are projected to local metres, building
+footprints are extruded into mud-brick prisms, roads and the Wadi Hanifah become
+ground ribbons, farmland and orchards become palm groves, and the named historic
+buildings are tagged as landmarks. Everything is merged or instanced so the whole
+town renders in a handful of draw calls.
 
-Edit that one file to replace the default cast with your own friend group.
+- `index.html` — HUD, culture cards, intro veil, touch joystick.
+- `src/diriyah/map.js` — turns OSM footprints into the 3D city (buildings,
+  crenellations, water, palms, markers, collision grid).
+- `src/diriyah/player.js` — the cartoony Najdi explorer and movement.
+- `src/diriyah/culture.js` — all the bilingual landmark history and facts.
+- `src/diriyah/game.js` — scene, lighting, input, collectibles, audio, loop.
+
+Edit `src/diriyah/culture.js` to change any of the stories, or re-run the
+Overpass query for a different bounding box to explore another town.
+
+## Credits
+
+- Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright)
+  contributors (ODbL).
+- Rendering by [Three.js](https://threejs.org/) (MIT), vendored under `vendor/`.
