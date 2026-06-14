@@ -13,6 +13,11 @@ const $ = (id) => document.getElementById(id);
 const canvas = $('game');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+// Correct sRGB output across three.js versions (r152+ does this by default;
+// older builds need outputEncoding set or the scene looks washed out).
+if (!('outputColorSpace' in renderer) && 'outputEncoding' in renderer && THREE.sRGBEncoding !== undefined) {
+  renderer.outputEncoding = THREE.sRGBEncoding;
+}
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 

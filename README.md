@@ -11,7 +11,15 @@ low-poly Najdi style: sun-baked ochre walls crowned with the region's iconic
 triangular crenellations. Built with [Three.js](https://threejs.org/), no build
 step and no dependencies to install.
 
-## Run it
+## Play with zero setup (no install, no terminal)
+
+Just open **[`Diriyah-Game.html`](Diriyah-Game.html)** by double-clicking it — the
+whole game, the 3D engine, and the map are bundled into that one file, so it runs
+straight from your hard drive in any modern browser. Nothing to install.
+
+To regenerate that file after changing the game: `node scripts/build-offline.mjs`
+
+## Run it with a server (for development)
 
 Any static file server works. From the repo root:
 
