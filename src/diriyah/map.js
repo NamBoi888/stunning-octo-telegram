@@ -179,6 +179,8 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
   const buildGeos = [];
   const colliders = [];        // AABBs for collision
   const teethMatrices = [];
+  const doorMatrices = [];     // wooden doors (1 per building)
+  const winMatrices = [];      // small windows
   const dummy = new THREE.Object3D();
   const landmarkBuildings = {}; // key -> {cx,cz,top}
 
@@ -189,11 +191,51 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
     const g = paint(prism(fp, h), b.lm ? 0xd9b27e : tone); // landmarks a touch lighter/golden
     buildGeos.push(g);
 
-    // AABB collider
+    // collider + centroid
     let minx = Infinity, maxx = -Infinity, minz = Infinity, maxz = -Infinity, sx = 0, sz = 0;
     for (const p of fp) { minx = Math.min(minx, p[0]); maxx = Math.max(maxx, p[0]); minz = Math.min(minz, p[1]); maxz = Math.max(maxz, p[1]); sx += p[0]; sz += p[1]; }
-    colliders.push({ minx, maxx, minz, maxz });
-    if (b.lm) landmarkBuildings[b.lm] = { cx: sx / fp.length, cz: sz / fp.length, top: h };
+    colliders.push({ minx, maxx, minz, maxz, poly: fp });
+    const ctx = sx / fp.length, ctz = sz / fp.length;
+    if (b.lm) landmarkBuildings[b.lm] = { cx: ctx, cz: ctz, top: h };
+
+    // doors + windows: walk the edges, find the longest for the door
+    let longest = -1, dEdge = null;
+    const edges = [];
+    for (let i = 0; i < fp.length - 1; i++) {
+      const [ax, az] = fp[i], [bx2, bz2] = fp[i + 1];
+      let dx = bx2 - ax, dz = bz2 - az; const len = Math.hypot(dx, dz);
+      if (len < 1.2) continue;
+      // outward normal (away from centroid)
+      let nx = -dz / len, nz = dx / len;
+      const mx = (ax + bx2) / 2, mz = (az + bz2) / 2;
+      if (nx * (mx - ctx) + nz * (mz - ctz) < 0) { nx = -nx; nz = -nz; }
+      const ang = Math.atan2(nx, nz);
+      edges.push({ ax, az, dx, dz, len, nx, nz, ang });
+      if (len > longest) { longest = len; dEdge = edges[edges.length - 1]; }
+    }
+    if (dEdge) {
+      // door at mid of longest edge, pressed to the wall, facing out
+      const mx = dEdge.ax + dEdge.dx * 0.5, mz = dEdge.az + dEdge.dz * 0.5;
+      dummy.position.set(mx + dEdge.nx * 0.06, 0.95, mz + dEdge.nz * 0.06);
+      dummy.rotation.set(0, dEdge.ang, 0); dummy.scale.set(1, 1, 1); dummy.updateMatrix();
+      doorMatrices.push(dummy.matrix.clone());
+    }
+    // windows along edges (more on taller/landmark buildings)
+    const rows = h > 7 ? 2 : 1;
+    for (const e of edges) {
+      const n = Math.floor(e.len / 3.2);
+      for (let k = 1; k <= n; k++) {
+        const t = k / (n + 1);
+        const wx = e.ax + e.dx * t, wz = e.az + e.dz * t;
+        // skip windows right where the door is
+        if (e === dEdge && Math.abs(t - 0.5) < 0.12) continue;
+        for (let r = 0; r < rows; r++) {
+          dummy.position.set(wx + e.nx * 0.05, 1.9 + r * 2.4, wz + e.nz * 0.05);
+          dummy.rotation.set(0, e.ang, 0); dummy.scale.set(1, 1, 1); dummy.updateMatrix();
+          winMatrices.push(dummy.matrix.clone());
+        }
+      }
+    }
 
     // crenellation teeth along the top perimeter
     const spacing = 1.8;
@@ -228,21 +270,152 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
     scene.add(inst);
   }
 
-  // ---- palm trees (instanced) ----
+  // carved wooden doors (with a pale frame) and small recessed windows
+  function instFromMatrices(geo, mat, mats, cast) {
+    if (!mats.length) return;
+    const m = new THREE.InstancedMesh(geo, mat, mats.length);
+    mats.forEach((mm, i) => m.setMatrixAt(i, mm));
+    m.instanceMatrix.needsUpdate = true; if (cast) m.castShadow = true;
+    scene.add(m);
+  }
+  instFromMatrices(
+    new THREE.BoxGeometry(1.35, 2.1, 0.16).translate(0, 0.05, 0),
+    new THREE.MeshStandardMaterial({ color: 0xe7d4ac, roughness: 1, flatShading: true }), doorMatrices, false); // pale frame
+  instFromMatrices(
+    new THREE.BoxGeometry(1.0, 1.8, 0.22),
+    new THREE.MeshStandardMaterial({ color: 0x6e4a26, roughness: 0.8, flatShading: true }), doorMatrices, false); // wooden door
+  instFromMatrices(
+    new THREE.BoxGeometry(0.7, 0.85, 0.16),
+    new THREE.MeshStandardMaterial({ color: 0x4a3320, roughness: 0.9, flatShading: true }), winMatrices, false);
+
+  // a few palms along the streets too, for life
+  for (const r of data.roads) {
+    if (r.k === 'ped' || r.w < 6) continue;
+    for (let i = 0; i < r.l.length - 1; i += 3) {
+      if (Math.random() > 0.5) continue;
+      const a = r.l[i], b2 = r.l[i + 1];
+      const mx = (a[0] + b2[0]) / 2, mz = (a[1] + b2[1]) / 2;
+      let dx = b2[0] - a[0], dz = b2[1] - a[1]; const len = Math.hypot(dx, dz) || 1;
+      const off = r.w / 2 + 1.4;
+      const side = Math.random() < 0.5 ? 1 : -1;
+      const px = mx + (-dz / len) * off * side, pz = mz + (dx / len) * off * side;
+      let ok = true;
+      for (const c of colliders) if (px > c.minx - 1 && px < c.maxx + 1 && pz > c.minz - 1 && pz < c.maxz + 1) { ok = false; break; }
+      if (ok) palmPts.push([px, pz]);
+    }
+  }
+
+  // ---- date palms (instanced: trunk + drooping fronds + date bunches) ----
   if (palmPts.length) {
-    const trunk = new THREE.CylinderGeometry(0.18, 0.32, 4.2, 6).translate(0, 2.1, 0);
-    const crown = new THREE.ConeGeometry(2.0, 1.4, 7).translate(0, 4.4, 0);
+    const TH = 4.6; // trunk height
+    // segmented trunk
+    const trunk = new THREE.CylinderGeometry(0.2, 0.34, TH, 7).translate(0, TH / 2, 0);
+    // fronds: blades arching out and drooping from the crown
+    const blades = [];
+    const nb = 11;
+    for (let i = 0; i < nb; i++) {
+      const a = (i / nb) * Math.PI * 2 + Math.random() * 0.2;
+      const droop = 0.55 + (i % 3) * 0.12;
+      const bl = new THREE.ConeGeometry(0.26, 3.1, 4);
+      bl.translate(0, 1.55, 0);
+      bl.rotateX(Math.PI);            // point outward/down from base
+      bl.rotateZ(Math.PI / 2 - droop); // arch
+      bl.rotateY(a);
+      bl.translate(0, TH + 0.2, 0);
+      blades.push(bl);
+    }
+    const crown = new THREE.ConeGeometry(0.34, 1.1, 5).translate(0, TH + 0.55, 0);
+    blades.push(crown);
+    const fronds = mergeGeos(blades);
+    // date bunches hanging under the crown
+    const bunch = [];
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2;
+      const db = new THREE.SphereGeometry(0.3, 6, 5);
+      db.scale(0.7, 1.1, 0.7);
+      db.translate(Math.cos(a) * 0.55, TH - 0.35, Math.sin(a) * 0.55);
+      bunch.push(db);
+    }
+    const dateGeo = mergeGeos(bunch);
+
     const trunkMesh = new THREE.InstancedMesh(trunk, new THREE.MeshStandardMaterial({ color: PALM_BARK, roughness: 1, flatShading: true }), palmPts.length);
-    const crownMesh = new THREE.InstancedMesh(crown, new THREE.MeshStandardMaterial({ color: PALM_LEAF, roughness: 1, flatShading: true }), palmPts.length);
+    const frondMesh = new THREE.InstancedMesh(fronds, new THREE.MeshStandardMaterial({ color: PALM_LEAF, roughness: 1, flatShading: true }), palmPts.length);
+    const dateMesh = new THREE.InstancedMesh(dateGeo, new THREE.MeshStandardMaterial({ color: 0xb5742c, roughness: 0.8, flatShading: true }), palmPts.length);
     palmPts.forEach((p, i) => {
-      const s = 0.8 + Math.random() * 0.6;
+      const s = 0.85 + Math.random() * 0.7;
       dummy.position.set(p[0], 0, p[1]);
       dummy.rotation.set(0, Math.random() * Math.PI, 0);
-      dummy.scale.set(s, s, s); dummy.updateMatrix();
-      trunkMesh.setMatrixAt(i, dummy.matrix); crownMesh.setMatrixAt(i, dummy.matrix);
+      dummy.scale.set(s, s * (0.95 + Math.random() * 0.2), s); dummy.updateMatrix();
+      trunkMesh.setMatrixAt(i, dummy.matrix); frondMesh.setMatrixAt(i, dummy.matrix); dateMesh.setMatrixAt(i, dummy.matrix);
     });
-    trunkMesh.castShadow = crownMesh.castShadow = true;
-    scene.add(trunkMesh, crownMesh);
+    trunkMesh.castShadow = frondMesh.castShadow = true;
+    scene.add(trunkMesh, frondMesh, dateMesh);
+  }
+
+  // ---- scattered desert rocks + dry tufts for ground detail ----
+  const rockPts = [];
+  const rspan = { x0: B.minx, x1: B.maxx, z0: B.minz, z1: B.maxz };
+  for (let i = 0; i < 260; i++) {
+    const x = rspan.x0 + Math.random() * (rspan.x1 - rspan.x0);
+    const z = rspan.z0 + Math.random() * (rspan.z1 - rspan.z0);
+    let ok = true;
+    for (const c of colliders) if (x > c.minx && x < c.maxx && z > c.minz && z < c.maxz) { ok = false; break; }
+    if (ok) rockPts.push([x, z]);
+  }
+  if (rockPts.length) {
+    const rg = new THREE.DodecahedronGeometry(0.5, 0);
+    const rmesh = new THREE.InstancedMesh(rg, new THREE.MeshStandardMaterial({ color: 0xb09064, roughness: 1, flatShading: true }), rockPts.length);
+    rockPts.forEach((p, i) => {
+      const s = 0.25 + Math.random() * 0.7;
+      dummy.position.set(p[0], s * 0.3, p[1]);
+      dummy.rotation.set(Math.random(), Math.random() * 6, Math.random());
+      dummy.scale.set(s, s * 0.6, s); dummy.updateMatrix();
+      rmesh.setMatrixAt(i, dummy.matrix);
+    });
+    rmesh.castShadow = true; scene.add(rmesh);
+  }
+
+  // ---- cultural majlis prop: a rug, cushions and a brass dallah (قهوة) ----
+  const isOpen = (x, z, clear) => {
+    for (const c of colliders) if (x > c.minx - clear && x < c.maxx + clear && z > c.minz - clear && z < c.maxz + clear) return false;
+    return true;
+  };
+  const findOpen = (x, z) => {
+    for (let r = 4; r < 46; r += 3) for (let a = 0; a < 10; a++) {
+      const px = x + Math.cos(a / 10 * 6.283) * r, pz = z + Math.sin(a / 10 * 6.283) * r;
+      if (isOpen(px, pz, 1.6)) return [px, pz];
+    }
+    return null;
+  };
+  function makeMajlis() {
+    const m = new THREE.Group();
+    const rugMat = new THREE.MeshStandardMaterial({ color: 0x9d2f2a, roughness: 1, flatShading: true });
+    const rugBorder = new THREE.MeshStandardMaterial({ color: 0xd8b24a, roughness: 1, flatShading: true });
+    const rugUnder = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.06, 2.4), rugBorder); rugUnder.position.y = 0.04; m.add(rugUnder);
+    const rugTop = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.08, 2.0), rugMat); rugTop.position.y = 0.06; m.add(rugTop);
+    // cushions
+    const cushMat = new THREE.MeshStandardMaterial({ color: 0x315a3a, roughness: 1, flatShading: true });
+    for (const [cx, cz] of [[-1.1, -0.7], [1.1, -0.7], [-1.1, 0.7]]) {
+      const c = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.28, 0.5), cushMat);
+      c.position.set(cx, 0.22, cz); c.castShadow = true; m.add(c);
+    }
+    // brass dallah (coffee pot)
+    const brass = new THREE.MeshStandardMaterial({ color: 0xc89a3c, roughness: 0.4, metalness: 0.6, flatShading: true });
+    const pot = new THREE.Group();
+    const belly = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.22, 0.34, 10), brass); belly.position.y = 0.17; pot.add(belly);
+    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.16, 0.22, 10), brass); neck.position.y = 0.42; pot.add(neck);
+    const lid = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.18, 10), brass); lid.position.y = 0.6; pot.add(lid);
+    const finial = new THREE.Mesh(new THREE.SphereGeometry(0.04, 6, 6), brass); finial.position.y = 0.71; pot.add(finial);
+    const spout = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.34, 6), brass); spout.position.set(0.2, 0.5, 0); spout.rotation.z = -0.9; pot.add(spout);
+    const handle = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.025, 6, 10), brass); handle.position.set(-0.18, 0.42, 0); handle.rotation.y = Math.PI / 2; pot.add(handle);
+    pot.position.set(0, 0.1, 0); pot.traverse((o) => o.castShadow = true); m.add(pot);
+    // little cups
+    const cupMat = new THREE.MeshStandardMaterial({ color: 0xf3ece0, roughness: 0.9 });
+    for (const [cx, cz] of [[0.5, 0.3], [0.75, 0.1]]) {
+      const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.05, 0.08, 8), cupMat);
+      cup.position.set(cx, 0.14, cz); m.add(cup);
+    }
+    return m;
   }
 
   // ---- landmark markers (floating, pulsing beacons) ----
@@ -274,6 +447,16 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
     beam.position.y = top / 2; group.add(beam);
 
     scene.add(group);
+
+    // a welcoming majlis on open ground beside the landmark
+    const spot = findOpen(pos[0], pos[1]);
+    if (spot) {
+      const maj = makeMajlis();
+      maj.position.set(spot[0], 0, spot[1]);
+      maj.rotation.y = Math.random() * Math.PI * 2;
+      scene.add(maj);
+    }
+
     markers.push({ ring, gem, beam, baseY: top });
     landmarks.push({ key: lm.key, pos: new THREE.Vector3(pos[0], 0, pos[1]), radius: 13, discovered: false });
   }
@@ -310,29 +493,55 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
     }
   });
 
-  // resolve a moving point (with radius) against nearby building AABBs
+  // Push a point with `radius` out of one footprint polygon. Returns the
+  // corrected [x,z] if it was touching, else null. Accurate to the real walls
+  // so the narrow Najdi alleys stay walkable.
+  function resolvePoly(x, z, poly, radius) {
+    // nearest point on the polygon boundary
+    let bestD = Infinity, bx = 0, bz = 0;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const ax = poly[j][0], az = poly[j][1], cx = poly[i][0], cz = poly[i][1];
+      let dx = cx - ax, dz = cz - az; const len2 = dx * dx + dz * dz || 1;
+      let t = ((x - ax) * dx + (z - az) * dz) / len2; t = t < 0 ? 0 : t > 1 ? 1 : t;
+      const px = ax + dx * t, pz = az + dz * t;
+      const dd = (x - px) * (x - px) + (z - pz) * (z - pz);
+      if (dd < bestD) { bestD = dd; bx = px; bz = pz; }
+    }
+    bestD = Math.sqrt(bestD);
+    const inside = pointInPoly(x, z, poly);
+    if (!inside && bestD >= radius) return null;
+    let dirx = x - bx, dirz = z - bz;
+    if (inside) { dirx = -dirx; dirz = -dirz; }   // outward = toward boundary
+    let l = Math.hypot(dirx, dirz);
+    if (l < 1e-6) { dirx = 1; dirz = 0; l = 1; }
+    dirx /= l; dirz /= l;
+    return [bx + dirx * radius, bz + dirz * radius];
+  }
+
+  // resolve a moving point against nearby building footprints (a couple of
+  // passes so overlapping buildings can't trap the player in a corner)
   function collide(x, z, radius) {
-    const gx = Math.floor(x / CELL), gz = Math.floor(z / CELL);
-    for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
-      const arr = grid.get(keyOf(gx + dx, gz + dz)); if (!arr) continue;
-      for (const idx of arr) {
-        const c = colliders[idx];
-        const nx = Math.max(c.minx, Math.min(x, c.maxx));
-        const nz = Math.max(c.minz, Math.min(z, c.maxz));
-        const ddx = x - nx, ddz = z - nz;
-        const dist2 = ddx * ddx + ddz * ddz;
-        if (dist2 < radius * radius) {
-          if (dist2 > 1e-6) { const dist = Math.sqrt(dist2); const push = radius - dist; x += (ddx / dist) * push; z += (ddz / dist) * push; }
-          else { // center inside: push out on least-penetration axis
-            const pl = x - c.minx, pr = c.maxx - x, pu = z - c.minz, pd = c.maxz - z;
-            const m = Math.min(pl, pr, pu, pd);
-            if (m === pl) x = c.minx - radius; else if (m === pr) x = c.maxx + radius;
-            else if (m === pu) z = c.minz - radius; else z = c.maxz + radius;
-          }
+    for (let pass = 0; pass < 3; pass++) {
+      let moved = false;
+      const gx = Math.floor(x / CELL), gz = Math.floor(z / CELL);
+      for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
+        const arr = grid.get(keyOf(gx + dx, gz + dz)); if (!arr) continue;
+        for (const idx of arr) {
+          const c = colliders[idx];
+          if (x < c.minx - radius || x > c.maxx + radius || z < c.minz - radius || z > c.maxz + radius) continue;
+          const r = resolvePoly(x, z, c.poly, radius);
+          if (r) { x = r[0]; z = r[1]; moved = true; }
         }
       }
+      if (!moved) break;
     }
     return [x, z];
+  }
+
+  // find an open spot near a desired point (push out of any building first)
+  function openSpawn(x, z) {
+    const [rx, rz] = collide(x, z, 1.1);
+    return [rx, rz];
   }
 
   function updateMarkers(t) {
@@ -344,8 +553,10 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
     }
   }
 
+  const spawn = openSpawn(data.spawn[0], data.spawn[1]);
+
   return {
-    data, bounds: B, spawn: data.spawn,
-    colliders, collide, landmarks, datePositions, updateMarkers,
+    data, bounds: B, spawn,
+    colliders, collide, openSpawn, landmarks, datePositions, updateMarkers,
   };
 }

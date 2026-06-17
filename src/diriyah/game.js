@@ -20,10 +20,55 @@ if (!('outputColorSpace' in renderer) && 'outputEncoding' in renderer && THREE.s
 }
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+if (THREE.ACESFilmicToneMapping !== undefined) {
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
+}
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xf2d9a8);
-scene.fog = new THREE.Fog(0xf2d9a8, 220, 620);
+scene.background = new THREE.Color(0xeadbb6);
+scene.fog = new THREE.Fog(0xeedcb4, 260, 720);
+
+// gradient sky dome (pale desert blue up top, warm haze at the horizon)
+const sky = new THREE.Mesh(
+  new THREE.SphereGeometry(1000, 32, 16),
+  new THREE.ShaderMaterial({
+    side: THREE.BackSide, depthWrite: false, fog: false,
+    uniforms: { top: { value: new THREE.Color(0x8bb8e6) }, bot: { value: new THREE.Color(0xf4e6c6) } },
+    vertexShader: 'varying float h; void main(){ h = normalize(position).y; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+    fragmentShader: 'uniform vec3 top; uniform vec3 bot; varying float h; void main(){ gl_FragColor = vec4(mix(bot, top, clamp(h*1.4+0.15,0.0,1.0)), 1.0); }',
+  })
+);
+scene.add(sky);
+
+// a few soft drifting clouds
+const clouds = new THREE.Group();
+const cloudMat = new THREE.MeshBasicMaterial({ color: 0xfffaf0, transparent: true, opacity: 0.7, fog: false });
+for (let i = 0; i < 14; i++) {
+  const c = new THREE.Group();
+  const n = 3 + (i % 3);
+  for (let k = 0; k < n; k++) {
+    const puff = new THREE.Mesh(new THREE.SphereGeometry(14 + Math.random() * 14, 8, 6), cloudMat);
+    puff.position.set((k - n / 2) * 16, Math.random() * 6, Math.random() * 8);
+    puff.scale.y = 0.5; c.add(puff);
+  }
+  c.position.set((Math.random() - 0.5) * 1600, 180 + Math.random() * 120, (Math.random() - 0.5) * 1600);
+  clouds.add(c);
+}
+scene.add(clouds);
+
+// faint floating dust motes drifting in the sun (follows the player)
+const DUST = 140;
+const dustGeo = new THREE.BufferGeometry();
+const dustPos = new Float32Array(DUST * 3);
+for (let i = 0; i < DUST; i++) {
+  dustPos[i * 3] = (Math.random() - 0.5) * 60;
+  dustPos[i * 3 + 1] = Math.random() * 12;
+  dustPos[i * 3 + 2] = (Math.random() - 0.5) * 60;
+}
+dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0xfff3d8, size: 0.18, transparent: true, opacity: 0.5, depthWrite: false, fog: true }));
+scene.add(dust);
 
 const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 2000);
 camera.position.set(0, 18, 26);
@@ -199,6 +244,19 @@ function animate() {
   markerT += dt;
 
   if (world) world.updateMarkers(markerT);
+
+  // drift clouds; keep dust + sky centred on the action
+  clouds.position.x = (markerT * 4) % 1700 - 850;
+  if (player) {
+    sky.position.set(player.position.x, 0, player.position.z);
+    dust.position.set(player.position.x, 0, player.position.z);
+    const dp = dust.geometry.attributes.position;
+    for (let i = 0; i < DUST; i++) {
+      dp.array[i * 3 + 1] += dt * 0.4;
+      if (dp.array[i * 3 + 1] > 12) dp.array[i * 3 + 1] = 0;
+    }
+    dp.needsUpdate = true;
+  }
 
   // bob/spin dates
   for (const d of dates) { if (d.taken) continue; d.mesh.rotation.y += dt * 2; d.mesh.position.y = 0.9 + Math.sin(markerT * 3 + d.phase) * 0.18; }

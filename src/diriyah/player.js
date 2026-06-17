@@ -16,12 +16,26 @@ export function createPlayer(scene) {
   const body = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.62, 1.5, 12), thobe);
   body.position.y = 0.95; body.castShadow = true; g.add(body);
 
-  // arms (simple)
+  // feet (peek out under the thobe)
+  const sandal = new THREE.MeshStandardMaterial({ color: 0x4a3526, roughness: 0.9, flatShading: true });
+  for (const s of [-1, 1]) {
+    const foot = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.14, 0.42), sandal);
+    foot.position.set(0.16 * s, 0.07, 0.06); foot.castShadow = true; g.add(foot);
+  }
+
+  // arms + hands
   for (const s of [-1, 1]) {
     const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.12, 0.7, 4, 6), thobe);
     arm.position.set(0.46 * s, 1.0, 0); arm.rotation.z = 0.25 * s; arm.castShadow = true;
     g.add(arm);
+    const hand = new THREE.Mesh(new THREE.SphereGeometry(0.11, 8, 8), skin);
+    hand.position.set(0.6 * s, 0.62, 0.04); g.add(hand);
   }
+
+  // a thin embroidered belt around the waist
+  const belt = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.12, 14),
+    new THREE.MeshStandardMaterial({ color: 0xb08a3a, roughness: 0.7, metalness: 0.3, flatShading: true }));
+  belt.position.y = 0.78; g.add(belt);
 
   // head
   const head = new THREE.Mesh(new THREE.SphereGeometry(0.36, 16, 14), skin);
@@ -48,8 +62,8 @@ export function createPlayer(scene) {
 
   scene.add(g);
 
-  const SPEED = 11;            // metres / second
-  const RADIUS = 0.9;
+  const SPEED = 12;            // metres / second
+  const RADIUS = 0.55;         // small enough to thread the Najdi alleys
   let facing = 0;
   let bobT = 0;
 

@@ -30,10 +30,11 @@ let map = strip(read(root + '/src/diriyah/map.js'));
 let game = strip(read(root + '/src/diriyah/game.js'));
 
 // three r147 (the last UMD build) uses legacy lighting, brighter than the
-// vendored r165 (physically-correct). Dial the lights down to match the look.
+// vendored r165 (physically-correct). Dial the lights + exposure down to match.
 game = game
-  .replace('new THREE.HemisphereLight(0xfff1d4, 0xb08a5a, 0.85)', 'new THREE.HemisphereLight(0xfff1d4, 0xb08a5a, 0.5)')
-  .replace('new THREE.DirectionalLight(0xfff0d0, 1.5)', 'new THREE.DirectionalLight(0xfff0d0, 0.9)');
+  .replace('new THREE.HemisphereLight(0xfff1d4, 0xb08a5a, 0.85)', 'new THREE.HemisphereLight(0xfff1d4, 0xb08a5a, 0.3)')
+  .replace('new THREE.DirectionalLight(0xfff0d0, 1.5)', 'new THREE.DirectionalLight(0xfff0d0, 1.05)')
+  .replace('renderer.toneMappingExposure = 1.15;', 'renderer.toneMappingExposure = 1.0;');
 
 // inline the map data instead of fetch()
 map = map.replace(/const data = await fetch\([^;]*;/, 'const data = window.__MAP_DATA__;');
