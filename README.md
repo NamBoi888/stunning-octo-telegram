@@ -43,11 +43,20 @@ restored alleys of old Diriyah.
   uncover its real story — a bilingual (Arabic + English) culture card with the
   history of the site and a "did you know" fact.
 - **Collect golden dates** (تمر 🌴) scattered through the streets.
+- **Climb to the rooftops.** Najdi families climbed palm-wood ladders to the
+  rooftop terrace (السطح) to dry dates and sleep under the stars. Stand at a
+  ladder and press **Space** (or **E**) to climb up — and again at the top to
+  climb down. Walk across the roofs and **raise the heritage banners** (الرايات 🏴),
+  and grab the bonus trays of **drying dates** up there.
 - The **compass** (top-right) always points to the nearest site you haven't
   discovered yet, with its distance.
 
-**Goal:** discover all **8 landmarks** to complete your journey through the
-birthplace of the nation.
+Look out for the ambient life too: **camels** resting by the wadi, **falcons**
+circling overhead (falconry is deep Najdi heritage), and a little **souq** of
+market stalls.
+
+**Goal:** discover all **8 landmarks** *and* raise all **5 rooftop banners** to
+complete your journey through the birthplace of the nation.
 
 ## The landmarks — معالم الطريف
 

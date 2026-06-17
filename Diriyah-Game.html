@@ -73,6 +73,26 @@
   }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+  /* climb prompt */
+  #climbPrompt {
+    bottom: 96px; left: 50%; transform: translateX(-50%);
+    background: var(--gold); color: #3a2a17; font-weight: 800;
+    padding: 8px 16px; border-radius: 999px; font-size: 14px;
+    opacity: 0; transition: opacity 0.2s; box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  }
+  #climbPrompt.show { opacity: 1; }
+
+  /* touch climb button (only on touch devices) */
+  #climbBtn {
+    display: none; position: fixed; right: 26px; bottom: 30px; z-index: 15;
+    width: 92px; height: 92px; border-radius: 50%;
+    background: rgba(216,162,74,0.9); border: 3px solid #fff; color: #3a2a17;
+    font-size: 30px; font-weight: 800; cursor: pointer; line-height: 1;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  }
+  #climbBtn.touch { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  #climbBtn span { font-size: 12px; font-weight: 700; }
+
   /* touch joystick */
   #joy {
     display: none; position: fixed; left: 26px; bottom: 26px;
@@ -164,6 +184,7 @@
 <div id="stats" class="hud">
   <div class="pill"><span class="ico">🌴</span><span id="hudDates">0</span></div>
   <div class="pill"><span class="ico">🏛️</span><span id="hudMarks">0 / 0</span></div>
+  <div class="pill"><span class="ico">🏴</span><span id="hudBanners">0 / 0</span></div>
 </div>
 <div id="topright" class="hud">
   <button id="muteBtn" title="sound">🔊</button>
@@ -174,12 +195,14 @@
   <div id="compassDist"></div>
 </div>
 <div id="hint" class="hud">
-  <b>Move</b> WASD / arrows · <b>look</b> drag · <b>zoom</b> scroll · find the <b>golden beacons</b> 🔆
+  <b>Move</b> WASD · <b>climb</b> ladders with <b>Space</b> · raise the rooftop <b>banners</b> 🏴 &amp; find the <b>beacons</b> 🔆
 </div>
 <div id="toast" class="hud"></div>
+<div id="climbPrompt" class="hud"></div>
 
-<!-- touch joystick -->
+<!-- touch controls -->
 <div id="joy" class="hud"><div id="joyStick"></div></div>
+<button id="climbBtn" class="hud">⤒<span>climb</span></button>
 
 <!-- culture card -->
 <div id="card" class="modal">
@@ -197,9 +220,9 @@
 <!-- win -->
 <div id="win" class="modal">
   <div class="sheet">
-    <div id="winEmoji">🎉🕌🌴</div>
+    <div id="winEmoji">🎉🕌🏴🌴</div>
     <div style="font-size:24px;font-weight:800;text-align:center;color:var(--gold-deep)">أحسنت! اكتشفت الدرعية</div>
-    <div style="text-align:center;margin-top:4px">You discovered every landmark of historic Diriyah!</div>
+    <div style="text-align:center;margin-top:4px">You discovered every landmark <b>and</b> raised every rooftop banner of historic Diriyah!</div>
     <div class="factbox" style="text-align:center">You also gathered <b><span id="winDates">0</span></b> golden dates 🌴 along the way. The story of the first Saudi State, kept alive in mud brick and palm.</div>
     <button id="winClose" class="btn">Keep exploring</button>
   </div>
@@ -1360,8 +1383,11 @@ const INTRO = {
     'Saudi State (1727). The whole town below was rebuilt from real ' +
     'OpenStreetMap data.\n\n' +
     'Explore the warm Najdi alleys, collect golden dates (تمر), and walk up to ' +
-    'the glowing landmarks to uncover their stories.',
-  tip: 'Move: WASD / arrows · or drag the joystick on touch · Camera: drag to orbit, scroll to zoom',
+    'the glowing landmarks to uncover their stories.\n\n' +
+    'Najdi families climbed palm-wood ladders to the rooftop terrace (السطح) to ' +
+    'dry dates and sleep under the stars. Climb the ladders and raise the ' +
+    'heritage banners (الرايات) on the high roofs to complete your journey.',
+  tip: 'Move: WASD / arrows or joystick · Climb a ladder: Space (or E) · Camera: drag to orbit, scroll to zoom',
 };
 
 const LANDMARKS = {
@@ -1540,12 +1566,15 @@ function createPlayer(scene) {
 
   const SPEED = 12;            // metres / second
   const RADIUS = 0.55;         // small enough to thread the Najdi alleys
+  const GRAVITY = 34;
   let facing = 0;
   let bobT = 0;
-
-  const tmp = new THREE.Vector3();
+  let vy = 0;
+  let climbing = false;
 
   function update(dt, input, world) {
+    if (climbing) { bobT += dt * 3; return false; } // game drives position while climbing
+
     // input: world-space desired direction (x,z), magnitude 0..1
     let mx = input.x, mz = input.z;
     const mag = Math.hypot(mx, mz);
@@ -1555,13 +1584,20 @@ function createPlayer(scene) {
     if (moving) {
       const nx = g.position.x + mx * SPEED * dt;
       const nz = g.position.z + mz * SPEED * dt;
-      const [rx, rz] = world.collide(nx, nz, RADIUS);
+      const [rx, rz] = world.collide(nx, nz, RADIUS, g.position.y);
       g.position.x = rx; g.position.z = rz;
       facing = Math.atan2(mx, mz);
       bobT += dt * 12;
     } else {
       bobT += dt * 2.5;
     }
+
+    // gravity + rooftop support (so you can walk roofs and step off edges)
+    vy -= GRAVITY * dt;
+    let ny = g.position.y + vy * dt;
+    const support = world.supportHeightAt(g.position.x, g.position.z, g.position.y);
+    if (ny <= support) { ny = support; vy = 0; }
+    g.position.y = ny;
 
     // smooth turn toward facing
     let diff = facing - g.rotation.y;
@@ -1581,6 +1617,8 @@ function createPlayer(scene) {
     position: g.position,
     update,
     radius: RADIUS,
+    get climbing() { return climbing; },
+    setClimbing(v) { climbing = v; if (!v) vy = 0; },
     setSpawn(x, z) { g.position.set(x, 0, z); },
   };
 }
@@ -1769,6 +1807,7 @@ async function loadCity(scene, basePath = './src/diriyah/') {
   const winMatrices = [];      // small windows
   const dummy = new THREE.Object3D();
   const landmarkBuildings = {}; // key -> {cx,cz,top}
+  const buildMeta = [];         // for placing ladders / rooftop goals
 
   for (const b of data.buildings) {
     const fp = b.p; if (fp.length < 3) continue;
@@ -1780,7 +1819,7 @@ async function loadCity(scene, basePath = './src/diriyah/') {
     // collider + centroid
     let minx = Infinity, maxx = -Infinity, minz = Infinity, maxz = -Infinity, sx = 0, sz = 0;
     for (const p of fp) { minx = Math.min(minx, p[0]); maxx = Math.max(maxx, p[0]); minz = Math.min(minz, p[1]); maxz = Math.max(maxz, p[1]); sx += p[0]; sz += p[1]; }
-    colliders.push({ minx, maxx, minz, maxz, poly: fp });
+    colliders.push({ minx, maxx, minz, maxz, poly: fp, h });
     const ctx = sx / fp.length, ctz = sz / fp.length;
     if (b.lm) landmarkBuildings[b.lm] = { cx: ctx, cz: ctz, top: h };
 
@@ -1805,6 +1844,7 @@ async function loadCity(scene, basePath = './src/diriyah/') {
       dummy.position.set(mx + dEdge.nx * 0.06, 0.95, mz + dEdge.nz * 0.06);
       dummy.rotation.set(0, dEdge.ang, 0); dummy.scale.set(1, 1, 1); dummy.updateMatrix();
       doorMatrices.push(dummy.matrix.clone());
+      buildMeta.push({ cx: ctx, cz: ctz, h, edge: dEdge, lm: b.lm, fp });
     }
     // windows along edges (more on taller/landmark buildings)
     const rows = h > 7 ? 2 : 1;
@@ -1961,7 +2001,6 @@ async function loadCity(scene, basePath = './src/diriyah/') {
     rmesh.castShadow = true; scene.add(rmesh);
   }
 
-  // ---- cultural majlis prop: a rug, cushions and a brass dallah (قهوة) ----
   const isOpen = (x, z, clear) => {
     for (const c of colliders) if (x > c.minx - clear && x < c.maxx + clear && z > c.minz - clear && z < c.maxz + clear) return false;
     return true;
@@ -1973,6 +2012,152 @@ async function loadCity(scene, basePath = './src/diriyah/') {
     }
     return null;
   };
+
+  // ---- climbable palm-wood ladders to the rooftops (السطح) + rooftop goals ----
+  const wood = new THREE.MeshStandardMaterial({ color: 0x6e4a26, roughness: 0.9, flatShading: true });
+  const ladders = [];   // { stand:Vec, top:Vec, h }
+  const banners = [];    // { group, cloth, pos:Vec, raised }
+  const roofItems = [];  // bonus drying-date trays: { mesh, pos:Vec, taken }
+
+  function makeLadder(h) {
+    const g = new THREE.Group();
+    const lean = 1.1;
+    const railLen = Math.hypot(h, lean) + 0.3;
+    const tilt = Math.atan2(lean, h);
+    for (const s of [-0.34, 0.34]) {
+      const rail = new THREE.Mesh(new THREE.BoxGeometry(0.12, railLen, 0.12), wood);
+      rail.position.set(s, h / 2, -lean / 2); rail.rotation.x = tilt; rail.castShadow = true; g.add(rail);
+    }
+    const rungs = Math.max(3, Math.floor(h / 0.55));
+    for (let i = 1; i < rungs; i++) {
+      const f = i / rungs;
+      const r = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.07, 0.1), wood);
+      r.position.set(0, f * h, -f * lean); g.add(r);
+    }
+    return g;
+  }
+  function makeBanner() {
+    const g = new THREE.Group();
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 4.4, 8), wood);
+    pole.position.y = 2.2; pole.castShadow = true; g.add(pole);
+    const finial = new THREE.Mesh(new THREE.SphereGeometry(0.13, 8, 8), new THREE.MeshStandardMaterial({ color: 0xd8b24a, metalness: 0.5, roughness: 0.4 }));
+    finial.position.y = 4.5; g.add(finial);
+    const cloth = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.9, 1.15, 6, 1),
+      new THREE.MeshStandardMaterial({ color: 0x1f7a3d, side: THREE.DoubleSide, roughness: 0.9, flatShading: true })
+    );
+    cloth.position.set(1.0, 0.7, 0); cloth.scale.set(0.001, 0.001, 0.001); g.add(cloth); // furled until raised
+    return { group: g, cloth };
+  }
+
+  // choose well-spread tall / landmark buildings to be climbable
+  const candidates = buildMeta.filter((m) => m.h >= 5.5 || m.lm).sort((a, b) => (b.lm ? 1 : 0) - (a.lm ? 1 : 0) || b.h - a.h);
+  const chosen = [];
+  for (const m of candidates) {
+    if (chosen.length >= 12) break;
+    if (chosen.some((c) => Math.hypot(c.cx - m.cx, c.cz - m.cz) < 38)) continue;
+    chosen.push(m);
+  }
+  // a point a few metres inward from the wall that is still on the roof
+  function roofPoint(m, inward) {
+    const e = m.edge, wx = e.ax + e.dx * 0.5, wz = e.az + e.dz * 0.5;
+    let bx = wx - e.nx * 0.7, bz = wz - e.nz * 0.7;
+    for (let d = 1; d <= inward; d += 0.7) {
+      const px = wx - e.nx * d, pz = wz - e.nz * d;
+      if (pointInPoly(px, pz, m.fp)) { bx = px; bz = pz; } else break;
+    }
+    return [bx, bz];
+  }
+  chosen.forEach((m, i) => {
+    const e = m.edge;
+    const wx = e.ax + e.dx * 0.78, wz = e.az + e.dz * 0.78;     // a spot along the wall
+    const stand = new THREE.Vector3(wx + e.nx * 0.95, 0, wz + e.nz * 0.95);
+    const top = new THREE.Vector3(wx - e.nx * 0.7, m.h, wz - e.nz * 0.7);
+    const lad = makeLadder(m.h);
+    lad.position.copy(stand); lad.rotation.y = Math.atan2(e.nx, e.nz);
+    scene.add(lad);
+    ladders.push({ stand, top, h: m.h });
+
+    const [gx, gz] = roofPoint(m, 5);   // a guaranteed on-roof spot to place the goal
+    if (i < 5) {
+      // the climbing goal: a heritage banner to raise on the rooftop
+      const b = makeBanner();
+      b.group.position.set(gx, m.h, gz);
+      scene.add(b.group);
+      banners.push({ group: b.group, cloth: b.cloth, pos: new THREE.Vector3(gx, m.h, gz), raised: false });
+    } else {
+      // otherwise a tray of dates drying in the sun (bonus)
+      const tray = new THREE.Group();
+      const board = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.1, 1.0), wood); tray.add(board);
+      const dm = new THREE.MeshStandardMaterial({ color: 0xb5742c, roughness: 0.7, flatShading: true });
+      for (let k = 0; k < 10; k++) {
+        const d = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 5), dm);
+        d.scale.set(0.7, 1.1, 0.7);
+        d.position.set((Math.random() - 0.5) * 1.1, 0.13, (Math.random() - 0.5) * 0.7); tray.add(d);
+      }
+      tray.position.set(gx, m.h + 0.05, gz);
+      scene.add(tray);
+      roofItems.push({ mesh: tray, pos: new THREE.Vector3(gx, m.h, gz), taken: false });
+    }
+  });
+
+  // ---- camels resting by the wadi / palm groves ----
+  function makeCamel() {
+    const c = new THREE.Group();
+    const hide = new THREE.MeshStandardMaterial({ color: 0xc99a5e, roughness: 1, flatShading: true });
+    const body = new THREE.Mesh(new THREE.SphereGeometry(0.9, 10, 8), hide); body.scale.set(1.5, 0.9, 0.8); body.position.y = 1.7; c.add(body);
+    const hump = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 7), hide); hump.position.set(0, 2.35, 0); c.add(hump);
+    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.3, 1.5, 8), hide); neck.position.set(1.1, 2.3, 0); neck.rotation.z = -0.7; c.add(neck);
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.4, 0.35), hide); head.position.set(1.75, 2.85, 0); c.add(head);
+    for (const [lx, lz] of [[0.9, 0.35], [0.9, -0.35], [-0.9, 0.35], [-0.9, -0.35]]) {
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.1, 1.7, 6), hide); leg.position.set(lx, 0.85, lz); c.add(leg);
+    }
+    c.traverse((o) => { o.castShadow = true; });
+    return c;
+  }
+  let placedCamels = 0;
+  for (const p of palmPts) {
+    if (placedCamels >= 6) break;
+    if (Math.random() > 0.12) continue;
+    const sp = findOpen(p[0], p[1]); if (!sp) continue;
+    const cam = makeCamel(); cam.position.set(sp[0], 0, sp[1]); cam.rotation.y = Math.random() * 6.28;
+    const s = 0.9 + Math.random() * 0.3; cam.scale.setScalar(s);
+    scene.add(cam); placedCamels++;
+  }
+
+  // ---- a small souq (market stalls with striped awnings) ----
+  function makeStall() {
+    const g = new THREE.Group();
+    for (const [px, pz] of [[-1, -0.7], [1, -0.7], [-1, 0.7], [1, 0.7]]) {
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 2.2, 6), wood); post.position.set(px, 1.1, pz); post.castShadow = true; g.add(post);
+    }
+    const awn = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.12, 1.8), new THREE.MeshStandardMaterial({ color: 0xc94f3a, roughness: 1, flatShading: true }));
+    awn.position.y = 2.3; awn.castShadow = true; g.add(awn);
+    const table = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.12, 1.2), wood); table.position.y = 1.0; g.add(table);
+    const goods = [0xd8a24a, 0x9d2f2a, 0x315a3a, 0xb5742c];
+    for (let k = 0; k < 6; k++) {
+      const gd = new THREE.Mesh(new THREE.SphereGeometry(0.16, 7, 6), new THREE.MeshStandardMaterial({ color: goods[k % 4], roughness: 0.8, flatShading: true }));
+      gd.position.set(-0.9 + k * 0.36, 1.2, (Math.random() - 0.5) * 0.7); g.add(gd);
+    }
+    return g;
+  }
+  // line a few stalls along the nearest pedestrian street to the centre
+  let stalls = 0;
+  for (const r of data.roads) {
+    if (stalls >= 6) break;
+    if (r.k !== 'ped' || r.l.length < 3) continue;
+    for (let i = 1; i < r.l.length - 1 && stalls < 6; i += 2) {
+      const a = r.l[i], b2 = r.l[i + 1];
+      let dx = b2[0] - a[0], dz = b2[1] - a[1]; const len = Math.hypot(dx, dz) || 1;
+      const off = 2.6, side = (stalls % 2) ? 1 : -1;
+      const sx = a[0] + (-dz / len) * off * side, sz = a[1] + (dx / len) * off * side;
+      if (!isOpen(sx, sz, 1.8)) continue;
+      const st = makeStall(); st.position.set(sx, 0, sz); st.rotation.y = Math.atan2(dx, dz);
+      scene.add(st); stalls++;
+    }
+  }
+
+  // ---- cultural majlis prop: a rug, cushions and a brass dallah (قهوة) ----
   function makeMajlis() {
     const m = new THREE.Group();
     const rugMat = new THREE.MeshStandardMaterial({ color: 0x9d2f2a, roughness: 1, flatShading: true });
@@ -2104,9 +2289,10 @@ async function loadCity(scene, basePath = './src/diriyah/') {
     return [bx + dirx * radius, bz + dirz * radius];
   }
 
-  // resolve a moving point against nearby building footprints (a couple of
-  // passes so overlapping buildings can't trap the player in a corner)
-  function collide(x, z, radius) {
+  // resolve a moving point against nearby building footprints. `feetY` makes it
+  // height-aware: a building only blocks you if its roof is above your feet, so
+  // once you've climbed onto a rooftop you can walk across it freely.
+  function collide(x, z, radius, feetY = 0) {
     for (let pass = 0; pass < 3; pass++) {
       let moved = false;
       const gx = Math.floor(x / CELL), gz = Math.floor(z / CELL);
@@ -2114,6 +2300,7 @@ async function loadCity(scene, basePath = './src/diriyah/') {
         const arr = grid.get(keyOf(gx + dx, gz + dz)); if (!arr) continue;
         for (const idx of arr) {
           const c = colliders[idx];
+          if (c.h <= feetY + 0.4) continue; // a wall you can stand on top of
           if (x < c.minx - radius || x > c.maxx + radius || z < c.minz - radius || z > c.maxz + radius) continue;
           const r = resolvePoly(x, z, c.poly, radius);
           if (r) { x = r[0]; z = r[1]; moved = true; }
@@ -2122,6 +2309,21 @@ async function loadCity(scene, basePath = './src/diriyah/') {
       if (!moved) break;
     }
     return [x, z];
+  }
+
+  // the height of whatever surface is under the player (a rooftop they're on, or
+  // the ground). Used for gravity so they can walk roofs and step off edges.
+  function supportHeightAt(x, z, feetY) {
+    let best = 0;
+    const gx = Math.floor(x / CELL), gz = Math.floor(z / CELL);
+    for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
+      const arr = grid.get(keyOf(gx + dx, gz + dz)); if (!arr) continue;
+      for (const idx of arr) {
+        const c = colliders[idx];
+        if (c.h > best && c.h <= feetY + 0.6 && pointInPoly(x, z, c.poly)) best = c.h;
+      }
+    }
+    return best;
   }
 
   // find an open spot near a desired point (push out of any building first)
@@ -2143,7 +2345,8 @@ async function loadCity(scene, basePath = './src/diriyah/') {
 
   return {
     data, bounds: B, spawn,
-    colliders, collide, openSpawn, landmarks, datePositions, updateMarkers,
+    colliders, collide, supportHeightAt, openSpawn, landmarks, datePositions, updateMarkers,
+    ladders, banners, roofItems,
   };
 }
 
@@ -2251,8 +2454,11 @@ let world = null, player = null;
 const clock = new THREE.Clock();
 const keys = {};
 let dateCount = 0, found = 0, total = 0;
+let bannersRaised = 0, totalBanners = 0;
 let running = false;
+let climbTween = null;
 const dates = [];
+const falcons = [];
 const tmpForward = new THREE.Vector3(), tmpRight = new THREE.Vector3();
 
 // ---------------- audio (tiny WebAudio) ----------------
@@ -2312,8 +2518,34 @@ function toast(msg) {
 }
 
 // ---------------- input ----------------
-addEventListener('keydown', (e) => { keys[e.code] = true; });
+addEventListener('keydown', (e) => {
+  keys[e.code] = true;
+  if (e.code === 'Space' || e.code === 'KeyE') { e.preventDefault(); tryClimb(); }
+});
 addEventListener('keyup', (e) => { keys[e.code] = false; });
+
+// find the ladder you're standing at and climb up (or down if you're on a roof)
+function nearestLadder() {
+  if (!world || !player) return null;
+  const onRoof = player.position.y > 1;
+  let best = null, bd = 3.0;
+  for (const L of world.ladders) {
+    const ref = onRoof ? L.top : L.stand;
+    const d = Math.hypot(player.position.x - ref.x, player.position.z - ref.z);
+    if (d < bd) { bd = d; best = L; }
+  }
+  return best;
+}
+function tryClimb() {
+  if (!running || !player || player.climbing || climbTween) return;
+  const L = nearestLadder(); if (!L) return;
+  const onRoof = player.position.y > 1;
+  const from = player.position.clone();
+  const to = (onRoof ? L.stand : L.top).clone();
+  climbTween = { from, to, t: 0, dur: Math.max(0.8, L.h * 0.12) };
+  player.setClimbing(true);
+  blip(523, 0.1, 'sine', 0.18);
+}
 
 // touch joystick
 const joy = { active: false, x: 0, y: 0, id: null };
@@ -2340,8 +2572,9 @@ function joyEnd() { joy.active = false; joy.x = joy.y = 0; joyKnob.style.transfo
 joyBase.addEventListener('touchstart', (e) => { e.preventDefault(); joyStart(e); }, { passive: false });
 joyBase.addEventListener('touchmove', (e) => { e.preventDefault(); joyMove(e); }, { passive: false });
 joyBase.addEventListener('touchend', (e) => { e.preventDefault(); joyEnd(); }, { passive: false });
-// show joystick zone only on touch devices
-if (matchMedia('(pointer: coarse)').matches) joyBase.classList.add('show');
+// show joystick zone + climb button only on touch devices
+if (matchMedia('(pointer: coarse)').matches) { joyBase.classList.add('show'); $('climbBtn').classList.add('touch'); }
+$('climbBtn').onclick = tryClimb;
 
 $('muteBtn').onclick = () => { muted = !muted; if (masterGain) masterGain.gain.value = muted ? 0 : 0.5; $('muteBtn').textContent = muted ? '🔇' : '🔊'; };
 
@@ -2405,11 +2638,64 @@ function animate() {
   // bob/spin dates
   for (const d of dates) { if (d.taken) continue; d.mesh.rotation.y += dt * 2; d.mesh.position.y = 0.9 + Math.sin(markerT * 3 + d.phase) * 0.18; }
 
+  // circling falcons (falconry heritage) + waving raised banners
+  for (const f of falcons) {
+    f.a += dt * f.speed;
+    f.group.position.set(f.cx + Math.cos(f.a) * f.r, f.alt + Math.sin(f.a * 2) * 3, f.cz + Math.sin(f.a) * f.r);
+    f.group.rotation.y = -f.a + Math.PI / 2;
+    const flap = Math.sin(markerT * 8 + f.phase) * 0.6;
+    f.wingL.rotation.z = 0.3 + flap; f.wingR.rotation.z = -0.3 - flap;
+  }
+  if (world) for (const b of world.banners) {
+    if (b.raised) {
+      if (b.raiseAnim < 1) {
+        b.raiseAnim = Math.min(1, b.raiseAnim + dt * 1.3);
+        const s = b.raiseAnim * b.raiseAnim * (3 - 2 * b.raiseAnim);
+        b.cloth.scale.setScalar(Math.max(0.001, s));
+        b.cloth.position.y = 0.7 + s * 2.7;
+      }
+      b.cloth.rotation.y = Math.sin(markerT * 4 + b.pos.x) * 0.18;
+    }
+  }
+
   if (running && player && world) {
+    // advance a climb in progress, otherwise normal movement
+    if (climbTween) {
+      climbTween.t += dt / climbTween.dur;
+      const t = Math.min(1, climbTween.t);
+      const e = t * t * (3 - 2 * t);
+      player.position.lerpVectors(climbTween.from, climbTween.to, e);
+      player.position.y += Math.sin(t * Math.PI) * 0.3; // slight arc
+      if (t >= 1) { player.setClimbing(false); climbTween = null; }
+    }
     const moving = player.update(dt, getMoveInput(), world);
 
-    // follow camera target
-    controls.target.lerp(tmpVecSet(player.position.x, 1.4, player.position.z), 0.18);
+    // follow camera target (tracks height so the camera rises onto rooftops)
+    controls.target.lerp(tmpVecSet(player.position.x, player.position.y + 1.4, player.position.z), 0.18);
+
+    // rooftop drying-date trays (bonus, only reachable by climbing)
+    for (const it of world.roofItems) {
+      if (it.taken) continue;
+      const dx = it.pos.x - player.position.x, dz = it.pos.z - player.position.z;
+      if (dx * dx + dz * dz < 2.0 * 2.0 && Math.abs(player.position.y - it.pos.y) < 1.8) {
+        it.taken = true; it.mesh.visible = false; dateCount += 3;
+        $('hudDates').textContent = dateCount;
+        chime(); toast('+3 تمر مجفّف  🌴');
+      }
+    }
+
+    // raise heritage banners on the rooftops (the climbing goal)
+    for (const b of world.banners) {
+      if (b.raised) continue;
+      const dx = b.pos.x - player.position.x, dz = b.pos.z - player.position.z;
+      if (dx * dx + dz * dz < 3.2 * 3.2 && Math.abs(player.position.y - b.pos.y) < 2.2) {
+        b.raised = true; b.raiseAnim = 0; bannersRaised++;
+        $('hudBanners').textContent = bannersRaised + ' / ' + totalBanners;
+        fanfare(); toast('🏴 رفعت الراية! Banner raised');
+        checkWin();
+      }
+    }
+    updateClimbPrompt();
 
     // date pickups
     for (const d of dates) {
@@ -2429,7 +2715,7 @@ function animate() {
         lm.discovered = true; found++;
         $('hudMarks').textContent = found + ' / ' + total;
         fanfare(); openCard(lm.key);
-        if (found === total) setTimeout(showWin, 600);
+        checkWin();
       }
     }
     updateCompass();
@@ -2441,6 +2727,34 @@ function animate() {
 
 const _v = new THREE.Vector3();
 function tmpVecSet(x, y, z) { return _v.set(x, y, z); }
+
+let won = false;
+function checkWin() {
+  if (won) return;
+  if (found === total && bannersRaised === totalBanners) { won = true; setTimeout(showWin, 700); }
+}
+
+function updateClimbPrompt() {
+  const el = $('climbPrompt'); if (!el) return;
+  const near = !player.climbing && !climbTween && nearestLadder();
+  if (near) {
+    el.classList.add('show');
+    el.textContent = player.position.y > 1 ? '⤓  Space — climb down · انزل' : '⤒  Space — climb up · اصعد';
+  } else el.classList.remove('show');
+}
+
+// build a simple flapping falcon
+function makeFalcon() {
+  const g = new THREE.Group();
+  const dark = new THREE.MeshStandardMaterial({ color: 0x5a4632, roughness: 0.9, flatShading: true });
+  const body = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 6), dark); body.scale.set(1.8, 0.7, 0.7); g.add(body);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.3, 7, 6), dark); head.position.set(1.0, 0.1, 0); g.add(head);
+  const wingGeo = new THREE.ConeGeometry(0.4, 2.4, 4); wingGeo.rotateZ(Math.PI / 2); wingGeo.translate(0, 0, 0);
+  const wingL = new THREE.Mesh(wingGeo, dark); wingL.position.set(0, 0, 1.1); wingL.rotation.x = Math.PI / 2; g.add(wingL);
+  const wingR = new THREE.Mesh(wingGeo, dark); wingR.position.set(0, 0, -1.1); wingR.rotation.x = -Math.PI / 2; g.add(wingR);
+  g.scale.setScalar(1.6);
+  return { group: g, wingL, wingR };
+}
 
 function showWin() {
   $('winDates').textContent = dateCount;
@@ -2464,7 +2778,21 @@ async function boot() {
 
   world = await loadCity(scene, './src/diriyah/');
   total = world.landmarks.length;
+  totalBanners = world.banners.length;
   $('hudMarks').textContent = '0 / ' + total;
+  $('hudBanners').textContent = '0 / ' + totalBanners;
+
+  // falcons circling over the town (falconry heritage of Najd)
+  for (let i = 0; i < 4; i++) {
+    const f = makeFalcon();
+    Object.assign(f, {
+      cx: (world.bounds.minx + world.bounds.maxx) / 2 + (Math.random() - 0.5) * 400,
+      cz: (world.bounds.minz + world.bounds.maxz) / 2 + (Math.random() - 0.5) * 400,
+      r: 60 + Math.random() * 120, alt: 45 + Math.random() * 35,
+      a: Math.random() * 6.28, speed: 0.12 + Math.random() * 0.12, phase: Math.random() * 6.28,
+    });
+    scene.add(f.group); falcons.push(f);
+  }
 
   player = createPlayer(scene);
   player.setSpawn(world.spawn[0], world.spawn[1]);
@@ -2484,7 +2812,7 @@ async function boot() {
   $('introTip').textContent = INTRO.tip;
 
   // debug handle (harmless; handy for testing / tinkering in the console)
-  window.__diriyah = { scene, camera, world, player, dates, get state() { return { dateCount, found, total }; } };
+  window.__diriyah = { scene, camera, world, player, dates, get state() { return { dateCount, found, total, bannersRaised, running, climbing: player && player.climbing }; } };
 
   clearInterval(wisdomTimer);
   $('veilLoading').style.display = 'none';

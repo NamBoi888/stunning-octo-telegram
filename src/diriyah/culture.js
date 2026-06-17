@@ -14,8 +14,11 @@ export const INTRO = {
     'Saudi State (1727). The whole town below was rebuilt from real ' +
     'OpenStreetMap data.\n\n' +
     'Explore the warm Najdi alleys, collect golden dates (تمر), and walk up to ' +
-    'the glowing landmarks to uncover their stories.',
-  tip: 'Move: WASD / arrows · or drag the joystick on touch · Camera: drag to orbit, scroll to zoom',
+    'the glowing landmarks to uncover their stories.\n\n' +
+    'Najdi families climbed palm-wood ladders to the rooftop terrace (السطح) to ' +
+    'dry dates and sleep under the stars. Climb the ladders and raise the ' +
+    'heritage banners (الرايات) on the high roofs to complete your journey.',
+  tip: 'Move: WASD / arrows or joystick · Climb a ladder: Space (or E) · Camera: drag to orbit, scroll to zoom',
 };
 
 export const LANDMARKS = {

@@ -107,8 +107,11 @@ let world = null, player = null;
 const clock = new THREE.Clock();
 const keys = {};
 let dateCount = 0, found = 0, total = 0;
+let bannersRaised = 0, totalBanners = 0;
 let running = false;
+let climbTween = null;
 const dates = [];
+const falcons = [];
 const tmpForward = new THREE.Vector3(), tmpRight = new THREE.Vector3();
 
 // ---------------- audio (tiny WebAudio) ----------------
@@ -168,8 +171,34 @@ function toast(msg) {
 }
 
 // ---------------- input ----------------
-addEventListener('keydown', (e) => { keys[e.code] = true; });
+addEventListener('keydown', (e) => {
+  keys[e.code] = true;
+  if (e.code === 'Space' || e.code === 'KeyE') { e.preventDefault(); tryClimb(); }
+});
 addEventListener('keyup', (e) => { keys[e.code] = false; });
+
+// find the ladder you're standing at and climb up (or down if you're on a roof)
+function nearestLadder() {
+  if (!world || !player) return null;
+  const onRoof = player.position.y > 1;
+  let best = null, bd = 3.0;
+  for (const L of world.ladders) {
+    const ref = onRoof ? L.top : L.stand;
+    const d = Math.hypot(player.position.x - ref.x, player.position.z - ref.z);
+    if (d < bd) { bd = d; best = L; }
+  }
+  return best;
+}
+function tryClimb() {
+  if (!running || !player || player.climbing || climbTween) return;
+  const L = nearestLadder(); if (!L) return;
+  const onRoof = player.position.y > 1;
+  const from = player.position.clone();
+  const to = (onRoof ? L.stand : L.top).clone();
+  climbTween = { from, to, t: 0, dur: Math.max(0.8, L.h * 0.12) };
+  player.setClimbing(true);
+  blip(523, 0.1, 'sine', 0.18);
+}
 
 // touch joystick
 const joy = { active: false, x: 0, y: 0, id: null };
@@ -196,8 +225,9 @@ function joyEnd() { joy.active = false; joy.x = joy.y = 0; joyKnob.style.transfo
 joyBase.addEventListener('touchstart', (e) => { e.preventDefault(); joyStart(e); }, { passive: false });
 joyBase.addEventListener('touchmove', (e) => { e.preventDefault(); joyMove(e); }, { passive: false });
 joyBase.addEventListener('touchend', (e) => { e.preventDefault(); joyEnd(); }, { passive: false });
-// show joystick zone only on touch devices
-if (matchMedia('(pointer: coarse)').matches) joyBase.classList.add('show');
+// show joystick zone + climb button only on touch devices
+if (matchMedia('(pointer: coarse)').matches) { joyBase.classList.add('show'); $('climbBtn').classList.add('touch'); }
+$('climbBtn').onclick = tryClimb;
 
 $('muteBtn').onclick = () => { muted = !muted; if (masterGain) masterGain.gain.value = muted ? 0 : 0.5; $('muteBtn').textContent = muted ? '🔇' : '🔊'; };
 
@@ -261,11 +291,64 @@ function animate() {
   // bob/spin dates
   for (const d of dates) { if (d.taken) continue; d.mesh.rotation.y += dt * 2; d.mesh.position.y = 0.9 + Math.sin(markerT * 3 + d.phase) * 0.18; }
 
+  // circling falcons (falconry heritage) + waving raised banners
+  for (const f of falcons) {
+    f.a += dt * f.speed;
+    f.group.position.set(f.cx + Math.cos(f.a) * f.r, f.alt + Math.sin(f.a * 2) * 3, f.cz + Math.sin(f.a) * f.r);
+    f.group.rotation.y = -f.a + Math.PI / 2;
+    const flap = Math.sin(markerT * 8 + f.phase) * 0.6;
+    f.wingL.rotation.z = 0.3 + flap; f.wingR.rotation.z = -0.3 - flap;
+  }
+  if (world) for (const b of world.banners) {
+    if (b.raised) {
+      if (b.raiseAnim < 1) {
+        b.raiseAnim = Math.min(1, b.raiseAnim + dt * 1.3);
+        const s = b.raiseAnim * b.raiseAnim * (3 - 2 * b.raiseAnim);
+        b.cloth.scale.setScalar(Math.max(0.001, s));
+        b.cloth.position.y = 0.7 + s * 2.7;
+      }
+      b.cloth.rotation.y = Math.sin(markerT * 4 + b.pos.x) * 0.18;
+    }
+  }
+
   if (running && player && world) {
+    // advance a climb in progress, otherwise normal movement
+    if (climbTween) {
+      climbTween.t += dt / climbTween.dur;
+      const t = Math.min(1, climbTween.t);
+      const e = t * t * (3 - 2 * t);
+      player.position.lerpVectors(climbTween.from, climbTween.to, e);
+      player.position.y += Math.sin(t * Math.PI) * 0.3; // slight arc
+      if (t >= 1) { player.setClimbing(false); climbTween = null; }
+    }
     const moving = player.update(dt, getMoveInput(), world);
 
-    // follow camera target
-    controls.target.lerp(tmpVecSet(player.position.x, 1.4, player.position.z), 0.18);
+    // follow camera target (tracks height so the camera rises onto rooftops)
+    controls.target.lerp(tmpVecSet(player.position.x, player.position.y + 1.4, player.position.z), 0.18);
+
+    // rooftop drying-date trays (bonus, only reachable by climbing)
+    for (const it of world.roofItems) {
+      if (it.taken) continue;
+      const dx = it.pos.x - player.position.x, dz = it.pos.z - player.position.z;
+      if (dx * dx + dz * dz < 2.0 * 2.0 && Math.abs(player.position.y - it.pos.y) < 1.8) {
+        it.taken = true; it.mesh.visible = false; dateCount += 3;
+        $('hudDates').textContent = dateCount;
+        chime(); toast('+3 تمر مجفّف  🌴');
+      }
+    }
+
+    // raise heritage banners on the rooftops (the climbing goal)
+    for (const b of world.banners) {
+      if (b.raised) continue;
+      const dx = b.pos.x - player.position.x, dz = b.pos.z - player.position.z;
+      if (dx * dx + dz * dz < 3.2 * 3.2 && Math.abs(player.position.y - b.pos.y) < 2.2) {
+        b.raised = true; b.raiseAnim = 0; bannersRaised++;
+        $('hudBanners').textContent = bannersRaised + ' / ' + totalBanners;
+        fanfare(); toast('🏴 رفعت الراية! Banner raised');
+        checkWin();
+      }
+    }
+    updateClimbPrompt();
 
     // date pickups
     for (const d of dates) {
@@ -285,7 +368,7 @@ function animate() {
         lm.discovered = true; found++;
         $('hudMarks').textContent = found + ' / ' + total;
         fanfare(); openCard(lm.key);
-        if (found === total) setTimeout(showWin, 600);
+        checkWin();
       }
     }
     updateCompass();
@@ -297,6 +380,34 @@ function animate() {
 
 const _v = new THREE.Vector3();
 function tmpVecSet(x, y, z) { return _v.set(x, y, z); }
+
+let won = false;
+function checkWin() {
+  if (won) return;
+  if (found === total && bannersRaised === totalBanners) { won = true; setTimeout(showWin, 700); }
+}
+
+function updateClimbPrompt() {
+  const el = $('climbPrompt'); if (!el) return;
+  const near = !player.climbing && !climbTween && nearestLadder();
+  if (near) {
+    el.classList.add('show');
+    el.textContent = player.position.y > 1 ? '⤓  Space — climb down · انزل' : '⤒  Space — climb up · اصعد';
+  } else el.classList.remove('show');
+}
+
+// build a simple flapping falcon
+function makeFalcon() {
+  const g = new THREE.Group();
+  const dark = new THREE.MeshStandardMaterial({ color: 0x5a4632, roughness: 0.9, flatShading: true });
+  const body = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 6), dark); body.scale.set(1.8, 0.7, 0.7); g.add(body);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.3, 7, 6), dark); head.position.set(1.0, 0.1, 0); g.add(head);
+  const wingGeo = new THREE.ConeGeometry(0.4, 2.4, 4); wingGeo.rotateZ(Math.PI / 2); wingGeo.translate(0, 0, 0);
+  const wingL = new THREE.Mesh(wingGeo, dark); wingL.position.set(0, 0, 1.1); wingL.rotation.x = Math.PI / 2; g.add(wingL);
+  const wingR = new THREE.Mesh(wingGeo, dark); wingR.position.set(0, 0, -1.1); wingR.rotation.x = -Math.PI / 2; g.add(wingR);
+  g.scale.setScalar(1.6);
+  return { group: g, wingL, wingR };
+}
 
 function showWin() {
   $('winDates').textContent = dateCount;
@@ -320,7 +431,21 @@ async function boot() {
 
   world = await loadCity(scene, './src/diriyah/');
   total = world.landmarks.length;
+  totalBanners = world.banners.length;
   $('hudMarks').textContent = '0 / ' + total;
+  $('hudBanners').textContent = '0 / ' + totalBanners;
+
+  // falcons circling over the town (falconry heritage of Najd)
+  for (let i = 0; i < 4; i++) {
+    const f = makeFalcon();
+    Object.assign(f, {
+      cx: (world.bounds.minx + world.bounds.maxx) / 2 + (Math.random() - 0.5) * 400,
+      cz: (world.bounds.minz + world.bounds.maxz) / 2 + (Math.random() - 0.5) * 400,
+      r: 60 + Math.random() * 120, alt: 45 + Math.random() * 35,
+      a: Math.random() * 6.28, speed: 0.12 + Math.random() * 0.12, phase: Math.random() * 6.28,
+    });
+    scene.add(f.group); falcons.push(f);
+  }
 
   player = createPlayer(scene);
   player.setSpawn(world.spawn[0], world.spawn[1]);
@@ -340,7 +465,7 @@ async function boot() {
   $('introTip').textContent = INTRO.tip;
 
   // debug handle (harmless; handy for testing / tinkering in the console)
-  window.__diriyah = { scene, camera, world, player, dates, get state() { return { dateCount, found, total }; } };
+  window.__diriyah = { scene, camera, world, player, dates, get state() { return { dateCount, found, total, bannersRaised, running, climbing: player && player.climbing }; } };
 
   clearInterval(wisdomTimer);
   $('veilLoading').style.display = 'none';

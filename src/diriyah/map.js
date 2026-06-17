@@ -183,6 +183,7 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
   const winMatrices = [];      // small windows
   const dummy = new THREE.Object3D();
   const landmarkBuildings = {}; // key -> {cx,cz,top}
+  const buildMeta = [];         // for placing ladders / rooftop goals
 
   for (const b of data.buildings) {
     const fp = b.p; if (fp.length < 3) continue;
@@ -194,7 +195,7 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
     // collider + centroid
     let minx = Infinity, maxx = -Infinity, minz = Infinity, maxz = -Infinity, sx = 0, sz = 0;
     for (const p of fp) { minx = Math.min(minx, p[0]); maxx = Math.max(maxx, p[0]); minz = Math.min(minz, p[1]); maxz = Math.max(maxz, p[1]); sx += p[0]; sz += p[1]; }
-    colliders.push({ minx, maxx, minz, maxz, poly: fp });
+    colliders.push({ minx, maxx, minz, maxz, poly: fp, h });
     const ctx = sx / fp.length, ctz = sz / fp.length;
     if (b.lm) landmarkBuildings[b.lm] = { cx: ctx, cz: ctz, top: h };
 
@@ -219,6 +220,7 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
       dummy.position.set(mx + dEdge.nx * 0.06, 0.95, mz + dEdge.nz * 0.06);
       dummy.rotation.set(0, dEdge.ang, 0); dummy.scale.set(1, 1, 1); dummy.updateMatrix();
       doorMatrices.push(dummy.matrix.clone());
+      buildMeta.push({ cx: ctx, cz: ctz, h, edge: dEdge, lm: b.lm, fp });
     }
     // windows along edges (more on taller/landmark buildings)
     const rows = h > 7 ? 2 : 1;
@@ -375,7 +377,6 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
     rmesh.castShadow = true; scene.add(rmesh);
   }
 
-  // ---- cultural majlis prop: a rug, cushions and a brass dallah (قهوة) ----
   const isOpen = (x, z, clear) => {
     for (const c of colliders) if (x > c.minx - clear && x < c.maxx + clear && z > c.minz - clear && z < c.maxz + clear) return false;
     return true;
@@ -387,6 +388,152 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
     }
     return null;
   };
+
+  // ---- climbable palm-wood ladders to the rooftops (السطح) + rooftop goals ----
+  const wood = new THREE.MeshStandardMaterial({ color: 0x6e4a26, roughness: 0.9, flatShading: true });
+  const ladders = [];   // { stand:Vec, top:Vec, h }
+  const banners = [];    // { group, cloth, pos:Vec, raised }
+  const roofItems = [];  // bonus drying-date trays: { mesh, pos:Vec, taken }
+
+  function makeLadder(h) {
+    const g = new THREE.Group();
+    const lean = 1.1;
+    const railLen = Math.hypot(h, lean) + 0.3;
+    const tilt = Math.atan2(lean, h);
+    for (const s of [-0.34, 0.34]) {
+      const rail = new THREE.Mesh(new THREE.BoxGeometry(0.12, railLen, 0.12), wood);
+      rail.position.set(s, h / 2, -lean / 2); rail.rotation.x = tilt; rail.castShadow = true; g.add(rail);
+    }
+    const rungs = Math.max(3, Math.floor(h / 0.55));
+    for (let i = 1; i < rungs; i++) {
+      const f = i / rungs;
+      const r = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.07, 0.1), wood);
+      r.position.set(0, f * h, -f * lean); g.add(r);
+    }
+    return g;
+  }
+  function makeBanner() {
+    const g = new THREE.Group();
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 4.4, 8), wood);
+    pole.position.y = 2.2; pole.castShadow = true; g.add(pole);
+    const finial = new THREE.Mesh(new THREE.SphereGeometry(0.13, 8, 8), new THREE.MeshStandardMaterial({ color: 0xd8b24a, metalness: 0.5, roughness: 0.4 }));
+    finial.position.y = 4.5; g.add(finial);
+    const cloth = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.9, 1.15, 6, 1),
+      new THREE.MeshStandardMaterial({ color: 0x1f7a3d, side: THREE.DoubleSide, roughness: 0.9, flatShading: true })
+    );
+    cloth.position.set(1.0, 0.7, 0); cloth.scale.set(0.001, 0.001, 0.001); g.add(cloth); // furled until raised
+    return { group: g, cloth };
+  }
+
+  // choose well-spread tall / landmark buildings to be climbable
+  const candidates = buildMeta.filter((m) => m.h >= 5.5 || m.lm).sort((a, b) => (b.lm ? 1 : 0) - (a.lm ? 1 : 0) || b.h - a.h);
+  const chosen = [];
+  for (const m of candidates) {
+    if (chosen.length >= 12) break;
+    if (chosen.some((c) => Math.hypot(c.cx - m.cx, c.cz - m.cz) < 38)) continue;
+    chosen.push(m);
+  }
+  // a point a few metres inward from the wall that is still on the roof
+  function roofPoint(m, inward) {
+    const e = m.edge, wx = e.ax + e.dx * 0.5, wz = e.az + e.dz * 0.5;
+    let bx = wx - e.nx * 0.7, bz = wz - e.nz * 0.7;
+    for (let d = 1; d <= inward; d += 0.7) {
+      const px = wx - e.nx * d, pz = wz - e.nz * d;
+      if (pointInPoly(px, pz, m.fp)) { bx = px; bz = pz; } else break;
+    }
+    return [bx, bz];
+  }
+  chosen.forEach((m, i) => {
+    const e = m.edge;
+    const wx = e.ax + e.dx * 0.78, wz = e.az + e.dz * 0.78;     // a spot along the wall
+    const stand = new THREE.Vector3(wx + e.nx * 0.95, 0, wz + e.nz * 0.95);
+    const top = new THREE.Vector3(wx - e.nx * 0.7, m.h, wz - e.nz * 0.7);
+    const lad = makeLadder(m.h);
+    lad.position.copy(stand); lad.rotation.y = Math.atan2(e.nx, e.nz);
+    scene.add(lad);
+    ladders.push({ stand, top, h: m.h });
+
+    const [gx, gz] = roofPoint(m, 5);   // a guaranteed on-roof spot to place the goal
+    if (i < 5) {
+      // the climbing goal: a heritage banner to raise on the rooftop
+      const b = makeBanner();
+      b.group.position.set(gx, m.h, gz);
+      scene.add(b.group);
+      banners.push({ group: b.group, cloth: b.cloth, pos: new THREE.Vector3(gx, m.h, gz), raised: false });
+    } else {
+      // otherwise a tray of dates drying in the sun (bonus)
+      const tray = new THREE.Group();
+      const board = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.1, 1.0), wood); tray.add(board);
+      const dm = new THREE.MeshStandardMaterial({ color: 0xb5742c, roughness: 0.7, flatShading: true });
+      for (let k = 0; k < 10; k++) {
+        const d = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 5), dm);
+        d.scale.set(0.7, 1.1, 0.7);
+        d.position.set((Math.random() - 0.5) * 1.1, 0.13, (Math.random() - 0.5) * 0.7); tray.add(d);
+      }
+      tray.position.set(gx, m.h + 0.05, gz);
+      scene.add(tray);
+      roofItems.push({ mesh: tray, pos: new THREE.Vector3(gx, m.h, gz), taken: false });
+    }
+  });
+
+  // ---- camels resting by the wadi / palm groves ----
+  function makeCamel() {
+    const c = new THREE.Group();
+    const hide = new THREE.MeshStandardMaterial({ color: 0xc99a5e, roughness: 1, flatShading: true });
+    const body = new THREE.Mesh(new THREE.SphereGeometry(0.9, 10, 8), hide); body.scale.set(1.5, 0.9, 0.8); body.position.y = 1.7; c.add(body);
+    const hump = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 7), hide); hump.position.set(0, 2.35, 0); c.add(hump);
+    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.3, 1.5, 8), hide); neck.position.set(1.1, 2.3, 0); neck.rotation.z = -0.7; c.add(neck);
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.4, 0.35), hide); head.position.set(1.75, 2.85, 0); c.add(head);
+    for (const [lx, lz] of [[0.9, 0.35], [0.9, -0.35], [-0.9, 0.35], [-0.9, -0.35]]) {
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.1, 1.7, 6), hide); leg.position.set(lx, 0.85, lz); c.add(leg);
+    }
+    c.traverse((o) => { o.castShadow = true; });
+    return c;
+  }
+  let placedCamels = 0;
+  for (const p of palmPts) {
+    if (placedCamels >= 6) break;
+    if (Math.random() > 0.12) continue;
+    const sp = findOpen(p[0], p[1]); if (!sp) continue;
+    const cam = makeCamel(); cam.position.set(sp[0], 0, sp[1]); cam.rotation.y = Math.random() * 6.28;
+    const s = 0.9 + Math.random() * 0.3; cam.scale.setScalar(s);
+    scene.add(cam); placedCamels++;
+  }
+
+  // ---- a small souq (market stalls with striped awnings) ----
+  function makeStall() {
+    const g = new THREE.Group();
+    for (const [px, pz] of [[-1, -0.7], [1, -0.7], [-1, 0.7], [1, 0.7]]) {
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 2.2, 6), wood); post.position.set(px, 1.1, pz); post.castShadow = true; g.add(post);
+    }
+    const awn = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.12, 1.8), new THREE.MeshStandardMaterial({ color: 0xc94f3a, roughness: 1, flatShading: true }));
+    awn.position.y = 2.3; awn.castShadow = true; g.add(awn);
+    const table = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.12, 1.2), wood); table.position.y = 1.0; g.add(table);
+    const goods = [0xd8a24a, 0x9d2f2a, 0x315a3a, 0xb5742c];
+    for (let k = 0; k < 6; k++) {
+      const gd = new THREE.Mesh(new THREE.SphereGeometry(0.16, 7, 6), new THREE.MeshStandardMaterial({ color: goods[k % 4], roughness: 0.8, flatShading: true }));
+      gd.position.set(-0.9 + k * 0.36, 1.2, (Math.random() - 0.5) * 0.7); g.add(gd);
+    }
+    return g;
+  }
+  // line a few stalls along the nearest pedestrian street to the centre
+  let stalls = 0;
+  for (const r of data.roads) {
+    if (stalls >= 6) break;
+    if (r.k !== 'ped' || r.l.length < 3) continue;
+    for (let i = 1; i < r.l.length - 1 && stalls < 6; i += 2) {
+      const a = r.l[i], b2 = r.l[i + 1];
+      let dx = b2[0] - a[0], dz = b2[1] - a[1]; const len = Math.hypot(dx, dz) || 1;
+      const off = 2.6, side = (stalls % 2) ? 1 : -1;
+      const sx = a[0] + (-dz / len) * off * side, sz = a[1] + (dx / len) * off * side;
+      if (!isOpen(sx, sz, 1.8)) continue;
+      const st = makeStall(); st.position.set(sx, 0, sz); st.rotation.y = Math.atan2(dx, dz);
+      scene.add(st); stalls++;
+    }
+  }
+
+  // ---- cultural majlis prop: a rug, cushions and a brass dallah (قهوة) ----
   function makeMajlis() {
     const m = new THREE.Group();
     const rugMat = new THREE.MeshStandardMaterial({ color: 0x9d2f2a, roughness: 1, flatShading: true });
@@ -518,9 +665,10 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
     return [bx + dirx * radius, bz + dirz * radius];
   }
 
-  // resolve a moving point against nearby building footprints (a couple of
-  // passes so overlapping buildings can't trap the player in a corner)
-  function collide(x, z, radius) {
+  // resolve a moving point against nearby building footprints. `feetY` makes it
+  // height-aware: a building only blocks you if its roof is above your feet, so
+  // once you've climbed onto a rooftop you can walk across it freely.
+  function collide(x, z, radius, feetY = 0) {
     for (let pass = 0; pass < 3; pass++) {
       let moved = false;
       const gx = Math.floor(x / CELL), gz = Math.floor(z / CELL);
@@ -528,6 +676,7 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
         const arr = grid.get(keyOf(gx + dx, gz + dz)); if (!arr) continue;
         for (const idx of arr) {
           const c = colliders[idx];
+          if (c.h <= feetY + 0.4) continue; // a wall you can stand on top of
           if (x < c.minx - radius || x > c.maxx + radius || z < c.minz - radius || z > c.maxz + radius) continue;
           const r = resolvePoly(x, z, c.poly, radius);
           if (r) { x = r[0]; z = r[1]; moved = true; }
@@ -536,6 +685,21 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
       if (!moved) break;
     }
     return [x, z];
+  }
+
+  // the height of whatever surface is under the player (a rooftop they're on, or
+  // the ground). Used for gravity so they can walk roofs and step off edges.
+  function supportHeightAt(x, z, feetY) {
+    let best = 0;
+    const gx = Math.floor(x / CELL), gz = Math.floor(z / CELL);
+    for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
+      const arr = grid.get(keyOf(gx + dx, gz + dz)); if (!arr) continue;
+      for (const idx of arr) {
+        const c = colliders[idx];
+        if (c.h > best && c.h <= feetY + 0.6 && pointInPoly(x, z, c.poly)) best = c.h;
+      }
+    }
+    return best;
   }
 
   // find an open spot near a desired point (push out of any building first)
@@ -557,6 +721,7 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
 
   return {
     data, bounds: B, spawn,
-    colliders, collide, openSpawn, landmarks, datePositions, updateMarkers,
+    colliders, collide, supportHeightAt, openSpawn, landmarks, datePositions, updateMarkers,
+    ladders, banners, roofItems,
   };
 }

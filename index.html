@@ -73,6 +73,26 @@
   }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+  /* climb prompt */
+  #climbPrompt {
+    bottom: 96px; left: 50%; transform: translateX(-50%);
+    background: var(--gold); color: #3a2a17; font-weight: 800;
+    padding: 8px 16px; border-radius: 999px; font-size: 14px;
+    opacity: 0; transition: opacity 0.2s; box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  }
+  #climbPrompt.show { opacity: 1; }
+
+  /* touch climb button (only on touch devices) */
+  #climbBtn {
+    display: none; position: fixed; right: 26px; bottom: 30px; z-index: 15;
+    width: 92px; height: 92px; border-radius: 50%;
+    background: rgba(216,162,74,0.9); border: 3px solid #fff; color: #3a2a17;
+    font-size: 30px; font-weight: 800; cursor: pointer; line-height: 1;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  }
+  #climbBtn.touch { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  #climbBtn span { font-size: 12px; font-weight: 700; }
+
   /* touch joystick */
   #joy {
     display: none; position: fixed; left: 26px; bottom: 26px;
@@ -164,6 +184,7 @@
 <div id="stats" class="hud">
   <div class="pill"><span class="ico">🌴</span><span id="hudDates">0</span></div>
   <div class="pill"><span class="ico">🏛️</span><span id="hudMarks">0 / 0</span></div>
+  <div class="pill"><span class="ico">🏴</span><span id="hudBanners">0 / 0</span></div>
 </div>
 <div id="topright" class="hud">
   <button id="muteBtn" title="sound">🔊</button>
@@ -174,12 +195,14 @@
   <div id="compassDist"></div>
 </div>
 <div id="hint" class="hud">
-  <b>Move</b> WASD / arrows · <b>look</b> drag · <b>zoom</b> scroll · find the <b>golden beacons</b> 🔆
+  <b>Move</b> WASD · <b>climb</b> ladders with <b>Space</b> · raise the rooftop <b>banners</b> 🏴 &amp; find the <b>beacons</b> 🔆
 </div>
 <div id="toast" class="hud"></div>
+<div id="climbPrompt" class="hud"></div>
 
-<!-- touch joystick -->
+<!-- touch controls -->
 <div id="joy" class="hud"><div id="joyStick"></div></div>
+<button id="climbBtn" class="hud">⤒<span>climb</span></button>
 
 <!-- culture card -->
 <div id="card" class="modal">
@@ -197,9 +220,9 @@
 <!-- win -->
 <div id="win" class="modal">
   <div class="sheet">
-    <div id="winEmoji">🎉🕌🌴</div>
+    <div id="winEmoji">🎉🕌🏴🌴</div>
     <div style="font-size:24px;font-weight:800;text-align:center;color:var(--gold-deep)">أحسنت! اكتشفت الدرعية</div>
-    <div style="text-align:center;margin-top:4px">You discovered every landmark of historic Diriyah!</div>
+    <div style="text-align:center;margin-top:4px">You discovered every landmark <b>and</b> raised every rooftop banner of historic Diriyah!</div>
     <div class="factbox" style="text-align:center">You also gathered <b><span id="winDates">0</span></b> golden dates 🌴 along the way. The story of the first Saudi State, kept alive in mud brick and palm.</div>
     <button id="winClose" class="btn">Keep exploring</button>
   </div>

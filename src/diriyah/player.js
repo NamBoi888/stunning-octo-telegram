@@ -64,12 +64,15 @@ export function createPlayer(scene) {
 
   const SPEED = 12;            // metres / second
   const RADIUS = 0.55;         // small enough to thread the Najdi alleys
+  const GRAVITY = 34;
   let facing = 0;
   let bobT = 0;
-
-  const tmp = new THREE.Vector3();
+  let vy = 0;
+  let climbing = false;
 
   function update(dt, input, world) {
+    if (climbing) { bobT += dt * 3; return false; } // game drives position while climbing
+
     // input: world-space desired direction (x,z), magnitude 0..1
     let mx = input.x, mz = input.z;
     const mag = Math.hypot(mx, mz);
@@ -79,13 +82,20 @@ export function createPlayer(scene) {
     if (moving) {
       const nx = g.position.x + mx * SPEED * dt;
       const nz = g.position.z + mz * SPEED * dt;
-      const [rx, rz] = world.collide(nx, nz, RADIUS);
+      const [rx, rz] = world.collide(nx, nz, RADIUS, g.position.y);
       g.position.x = rx; g.position.z = rz;
       facing = Math.atan2(mx, mz);
       bobT += dt * 12;
     } else {
       bobT += dt * 2.5;
     }
+
+    // gravity + rooftop support (so you can walk roofs and step off edges)
+    vy -= GRAVITY * dt;
+    let ny = g.position.y + vy * dt;
+    const support = world.supportHeightAt(g.position.x, g.position.z, g.position.y);
+    if (ny <= support) { ny = support; vy = 0; }
+    g.position.y = ny;
 
     // smooth turn toward facing
     let diff = facing - g.rotation.y;
@@ -105,6 +115,8 @@ export function createPlayer(scene) {
     position: g.position,
     update,
     radius: RADIUS,
+    get climbing() { return climbing; },
+    setClimbing(v) { climbing = v; if (!v) vy = 0; },
     setSpawn(x, z) { g.position.set(x, 0, z); },
   };
 }
