@@ -13,7 +13,12 @@ quietly brings you coffee because you looked like you needed it.
 
 ## Run it
 
-Any static file server works. From the repo root:
+**Easiest — one file, no server:** open **`mbti-house.html`** by
+double-clicking it. Everything (the game *and* Three.js) is bundled into that
+single file, so it runs straight from your hard drive with no internet and no
+setup. Great for sharing — send the one file and it just works.
+
+**Dev version (multiple files):** any static file server works:
 
 ```bash
 npx serve .
@@ -21,9 +26,17 @@ npx serve .
 python3 -m http.server 8000
 ```
 
-Then open the printed URL (e.g. http://localhost:8000) in a browser.
-Three.js loads from a CDN via an import map, so you need an internet
-connection the first time.
+Then open the printed URL (e.g. http://localhost:8000). Three.js is vendored
+into `vendor/`, so this works offline too.
+
+### Rebuilding the single file
+
+`mbti-house.html` is generated from the dev sources. After editing anything
+in `src/`, regenerate it with:
+
+```bash
+node build-standalone.mjs
+```
 
 ## How to play
 
@@ -34,7 +47,25 @@ connection the first time.
   bookshelf, computer, garden) to make them use it.
 - **Drag** to orbit the camera, **scroll** to zoom.
 - **⏸ / ▶ / ▶▶** (top left) pause or speed up time. There's a full
-  day/night cycle.
+  day/night cycle — at night the مجلس fire pit lights up.
+
+### Toolbar & shortcuts
+
+- **🪔 ابدأ المجلس / Hangout** — gathers everyone onto the rug and plays a
+  scripted جلسة: وليد opens a topic → أحمد flips it → نامبوي ends it in one
+  line → بدر reads the room → عمر/سعود ground it → لوفاتو's closing line.
+  Click again (or press **G**) to end it.
+- **🎥 Follow camera** (**F**) — the camera trails the selected friend.
+- **🎮 I control them** — turns off the selected friend's free will so they
+  only do what *you* click. Toggle off to give them autonomy back.
+- **💾 Save** / **↺ Reset day** — the house also autosaves every ~20s and
+  resumes where you left off (stored in your browser).
+- Keys: **1–8** pick a friend, **Space** pause/resume time.
+
+### New objects
+
+- **Coffee station** (سعود's domain) restores energy.
+- **مجلس rug + fire pit** in the yard — the gathering circle.
 
 Left alone, everyone takes care of themselves — how efficiently depends on
 their personality. Watch the speech bubbles: each pair of friends with a

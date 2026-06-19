@@ -218,13 +218,70 @@ export function buildWorld(scene) {
     scene.add(tree);
   }
 
+  // coffee station (سعود's domain) — by the kitchen
+  const coffee = new THREE.Group();
+  box(1.6, 1.0, 0.9, 0x6e4626, 0, 0.5, 0, coffee);        // cabinet
+  box(1.6, 0.08, 1.0, 0x2a2a2e, 0, 1.04, 0, coffee);       // top
+  box(0.5, 0.55, 0.4, 0xb0b4bb, -0.4, 1.3, 0, coffee);     // machine body
+  box(0.18, 0.28, 0.18, 0x1c1f27, -0.4, 1.0, 0.25, coffee); // dispenser
+  const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.14, 0.32, 12), mat(0xd4a24a));
+  pot.position.set(0.4, 1.2, 0);
+  coffee.add(pot);
+  coffee.position.set(-5.5, 0.2, -7.5);
+  scene.add(coffee);
+  register("coffee", "Coffee", coffee, -5.5, -6.1, -5.5, -7.5, "energy", 24, "stand", 2);
+
+  // majlis rug + floor cushions (the gathering circle) — center yard
+  const majlisCenter = new THREE.Vector3(0, 0, 16);
+  const rug = new THREE.Mesh(new THREE.CircleGeometry(4.2, 32), mat(0x9c3b3b));
+  rug.rotation.x = -Math.PI / 2;
+  rug.position.set(majlisCenter.x, 0.02, majlisCenter.z);
+  rug.receiveShadow = true;
+  scene.add(rug);
+  const rugTrim = new THREE.Mesh(new THREE.RingGeometry(3.7, 4.2, 32), mat(0xe8c86a, { side: THREE.DoubleSide }));
+  rugTrim.rotation.x = -Math.PI / 2;
+  rugTrim.position.set(majlisCenter.x, 0.03, majlisCenter.z);
+  scene.add(rugTrim);
+
+  const majlisSeats = [];
+  const cushionColors = [0x4f86c9, 0xd9a13b, 0x67b06a, 0xb04fc9, 0xd13b6b, 0x3fb6d9, 0xe07a3f, 0x8a7fc9];
+  const seatCount = 8;
+  for (let i = 0; i < seatCount; i++) {
+    const a = (i / seatCount) * Math.PI * 2;
+    const r = 3.0;
+    const cx = majlisCenter.x + Math.cos(a) * r;
+    const cz = majlisCenter.z + Math.sin(a) * r;
+    const cushion = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.28, 1.0), mat(cushionColors[i % cushionColors.length]));
+    cushion.position.set(cx, 0.16, cz);
+    cushion.castShadow = cushion.receiveShadow = true;
+    scene.add(cushion);
+    majlisSeats.push(new THREE.Vector3(cx, 0, cz));
+  }
+
+  // fire pit in the middle of the majlis — glows at night
+  const pit = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.85, 0.4, 14), mat(0x3a3a3e));
+  pit.position.set(majlisCenter.x, 0.2, majlisCenter.z);
+  pit.castShadow = true;
+  scene.add(pit);
+  const flame = new THREE.Mesh(
+    new THREE.ConeGeometry(0.45, 1.1, 10),
+    new THREE.MeshStandardMaterial({ color: 0xff8a2a, emissive: 0xff5a1a, emissiveIntensity: 1.4, roughness: 0.4 })
+  );
+  flame.position.set(majlisCenter.x, 0.95, majlisCenter.z);
+  scene.add(flame);
+  const fireLight = new THREE.PointLight(0xff7a2a, 0, 14, 2);
+  fireLight.position.set(majlisCenter.x, 1.4, majlisCenter.z);
+  scene.add(fireLight);
+
   // path from door to street
-  const path = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 14), mat(0xc9bda4));
+  const path = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 9), mat(0xc9bda4));
   path.rotation.x = -Math.PI / 2;
-  path.position.set(0, 0.01, 12);
+  path.position.set(0, 0.01, 9);
   path.receiveShadow = true;
   path.userData.ground = true;
   scene.add(path);
+
+  return { majlisCenter, majlisSeats, flame, fireLight };
 }
 
 export function findObject(id) {

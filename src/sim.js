@@ -125,6 +125,33 @@ export class Sim {
     this.goUse(obj);
   }
 
+  // Send this sim to a fixed seat and lock them there (used by the مجلس scene).
+  gatherTo(point, faceCenter) {
+    this.releaseObject();
+    this.breakChat();
+    this.target = point.clone();
+    this.afterWalk = () => {
+      this.state = "gathered";
+      const look = new THREE.Vector3().subVectors(faceCenter, this.mesh.position);
+      if (look.lengthSq() > 0.001) this.mesh.rotation.y = Math.atan2(look.x, look.z);
+      this.mesh.position.y = 0.3;
+      const parts = this.mesh.userData.parts;
+      parts.legL.rotation.x = parts.legR.rotation.x = -1.4; // sit cross-legged-ish
+    };
+    this.state = "walking";
+  }
+
+  // Release from the مجلس back into free will.
+  unsetGather() {
+    if (this.state === "gathered") {
+      this.mesh.position.y = 0;
+      const parts = this.mesh.userData.parts;
+      parts.legL.rotation.x = parts.legR.rotation.x = 0;
+      this.state = "idle";
+      this.idleTimer = 0.5 + Math.random() * 1.5;
+    }
+  }
+
   // ---- internals ----
   releaseObject() {
     if (this.using) { this.using.users--; this.using = null; }
@@ -248,7 +275,14 @@ export class Sim {
       case "idle": {
         this.idleTimer -= dtReal;
         this.animIdle(parts, dtReal);
-        if (this.idleTimer <= 0) this.chooseAction(sims);
+        if (this.idleTimer <= 0 && this.autonomy !== false) this.chooseAction(sims);
+        break;
+      }
+      case "gathered": {
+        // seated in the مجلس; dialogue is driven externally, just gently idle the arms
+        this.walkPhase += dtReal * 1.5;
+        parts.armL.rotation.x = -0.3 + Math.sin(this.walkPhase) * 0.05;
+        parts.armR.rotation.x = -0.3 - Math.sin(this.walkPhase) * 0.05;
         break;
       }
       case "walking": {
