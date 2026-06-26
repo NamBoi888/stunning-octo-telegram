@@ -10,9 +10,10 @@ import { INTRO, LANDMARKS, QAHWA_WISDOM } from './culture.js';
 const $ = (id) => document.getElementById(id);
 
 // ---------------- renderer / scene ----------------
+const MOBILE = matchMedia('(pointer: coarse)').matches || Math.min(innerWidth, innerHeight) < 760;
 const canvas = $('game');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: !MOBILE, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, MOBILE ? 1.5 : 2));
 // Correct sRGB output across three.js versions (r152+ does this by default;
 // older builds need outputEncoding set or the scene looks washed out).
 if (!('outputColorSpace' in renderer) && 'outputEncoding' in renderer && THREE.sRGBEncoding !== undefined) {
@@ -58,7 +59,7 @@ for (let i = 0; i < 14; i++) {
 scene.add(clouds);
 
 // faint floating dust motes drifting in the sun (follows the player)
-const DUST = 140;
+const DUST = MOBILE ? 70 : 140;
 const dustGeo = new THREE.BufferGeometry();
 const dustPos = new Float32Array(DUST * 3);
 for (let i = 0; i < DUST; i++) {
@@ -87,7 +88,7 @@ scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xfff0d0, 1.5);
 sun.position.set(80, 120, 40);
 sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.mapSize.set(MOBILE ? 1024 : 2048, MOBILE ? 1024 : 2048);
 const S = 140;
 sun.shadow.camera.left = -S; sun.shadow.camera.right = S;
 sun.shadow.camera.top = S; sun.shadow.camera.bottom = -S;
@@ -112,7 +113,19 @@ let running = false;
 let climbTween = null;
 const dates = [];
 const falcons = [];
+const villagers = [];
+const goats = [];
+const wisps = [];
+let roc = null;
+let carpet = null;
 const tmpForward = new THREE.Vector3(), tmpRight = new THREE.Vector3();
+
+// ---- superpowers from Arabian folklore (cooldown-gated) ----
+const POWERS = {
+  carpet: { btn: 'abCarpet', cd: 12, t: 0 },   // بساط الريح — flying carpet
+  leap:   { btn: 'abLeap',   cd: 1.2, t: 0 },  // وثبة الصقر — falcon's leap
+  dash:   { btn: 'abDash',   cd: 6, t: 0 },    // زوبعة الجن — jinn whirlwind
+};
 
 // ---------------- audio (tiny WebAudio) ----------------
 let actx = null, masterGain = null, muted = false;
@@ -172,10 +185,31 @@ function toast(msg) {
 
 // ---------------- input ----------------
 addEventListener('keydown', (e) => {
+  if (e.repeat) return;
   keys[e.code] = true;
   if (e.code === 'Space' || e.code === 'KeyE') { e.preventDefault(); tryClimb(); }
+  if (e.code === 'KeyF') { e.preventDefault(); usePower('carpet'); }
+  if (e.code === 'KeyJ') { e.preventDefault(); usePower('leap'); }
+  if (e.code === 'KeyK' || e.code === 'ShiftLeft') { e.preventDefault(); usePower('dash'); }
 });
 addEventListener('keyup', (e) => { keys[e.code] = false; });
+
+// ---- superpowers ----
+function usePower(name) {
+  if (!running || !player || player.climbing) return;
+  const P = POWERS[name];
+  if (name === 'carpet') {
+    if (player.flying) { player.landFly(); return; }         // toggle to land early
+    if (P.t > 0) return;
+    if (player.startFly()) { P.t = P.cd; carpet.visible = true; blip(330, 0.18, 'sine', 0.22); setTimeout(() => blip(440, 0.18, 'sine', 0.18), 90); toast('🟦 بساط الريح · Flying carpet!'); }
+  } else if (name === 'leap') {
+    if (P.t > 0) return;
+    if (player.jump()) { P.t = P.cd; blip(660, 0.12, 'square', 0.16); }
+  } else if (name === 'dash') {
+    if (P.t > 0) return;
+    if (player.dash()) { P.t = P.cd; whirlBurst(); blip(200, 0.25, 'sawtooth', 0.18); toast('🌀 زوبعة الجن · Whirlwind!'); }
+  }
+}
 
 // find the ladder you're standing at and climb up (or down if you're on a roof)
 function nearestLadder() {
@@ -228,6 +262,9 @@ joyBase.addEventListener('touchend', (e) => { e.preventDefault(); joyEnd(); }, {
 // show joystick zone + climb button only on touch devices
 if (matchMedia('(pointer: coarse)').matches) { joyBase.classList.add('show'); $('climbBtn').classList.add('touch'); }
 $('climbBtn').onclick = tryClimb;
+$('abCarpet').onclick = () => usePower('carpet');
+$('abLeap').onclick = () => usePower('leap');
+$('abDash').onclick = () => usePower('dash');
 
 $('muteBtn').onclick = () => { muted = !muted; if (masterGain) masterGain.gain.value = muted ? 0 : 0.5; $('muteBtn').textContent = muted ? '🔇' : '🔊'; };
 
@@ -310,6 +347,51 @@ function animate() {
       b.cloth.rotation.y = Math.sin(markerT * 4 + b.pos.x) * 0.18;
     }
   }
+
+  // the Roc crossing the sky
+  if (roc) {
+    roc.a += dt * roc.speed;
+    roc.group.position.set(roc.cx + Math.cos(roc.a) * roc.r, roc.alt + Math.sin(roc.a) * 18, roc.cz + Math.sin(roc.a) * roc.r);
+    roc.group.rotation.y = -roc.a + Math.PI / 2;
+    const flap = Math.sin(markerT * 1.6) * 0.5;
+    roc.wingL.rotation.z = 0.3 + flap; roc.wingR.rotation.z = -0.3 - flap;
+  }
+  // jinn wisps drift + flicker
+  for (const w of wisps) {
+    w.group.position.x = w.hx + Math.sin(markerT * 0.6 + w.phase) * 3;
+    w.group.position.z = w.hz + Math.cos(markerT * 0.5 + w.phase) * 3;
+    w.group.position.y = 1.6 + Math.sin(markerT * 2 + w.phase) * 0.6;
+    w.core.material.emissiveIntensity = 1.1 + Math.sin(markerT * 6 + w.phase) * 0.5;
+  }
+  // dash dust bursts
+  for (let i = bursts.length - 1; i >= 0; i--) {
+    const bu = bursts[i]; bu.life += dt;
+    const a = bu.pts.geometry.attributes.position.array;
+    for (let k = 0; k < bu.vel.length; k++) {
+      a[k * 3] += bu.vel[k][0] * dt; a[k * 3 + 1] += bu.vel[k][1] * dt; a[k * 3 + 2] += bu.vel[k][2] * dt;
+      bu.vel[k][1] -= 9 * dt;
+    }
+    bu.pts.geometry.attributes.position.needsUpdate = true;
+    bu.pts.material.opacity = Math.max(0, 0.85 - bu.life);
+    if (bu.life > 0.85) { scene.remove(bu.pts); bursts.splice(i, 1); }
+  }
+  // water shimmer
+  if (world && world.waterMesh) world.waterMesh.material.opacity = 0.8 + Math.sin(markerT * 1.5) * 0.07;
+
+  // carpet under the player while flying
+  if (player && carpet) {
+    if (player.flying) {
+      carpet.group.visible = true;
+      carpet.group.position.set(player.position.x, player.position.y - 0.15, player.position.z);
+      carpet.group.rotation.y = player.group.rotation.y;
+      carpet.group.rotation.z = Math.sin(markerT * 3) * 0.05;
+      carpet.group.position.y += Math.sin(markerT * 4) * 0.06;
+    } else carpet.group.visible = false;
+  }
+
+  // creatures + power cooldowns
+  if (world && player) { updateCreatures(dt); }
+  updatePowers(dt);
 
   if (running && player && world) {
     // advance a climb in progress, otherwise normal movement
@@ -409,6 +491,134 @@ function makeFalcon() {
   return { group: g, wingL, wingR };
 }
 
+// ---- flying carpet (بساط الريح) shown beneath the player while flying ----
+function makeCarpet() {
+  const g = new THREE.Group();
+  const tex = makeCarpetTexture();
+  const rug = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 1.6, 8, 6),
+    new THREE.MeshStandardMaterial({ map: tex, side: THREE.DoubleSide, roughness: 0.95 }));
+  rug.rotation.x = -Math.PI / 2; g.add(rug);
+  // tassels
+  const tm = new THREE.MeshStandardMaterial({ color: 0xf0d98a, roughness: 1 });
+  for (let i = 0; i < 6; i++) {
+    for (const s of [-1, 1]) {
+      const t = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.3, 4), tm);
+      t.position.set(-1.0 + i * 0.4, -0.18, s * 0.8); g.add(t);
+    }
+  }
+  g.visible = false;
+  return { group: g, rug };
+}
+function makeCarpetTexture() {
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const x = c.getContext('2d');
+  x.fillStyle = '#9d2f2a'; x.fillRect(0, 0, 64, 64);
+  x.strokeStyle = '#d8b24a'; x.lineWidth = 4; x.strokeRect(4, 4, 56, 56);
+  x.fillStyle = '#1f7a3d'; x.fillRect(26, 26, 12, 12);
+  x.strokeStyle = '#e7d4ac'; x.lineWidth = 2;
+  for (let i = 12; i < 64; i += 16) { x.beginPath(); x.moveTo(i, 8); x.lineTo(i, 56); x.stroke(); }
+  const t = new THREE.CanvasTexture(c); return t;
+}
+
+// ---- jinn whirlwind dust burst (dash) ----
+const bursts = [];
+function whirlBurst() {
+  if (!player) return;
+  const n = MOBILE ? 16 : 28;
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(n * 3), vel = [];
+  for (let i = 0; i < n; i++) {
+    pos[i * 3] = player.position.x; pos[i * 3 + 1] = player.position.y + 0.3; pos[i * 3 + 2] = player.position.z;
+    const a = Math.random() * 6.28, sp = 3 + Math.random() * 5;
+    vel.push([Math.cos(a) * sp, 2 + Math.random() * 3, Math.sin(a) * sp]);
+  }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const pts = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xe8d6ad, size: 0.5, transparent: true, opacity: 0.85, depthWrite: false }));
+  scene.add(pts); bursts.push({ pts, vel, life: 0 });
+}
+
+// ---- a simple cartoony villager walking the streets ----
+function makeVillager() {
+  const g = new THREE.Group();
+  const robe = [0xeae0cf, 0xcdbfa3, 0xb9a98a, 0x8a9a7a, 0xa8b0bd][Math.floor(Math.random() * 5)];
+  const m = new THREE.MeshStandardMaterial({ color: robe, roughness: 0.9, flatShading: true });
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.42, 1.2, 9), m); body.position.y = 0.7; body.castShadow = true; g.add(body);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 10, 8), new THREE.MeshStandardMaterial({ color: 0xc98e63, flatShading: true })); head.position.y = 1.5; g.add(head);
+  const sc = new THREE.Mesh(new THREE.SphereGeometry(0.28, 10, 8, 0, 6.3, 0, 1.8), new THREE.MeshStandardMaterial({ color: Math.random() < 0.5 ? 0xf0ece0 : 0xc23b2e, flatShading: true })); sc.position.y = 1.55; g.add(sc);
+  return g;
+}
+// ---- goat ----
+function makeGoat() {
+  const g = new THREE.Group();
+  const hide = new THREE.MeshStandardMaterial({ color: Math.random() < 0.5 ? 0x6b5640 : 0xe8e2d4, roughness: 1, flatShading: true });
+  const body = new THREE.Mesh(new THREE.SphereGeometry(0.45, 8, 6), hide); body.scale.set(1.5, 0.9, 0.8); body.position.y = 0.7; g.add(body);
+  const head = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.3, 0.25), hide); head.position.set(0.7, 0.85, 0); g.add(head);
+  for (const [lx, lz] of [[0.4, 0.22], [0.4, -0.22], [-0.4, 0.22], [-0.4, -0.22]]) {
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.05, 0.7, 5), new THREE.MeshStandardMaterial({ color: 0x3a2c1c })); leg.position.set(lx, 0.35, lz); g.add(leg);
+  }
+  g.scale.setScalar(0.85);
+  return g;
+}
+// ---- jinn wisp: a glowing folklore spirit ----
+function makeWisp() {
+  const g = new THREE.Group();
+  const core = new THREE.Mesh(new THREE.SphereGeometry(0.32, 10, 8),
+    new THREE.MeshStandardMaterial({ color: 0x7fe3ff, emissive: 0x3aa6ff, emissiveIntensity: 1.4, transparent: true, opacity: 0.9 }));
+  g.add(core);
+  const halo = new THREE.Mesh(new THREE.SphereGeometry(0.6, 10, 8),
+    new THREE.MeshBasicMaterial({ color: 0x6fd6ff, transparent: true, opacity: 0.18, depthWrite: false }));
+  g.add(halo);
+  return { group: g, core };
+}
+// ---- the Roc (الرخ): a colossal mythical bird that crosses the sky ----
+function makeRoc() {
+  const f = makeFalcon();
+  f.group.scale.setScalar(11);
+  return f;
+}
+
+// villagers stroll between road points; goats mill near the herd centre
+function updateCreatures(dt) {
+  const wp = world.roadPoints;
+  for (const v of villagers) {
+    let dx = v.tx - v.g.position.x, dz = v.tz - v.g.position.z;
+    let d = Math.hypot(dx, dz);
+    if (d < 1.2 && wp.length) { const p = wp[(Math.random() * wp.length) | 0]; const o = world.findOpen(p[0], p[1]); if (o) { v.tx = o[0]; v.tz = o[1]; } }
+    else {
+      const nx = v.g.position.x + (dx / d) * v.speed * dt, nz = v.g.position.z + (dz / d) * v.speed * dt;
+      const [rx, rz] = world.collide(nx, nz, 0.5, 0);
+      v.g.position.x = rx; v.g.position.z = rz;
+      v.g.rotation.y = Math.atan2(dx, dz);
+      v.bob += dt * 8; v.g.position.y = Math.abs(Math.sin(v.bob)) * 0.05;
+    }
+  }
+  for (const gt of goats) {
+    let dx = gt.tx - gt.g.position.x, dz = gt.tz - gt.g.position.z;
+    let d = Math.hypot(dx, dz);
+    if (d < 0.6) { gt.tx = gt.hx + (Math.random() - 0.5) * 16; gt.tz = gt.hz + (Math.random() - 0.5) * 16; }
+    else {
+      const nx = gt.g.position.x + (dx / d) * gt.speed * dt, nz = gt.g.position.z + (dz / d) * gt.speed * dt;
+      const [rx, rz] = world.collide(nx, nz, 0.4, 0);
+      gt.g.position.x = rx; gt.g.position.z = rz; gt.g.rotation.y = Math.atan2(dx, dz);
+    }
+  }
+}
+
+// power cooldowns + button visuals
+function updatePowers(dt) {
+  for (const name in POWERS) {
+    const P = POWERS[name];
+    if (P.t > 0) P.t = Math.max(0, P.t - dt);
+    const el = $(P.btn); if (!el) continue;
+    const ready = P.t <= 0;
+    el.classList.toggle('cooling', !ready);
+    const cd = el.querySelector('.cd');
+    if (cd) cd.style.height = ready ? '0%' : Math.min(100, (P.t / P.cd) * 100) + '%';
+  }
+  // highlight carpet button while flying
+  const cb = $('abCarpet'); if (cb) cb.classList.toggle('active', !!(player && player.flying));
+}
+
 function showWin() {
   $('winDates').textContent = dateCount;
   $('win').classList.add('open');
@@ -429,7 +639,7 @@ async function boot() {
   $('veilWisdom').textContent = QAHWA_WISDOM[0];
   const wisdomTimer = setInterval(() => { wi = (wi + 1) % QAHWA_WISDOM.length; $('veilWisdom').textContent = QAHWA_WISDOM[wi]; }, 3200);
 
-  world = await loadCity(scene, './src/diriyah/');
+  world = await loadCity(scene, './src/diriyah/', { quality: MOBILE ? 0.55 : 1 });
   total = world.landmarks.length;
   totalBanners = world.banners.length;
   $('hudMarks').textContent = '0 / ' + total;
@@ -446,6 +656,47 @@ async function boot() {
     });
     scene.add(f.group); falcons.push(f);
   }
+
+  // the Roc — a giant mythical bird on a slow high circuit
+  roc = makeRoc();
+  Object.assign(roc, {
+    cx: (world.bounds.minx + world.bounds.maxx) / 2, cz: (world.bounds.minz + world.bounds.maxz) / 2,
+    r: 520, alt: 150, a: 0, speed: 0.05, phase: 0,
+  });
+  scene.add(roc.group);
+
+  // wandering villagers
+  const wp = world.roadPoints;
+  const nVill = MOBILE ? 4 : 7;
+  for (let i = 0; i < nVill && wp.length; i++) {
+    const start = world.findOpen(wp[(Math.random() * wp.length) | 0][0], wp[(Math.random() * wp.length) | 0][1]);
+    if (!start) continue;
+    const g = makeVillager(); g.position.set(start[0], 0, start[1]); scene.add(g);
+    villagers.push({ g, tx: start[0], tz: start[1], speed: 2 + Math.random() * 1.5, bob: Math.random() * 6.28 });
+  }
+
+  // a goat herd near the wadi greenery
+  const herd = world.findOpen(world.spawn[0] + 30, world.spawn[1] + 30) || [world.spawn[0], world.spawn[1]];
+  const nGoat = MOBILE ? 4 : 7;
+  for (let i = 0; i < nGoat; i++) {
+    const g = makeGoat();
+    g.position.set(herd[0] + (Math.random() - 0.5) * 14, 0, herd[1] + (Math.random() - 0.5) * 14);
+    scene.add(g);
+    goats.push({ g, hx: herd[0], hz: herd[1], tx: g.position.x, tz: g.position.z, speed: 1 + Math.random(), bob: Math.random() * 6.28 });
+  }
+
+  // jinn wisps haunting a few quiet alleys (folklore spirits)
+  const nWisp = MOBILE ? 5 : 8;
+  for (let i = 0; i < nWisp && wp.length; i++) {
+    const base = wp[(Math.random() * wp.length) | 0];
+    const w = makeWisp();
+    w.group.position.set(base[0], 1.5 + Math.random() * 1.5, base[1]);
+    Object.assign(w, { hx: base[0], hz: base[1], phase: Math.random() * 6.28 });
+    scene.add(w.group); wisps.push(w);
+  }
+
+  // the flying carpet (hidden until summoned)
+  carpet = makeCarpet(); scene.add(carpet.group);
 
   player = createPlayer(scene);
   player.setSpawn(world.spawn[0], world.spawn[1]);

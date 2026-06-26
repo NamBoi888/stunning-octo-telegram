@@ -109,8 +109,9 @@ function pointInPoly(x, z, poly) {
 }
 
 // ---------- the build -----------------------------------------------------
-export async function loadCity(scene, basePath = './src/diriyah/') {
+export async function loadCity(scene, basePath = './src/diriyah/', opts = {}) {
   const data = await fetch(basePath + 'map-data.json').then((r) => r.json());
+  const Q = opts.quality ?? 1; // 1 = desktop, ~0.6 on phones (fewer props)
 
   // Ground plane covering the bounds, with a soft edge falloff color.
   const B = data.bounds;
@@ -141,12 +142,13 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
     if (wf.fill && wf.p) waterGeos.push(flatPoly(wf.p));
     else if (wf.l) waterGeos.push(ribbon(wf.l, wf.w || 12, 0.04));
   }
+  let waterMesh = null;
   if (waterGeos.length) {
     const g = mergeGeos(waterGeos);
     const mat = new THREE.MeshStandardMaterial({
       color: WATER, transparent: true, opacity: 0.86, roughness: 0.25, metalness: 0.1,
     });
-    const m = new THREE.Mesh(g, mat); m.position.y = 0.05; m.renderOrder = 1; scene.add(m);
+    waterMesh = new THREE.Mesh(g, mat); waterMesh.position.y = 0.05; waterMesh.renderOrder = 1; scene.add(waterMesh);
   }
 
   // ---- green areas + palm groves ----
@@ -357,7 +359,7 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
   // ---- scattered desert rocks + dry tufts for ground detail ----
   const rockPts = [];
   const rspan = { x0: B.minx, x1: B.maxx, z0: B.minz, z1: B.maxz };
-  for (let i = 0; i < 260; i++) {
+  for (let i = 0; i < Math.round(260 * Q); i++) {
     const x = rspan.x0 + Math.random() * (rspan.x1 - rspan.x0);
     const z = rspan.z0 + Math.random() * (rspan.z1 - rspan.z0);
     let ok = true;
@@ -719,9 +721,14 @@ export async function loadCity(scene, basePath = './src/diriyah/') {
 
   const spawn = openSpawn(data.spawn[0], data.spawn[1]);
 
+  // road points usable as creature waypoints
+  const roadPoints = [];
+  for (const r of data.roads) for (const p of r.l) roadPoints.push(p);
+
   return {
     data, bounds: B, spawn,
     colliders, collide, supportHeightAt, openSpawn, landmarks, datePositions, updateMarkers,
-    ladders, banners, roofItems,
+    ladders, banners, roofItems, waterMesh, roadPoints,
+    isClear: isOpen, findOpen,
   };
 }

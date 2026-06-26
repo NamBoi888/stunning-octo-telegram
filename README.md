@@ -51,12 +51,34 @@ restored alleys of old Diriyah.
 - The **compass** (top-right) always points to the nearest site you haven't
   discovered yet, with its distance.
 
-Look out for the ambient life too: **camels** resting by the wadi, **falcons**
-circling overhead (falconry is deep Najdi heritage), and a little **souq** of
-market stalls.
+### Superpowers from Arabian folklore
+
+Three folk-powers are bound to keys (or tap the buttons on the right — they have
+cooldowns):
+
+| Power | الاسم | Key | What it does |
+|-------|-------|-----|--------------|
+| 🧞 Flying carpet | بساط الريح | **F** | Summon a magic carpet and glide up over the rooftops (press again to land) |
+| 🦅 Falcon's leap | وثبة الصقر | **J** | A high jump to hop walls and gaps |
+| 🌀 Jinn whirlwind | زوبعة الجن | **K** | A whirlwind dash — a burst of speed in a swirl of dust |
+
+### A living town
+
+The map is full of life: **camels** resting by the wadi, **goats** milling about,
+**villagers** strolling the alleys, **falcons** circling, glowing **jinn wisps**
+(جن) haunting quiet corners, the colossal **Roc** (الرخ) from the tales of Sindbad
+crossing the sky, drifting clouds, a little **souq** of market stalls, and the
+shimmering Wadi Hanifah.
 
 **Goal:** discover all **8 landmarks** *and* raise all **5 rooftop banners** to
 complete your journey through the birthplace of the nation.
+
+## Plays on phones too 📱
+
+The game is fully touch-enabled and responsive: a left-thumb **joystick**, a big
+**climb** button, tappable **power** buttons, drag anywhere to rotate the camera,
+and pinch to zoom. It also drops the render resolution, shadow quality and prop
+density on phones to keep things smooth.
 
 ## The landmarks — معالم الطريف
 

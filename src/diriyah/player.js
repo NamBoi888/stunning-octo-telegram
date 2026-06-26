@@ -65,10 +65,14 @@ export function createPlayer(scene) {
   const SPEED = 12;            // metres / second
   const RADIUS = 0.55;         // small enough to thread the Najdi alleys
   const GRAVITY = 34;
+  const JUMP_V = 15;
   let facing = 0;
   let bobT = 0;
   let vy = 0;
   let climbing = false;
+  let grounded = true;
+  let flying = false, flyT = 0, flyCruise = 0;
+  let dashT = 0;
 
   function update(dt, input, world) {
     if (climbing) { bobT += dt * 3; return false; } // game drives position while climbing
@@ -79,9 +83,12 @@ export function createPlayer(scene) {
     if (mag > 1) { mx /= mag; mz /= mag; }
     const moving = mag > 0.02;
 
+    let speed = SPEED;
+    if (dashT > 0) { dashT -= dt; speed = SPEED * 2.3; }   // jinn whirlwind dash
+
     if (moving) {
-      const nx = g.position.x + mx * SPEED * dt;
-      const nz = g.position.z + mz * SPEED * dt;
+      const nx = g.position.x + mx * speed * dt;
+      const nz = g.position.z + mz * speed * dt;
       const [rx, rz] = world.collide(nx, nz, RADIUS, g.position.y);
       g.position.x = rx; g.position.z = rz;
       facing = Math.atan2(mx, mz);
@@ -90,12 +97,21 @@ export function createPlayer(scene) {
       bobT += dt * 2.5;
     }
 
-    // gravity + rooftop support (so you can walk roofs and step off edges)
-    vy -= GRAVITY * dt;
-    let ny = g.position.y + vy * dt;
-    const support = world.supportHeightAt(g.position.x, g.position.z, g.position.y);
-    if (ny <= support) { ny = support; vy = 0; }
-    g.position.y = ny;
+    // vertical: flying carpet hovers; otherwise gravity + rooftop support
+    if (flying) {
+      flyT -= dt;
+      const dy = flyCruise - g.position.y;
+      vy = Math.max(-6, Math.min(8, dy * 3));
+      g.position.y += vy * dt;
+      if (flyT <= 0) flying = false;
+      grounded = false;
+    } else {
+      vy -= GRAVITY * dt;
+      let ny = g.position.y + vy * dt;
+      const support = world.supportHeightAt(g.position.x, g.position.z, g.position.y);
+      if (ny <= support) { ny = support; vy = 0; grounded = true; } else grounded = false;
+      g.position.y = ny;
+    }
 
     // smooth turn toward facing
     let diff = facing - g.rotation.y;
@@ -103,9 +119,10 @@ export function createPlayer(scene) {
     while (diff < -Math.PI) diff += Math.PI * 2;
     g.rotation.y += diff * Math.min(1, dt * 12);
 
-    // walk bob
-    body.position.y = 0.95 + (moving ? Math.abs(Math.sin(bobT)) * 0.06 : Math.sin(bobT) * 0.015);
-    g.scale.y = 1 + (moving ? Math.sin(bobT * 2) * 0.02 : 0);
+    // walk bob (suppressed in the air)
+    const air = flying || !grounded;
+    body.position.y = 0.95 + (air ? 0 : (moving ? Math.abs(Math.sin(bobT)) * 0.06 : Math.sin(bobT) * 0.015));
+    g.scale.y = 1 + (!air && moving ? Math.sin(bobT * 2) * 0.02 : 0);
 
     return moving;
   }
@@ -116,7 +133,13 @@ export function createPlayer(scene) {
     update,
     radius: RADIUS,
     get climbing() { return climbing; },
+    get flying() { return flying; },
+    get grounded() { return grounded; },
     setClimbing(v) { climbing = v; if (!v) vy = 0; },
+    jump() { if (grounded && !flying && !climbing) { vy = JUMP_V; grounded = false; return true; } return false; },
+    dash() { if (!climbing) { dashT = 1.4; return true; } return false; },
+    startFly() { if (!flying && !climbing) { flying = true; flyT = 7; flyCruise = g.position.y + 9; vy = 0; return true; } return false; },
+    landFly() { flying = false; },
     setSpawn(x, z) { g.position.set(x, 0, z); },
   };
 }

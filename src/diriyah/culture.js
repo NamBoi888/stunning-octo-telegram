@@ -17,8 +17,11 @@ export const INTRO = {
     'the glowing landmarks to uncover their stories.\n\n' +
     'Najdi families climbed palm-wood ladders to the rooftop terrace (السطح) to ' +
     'dry dates and sleep under the stars. Climb the ladders and raise the ' +
-    'heritage banners (الرايات) on the high roofs to complete your journey.',
-  tip: 'Move: WASD / arrows or joystick · Climb a ladder: Space (or E) · Camera: drag to orbit, scroll to zoom',
+    'heritage banners (الرايات) on the high roofs to complete your journey.\n\n' +
+    'And from the old tales of Arabia, three folk-powers are yours: the flying ' +
+    'carpet (بساط الريح), the falcon\'s leap, and the jinn\'s whirlwind. Watch ' +
+    'for jinn wisps in the alleys and the great Roc (الرخ) crossing the sky.',
+  tip: 'Move: WASD / joystick · Climb: Space · Powers: F carpet · J leap · K whirlwind (or tap the buttons)',
 };
 
 export const LANDMARKS = {
