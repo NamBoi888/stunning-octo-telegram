@@ -120,3 +120,56 @@ Overpass query for a different bounding box to explore another town.
 - Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright)
   contributors (ODbL).
 - Rendering by [Three.js](https://threejs.org/) (MIT), vendored under `vendor/`.
+
+---
+
+# Diriyah Geospatial Dashboard
+
+Alongside the game, `dashboard/` is a browser-based **geospatial analytics
+dashboard** for the same At-Turaif / Bujairi / Wadi Hanifah area — a 2D
+map-first tool for planners, researchers and the public, built entirely from
+public OpenStreetMap geometry plus free, key-less public basemaps (CARTO
+Positron/Dark Matter, Esri World Imagery).
+
+## Run it
+
+Any static file server works (the dashboard uses ES modules and `fetch()`,
+which need `http(s)://`, not `file://`):
+
+```bash
+npx serve .
+# or
+python3 -m http.server 8000
+```
+
+Then open `http://localhost:8000/dashboard/`.
+
+## What's in it
+
+- Six toggleable layer categories with a legend: Heritage & Culture,
+  Environment & Wadi, Urban Fabric, Transportation & Mobility, Hospitality &
+  Tourism, Public Amenities — plus a Study Area Boundary reference layer.
+- Light / dark / satellite basemaps, hover tooltips, a click-to-expand info
+  drawer (landmark entries reuse the same bilingual stories as the game, from
+  `src/diriyah/culture.js`), search, a distance-radius spatial filter,
+  distance/area measurement, a split-view layer/basemap comparison mode, a
+  guided tour, screenshot export, and a shareable URL view-state.
+- An analytics panel: a POI density heatmap, a land-use donut (built vs. green
+  vs. water vs. open) with the green:built ratio, a walkability approximation
+  per landmark, and 400 m walkable-accessibility buffers around every
+  landmark — all computed client-side and deterministically from the public
+  geometry with [Turf.js](https://turfjs.org/).
+- Arabic / English UI toggle with full RTL layout mirroring.
+
+Full write-up — architecture, component breakdown, data schema, and
+extensibility notes — is in [`dashboard/ARCHITECTURE.md`](dashboard/ARCHITECTURE.md).
+
+## Regenerating the data
+
+The dashboard's GeoJSON layers (`data/diriyah/*.geojson`) are derived from the
+same baked `src/diriyah/map-data.json` the game uses:
+
+```bash
+node scripts/convert-map-data.mjs   # buildings, roads, water, green, landmarks, boundary
+node scripts/generate-poi.mjs       # curated hospitality/amenity points
+```

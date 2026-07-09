@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Diriyah Explorer — Geospatial Dashboard</title>
+  <meta name="description" content="Interactive open-data geospatial dashboard of Diriyah's At-Turaif, Bujairi and Wadi Hanifah, built from public OpenStreetMap footprints." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%9B%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="../vendor/maplibre/maplibre-gl.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header id="topbar">
+      <button id="sidePanelToggle" class="chip-btn panel-toggle" aria-label="Toggle panel">☰</button>
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">🏛️</span>
+        <div class="brand-text">
+          <h1 id="appTitle">Diriyah Explorer</h1>
+          <p id="appSubtitle">Geospatial Dashboard</p>
+        </div>
+      </div>
+
+      <div class="search-wrap">
+        <input id="searchInput" type="text" autocomplete="off" />
+        <div id="searchResults" class="search-results"></div>
+      </div>
+
+      <div class="topbar-actions">
+        <select id="basemapSelect" aria-label="Basemap">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="satellite">Satellite</option>
+        </select>
+        <button id="langToggleBtn" class="chip-btn">العربية</button>
+      </div>
+    </header>
+
+    <div id="mainArea">
+      <aside id="sidePanel">
+        <nav class="panel-tabs">
+          <button class="tab-btn active" data-tab="layersPanel" id="tabLayers">Layers</button>
+          <button class="tab-btn" data-tab="toolsPanel" id="tabTools">Tools</button>
+          <button class="tab-btn" data-tab="analyticsPanel" id="tabAnalytics">Analytics</button>
+        </nav>
+
+        <div id="layersPanel" class="tab-panel active"></div>
+
+        <div id="toolsPanel" class="tab-panel">
+          <div class="tool-group">
+            <button id="toolMeasureDistance" class="tool-btn">📏 <span data-t="toolMeasureDistance">Measure distance</span></button>
+            <button id="toolMeasureArea" class="tool-btn">📐 <span data-t="toolMeasureArea">Measure area</span></button>
+            <div id="measureResult" class="tool-result hidden"></div>
+          </div>
+          <div class="tool-group">
+            <button id="toolRadius" class="tool-btn">🎯 <span data-t="toolRadius">Radius filter</span></button>
+            <div id="radiusControls" class="tool-sub hidden">
+              <label><span data-t="radiusLabel">Radius (m)</span>
+                <input id="radiusSlider" type="range" min="100" max="1200" step="50" value="400" />
+                <span id="radiusValue">400</span>
+              </label>
+            </div>
+            <div id="radiusResult" class="tool-result hidden"></div>
+          </div>
+          <div class="tool-group">
+            <button id="toolCompare" class="tool-btn">🪞 <span data-t="toolCompare">Compare layers</span></button>
+            <div id="compareControls" class="tool-sub hidden">
+              <select id="comparePreset">
+                <option value="satellite">Satellite imagery</option>
+                <option value="heritage">Heritage only</option>
+                <option value="environment">Environment only</option>
+                <option value="urban">Urban fabric only</option>
+              </select>
+            </div>
+          </div>
+          <div class="tool-group">
+            <button id="toolStory" class="tool-btn">🧭 <span data-t="toolStory">Guided tour</span></button>
+          </div>
+          <div class="tool-group">
+            <button id="toolShare" class="tool-btn">🔗 <span data-t="toolShare">Share view</span></button>
+            <button id="toolScreenshot" class="tool-btn">📷 <span data-t="toolScreenshot">Screenshot</span></button>
+          </div>
+          <div class="tool-group">
+            <button id="toolClear" class="tool-btn subtle">✕ <span data-t="toolClear">Clear</span></button>
+          </div>
+        </div>
+
+        <div id="analyticsPanel" class="tab-panel">
+          <label class="analytics-toggle">
+            <input type="checkbox" id="toggleHeatmap" />
+            <span data-t="analyticsPoiDensity">POI density heatmap</span>
+          </label>
+          <label class="analytics-toggle">
+            <input type="checkbox" id="toggleBuffers" />
+            <span data-t="analyticsBuffers">Accessibility buffers (400 m walk)</span>
+          </label>
+
+          <div class="analytics-block">
+            <h3 data-t="analyticsLandUse">Land-use distribution</h3>
+            <div id="landUseChart"></div>
+          </div>
+
+          <div class="analytics-block">
+            <h3 data-t="analyticsWalkability">Walkability (path density)</h3>
+            <div id="walkabilityChart"></div>
+          </div>
+        </div>
+      </aside>
+
+      <div id="mapWrap">
+        <div id="map"></div>
+        <div id="compareContainer"></div>
+        <div id="compareDivider"></div>
+
+        <div id="storyOverlay" class="story-overlay hidden">
+          <div class="story-card">
+            <div class="story-icon" id="storyIcon"></div>
+            <div class="story-progress" id="storyProgress"></div>
+            <h2 id="storyTitle"></h2>
+            <p class="story-tag" id="storyTag"></p>
+            <p class="story-body" id="storyBody"></p>
+            <p class="story-fact" id="storyFact"></p>
+            <div class="story-controls">
+              <button id="storyPrev" data-t="storyPrev">Back</button>
+              <button id="storyNext" data-t="storyNext">Next</button>
+              <button id="storyExit" data-t="storyExit">Exit tour</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="toast" class="toast"></div>
+      </div>
+
+      <aside id="drawer" class="drawer" aria-hidden="true">
+        <button id="drawerClose" class="drawer-close" data-t="close">Close</button>
+        <div id="drawerContent"></div>
+      </aside>
+    </div>
+  </div>
+
+  <script src="../vendor/maplibre/maplibre-gl.js"></script>
+  <script src="../vendor/turf/turf.min.js"></script>
+  <script type="module" src="../src/dashboard/main.js"></script>
+</body>
+</html>
