@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+<title>Riyadh Transit Network</title>
+<desc>Transit map rendered by riyadh-transit-scope in EPSG:32638</desc>
+<defs><clipPath id="map-frame"><rect x="36" y="126" width="1528" height="1038" rx="6"/></clipPath></defs>
+<g id="background">
+<rect x="0" y="0" width="1600" height="1200" fill="#F6F4EF"/>
+<rect x="36" y="126" width="1528" height="1038" fill="#FBFAF7" rx="6"/>
+</g>
+<g id="map" clip-path="url(#map-frame)">
+<g id="districts">
+<path d="M714.17,838.70 L679.45,831.68 L712.03,717.56 L717.67,714.61 L777.14,722.92 L800.37,795.48 L714.17,838.70Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M777.14,722.92 L813.14,693.60 L886.92,719.16 L879.96,762.13 L829.93,795.11 L800.37,795.48 L777.14,722.92Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M879.96,762.13 L914.82,799.38 L915.37,842.06 L851.74,878.01 L850.11,877.37 L829.93,795.11 L879.96,762.13Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M800.37,795.48 L829.93,795.11 L850.11,877.37 L779.52,907.73 L714.17,838.70 L800.37,795.48Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M779.52,907.73 L850.11,877.37 L851.74,878.01 L906.59,951.26 L905.02,956.51 L828.65,999.66 L786.20,972.19 L779.52,907.73Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M828.65,999.66 L905.02,956.51 L1001.67,1071.30 L881.86,1125.56 L839.81,1122.78 L828.65,999.66Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M679.45,831.68 L714.17,838.70 L779.52,907.73 L786.20,972.19 L665.44,1018.02 L626.45,849.33 L679.45,831.68Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M626.45,849.33 L665.44,1018.02 L630.05,1108.96 L608.09,1107.51 L574.83,1093.41 L458.99,836.57 L550.63,826.20 L626.45,849.33Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M458.99,836.57 L574.83,1093.41 L411.80,1024.28 L390.42,853.65 L398.01,824.71 L458.99,836.57Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M616.18,655.80 L550.63,826.20 L458.99,836.57 L398.01,824.71 L446.61,639.44 L512.06,516.63 L616.18,655.80Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M550.63,826.20 L616.18,655.80 L644.81,657.64 L712.03,717.56 L679.45,831.68 L626.45,849.33 L550.63,826.20Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M697.50,616.54 L753.87,646.53 L717.67,714.61 L712.03,717.56 L644.81,657.64 L697.50,616.54Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M512.06,516.63 L512.30,516.18 L703.09,571.75 L697.50,616.54 L644.81,657.64 L616.18,655.80 L512.06,516.63Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M746.23,488.25 L751.09,504.14 L734.92,546.21 L703.09,571.75 L512.30,516.18 L561.14,424.54 L565.37,415.78 L746.23,488.25Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M734.92,546.21 L789.46,627.00 L784.96,635.46 L753.87,646.53 L697.50,616.54 L703.09,571.75 L734.92,546.21Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M751.09,504.14 L815.55,532.59 L827.74,604.53 L789.46,627.00 L734.92,546.21 L751.09,504.14Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M784.96,635.46 L813.14,693.60 L777.14,722.92 L717.67,714.61 L753.87,646.53 L784.96,635.46Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M789.46,627.00 L827.74,604.53 L856.40,609.97 L900.35,700.59 L899.76,704.73 L886.92,719.16 L813.14,693.60 L784.96,635.46 L789.46,627.00Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M856.40,609.97 L912.85,565.87 L924.99,570.13 L947.45,638.75 L900.35,700.59 L856.40,609.97Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M912.85,565.87 L856.40,609.97 L827.74,604.53 L815.55,532.59 L882.46,505.44 L912.85,565.87Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1008.81,540.21 L924.99,570.13 L912.85,565.87 L882.46,505.44 L920.87,357.85 L1007.79,312.04 L1027.67,333.27 L1048.94,358.46 L1008.81,540.21Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1048.90,618.12 L1025.39,637.73 L947.45,638.75 L924.99,570.13 L1008.81,540.21 L1048.90,618.12Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M900.35,700.59 L947.45,638.75 L1025.39,637.73 L1002.28,726.74 L899.76,704.73 L900.35,700.59Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M899.76,704.73 L1002.28,726.74 L1050.19,797.63 L914.82,799.38 L879.96,762.13 L886.92,719.16 L899.76,704.73Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M914.82,799.38 L1050.19,797.63 L1154.73,869.05 L959.80,901.35 L915.37,842.06 L914.82,799.38Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1050.19,797.63 L1002.28,726.74 L1025.39,637.73 L1048.90,618.12 L1074.09,622.69 L1169.13,872.54 L1168.88,872.99 L1154.73,869.05 L1050.19,797.63Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1074.09,622.69 L1206.14,554.67 L1209.58,800.78 L1169.13,872.54 L1074.09,622.69Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1074.09,622.69 L1048.90,618.12 L1008.81,540.21 L1048.94,358.46 L1206.00,544.47 L1206.14,554.67 L1074.09,622.69Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M751.09,504.14 L746.23,488.25 L837.78,365.80 L920.87,357.85 L882.46,505.44 L815.55,532.59 L751.09,504.14Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M837.78,365.80 L746.23,488.25 L565.37,415.78 L635.51,270.49 L837.78,365.80Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M920.87,357.85 L837.78,365.80 L635.51,270.49 L675.22,188.23 L869.64,164.44 L1007.79,312.04 L920.87,357.85Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M915.37,842.06 L959.80,901.35 L906.59,951.26 L851.74,878.01 L915.37,842.06Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M905.02,956.51 L906.59,951.26 L959.80,901.35 L1154.73,869.05 L1168.88,872.99 L1076.11,1037.59 L1001.67,1071.30 L905.02,956.51Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M665.44,1018.02 L786.20,972.19 L828.65,999.66 L839.81,1122.78 L630.05,1108.96 L665.44,1018.02Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+</g>
+<g id="district-labels" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif" font-weight="500" font-size="9.5" letter-spacing="0.8" fill="#9C9384">
+<text x="744.4" y="762.5" text-anchor="middle">AL OLAYA</text>
+<text x="875.7" y="824" text-anchor="middle">AL MALAZ</text>
+<text x="788.9" y="861.4" text-anchor="middle">AL MURABBA</text>
+<text x="836" y="932.8" text-anchor="middle">AL BATHA</text>
+<text x="901.7" y="1038.8" text-anchor="middle">AL AZIZIYAH</text>
+<text x="715.1" y="943.3" text-anchor="middle">AL SHUMAISI</text>
+<text x="574.4" y="937" text-anchor="middle">AL SUWAIDI</text>
+<text x="453.1" y="942.3" text-anchor="middle">TUWAIQ</text>
+<text x="501.9" y="743.6" text-anchor="middle">DIRIYAH</text>
+<text x="634" y="775.2" text-anchor="middle">KING SAUD UNIVERSITY</text>
+<text x="635.2" y="597.5" text-anchor="middle">AL AQIQ</text>
+<text x="635.8" y="499.5" text-anchor="middle">AL SAHAFAH</text>
+<text x="733.8" y="597.5" text-anchor="middle">AL GHADIR</text>
+<text x="861.4" y="552.6" text-anchor="middle">AL NADA</text>
+<text x="967.1" y="435.3" text-anchor="middle">AL YARMUK</text>
+<text x="984.7" y="597.4" text-anchor="middle">AL KHALEEJ</text>
+<text x="948.5" y="747.8" text-anchor="middle">AL RAWDAH</text>
+<text x="1030.2" y="858.9" text-anchor="middle">AL JAZIRAH</text>
+<text x="1158.1" y="715.1" text-anchor="middle">KHASHM AL AN</text>
+<text x="1077.3" y="452.7" text-anchor="middle">AL QADISIYAH</text>
+<text x="847.4" y="430.3" text-anchor="middle">IMAM UNIVERSITY</text>
+<text x="698.3" y="394.1" text-anchor="middle">AL QIRAWAN</text>
+<text x="792.9" y="232.7" text-anchor="middle">AIRPORT</text>
+<text x="1019.1" y="1000.4" text-anchor="middle">AL FAISALIYAH</text>
+<text x="741.1" y="1066.8" text-anchor="middle">NAMAR</text>
+</g>
+<g id="catchments">
+<g id="catchment-500m" fill="#0072CE" fill-opacity="0.07" stroke="#0072CE" stroke-opacity="0.3" stroke-width="0.8">
+<circle cx="676.11" cy="585.53" r="9.64"/>
+<circle cx="790.44" cy="214.58" r="9.64"/>
+<circle cx="810.53" cy="263.46" r="9.64"/>
+<circle cx="896.14" cy="1018.57" r="9.64"/>
+<circle cx="848.96" cy="948.67" r="9.64"/>
+<circle cx="926.04" cy="1065.18" r="9.64"/>
+<circle cx="740.76" cy="610.38" r="9.64"/>
+<circle cx="895.61" cy="625.53" r="9.64"/>
+<circle cx="817.61" cy="517.57" r="9.64"/>
+<circle cx="952.82" cy="825.59" r="9.64"/>
+<circle cx="686.34" cy="625.99" r="9.64"/>
+<circle cx="790.31" cy="673.85" r="9.64"/>
+<circle cx="776.34" cy="806.46" r="9.64"/>
+<circle cx="1065.96" cy="572.02" r="9.64"/>
+<circle cx="1129.76" cy="673.7" r="9.64"/>
+<circle cx="963.04" cy="605.43" r="9.64"/>
+<circle cx="685.95" cy="707.16" r="9.64"/>
+<circle cx="649.06" cy="722.55" r="9.64"/>
+<circle cx="814.42" cy="840.17" r="9.64"/>
+<circle cx="881.32" cy="882.05" r="9.64"/>
+<circle cx="710.18" cy="662.01" r="9.64"/>
+<circle cx="846.21" cy="574.89" r="9.64"/>
+<circle cx="777.39" cy="575.75" r="9.64"/>
+<circle cx="822.68" cy="876.38" r="9.64"/>
+<circle cx="1042.9" cy="700.51" r="9.64"/>
+<circle cx="832.95" cy="651.96" r="9.64"/>
+<circle cx="726.18" cy="693.86" r="9.64"/>
+<circle cx="748.79" cy="740.58" r="9.64"/>
+<circle cx="840.14" cy="448.93" r="9.64"/>
+<circle cx="827.01" cy="910.5" r="9.64"/>
+<circle cx="963.82" cy="665.23" r="9.64"/>
+<circle cx="1000.83" cy="765.15" r="9.64"/>
+<circle cx="663.87" cy="540.82" r="9.64"/>
+<circle cx="742.66" cy="926.49" r="9.64"/>
+<circle cx="797.45" cy="731.44" r="9.64"/>
+<circle cx="586.9" cy="964.65" r="9.64"/>
+<circle cx="489.51" cy="987.11" r="9.64"/>
+<circle cx="759.21" cy="682.78" r="9.64"/>
+<circle cx="803.52" cy="795.44" r="9.64"/>
+</g>
+</g>
+<g id="routes">
+<g id="routes-surface" fill="none" stroke-width="1.8" stroke-opacity="0.85" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 3">
+<path d="M942.46,522.39 L846.79,574.88 L896.19,625.52 L925.22,697.78 L1043.48,700.50 L1001.41,765.14 L953.40,825.58 L868.51,841.62" stroke="#98A4AE"/>
+<path d="M556.45,693.73 L649.64,722.55 L686.52,707.16 L711.29,753.85 L749.36,740.57 L798.03,731.43" stroke="#5E6A71"/>
+<path d="M849.54,948.67 L827.59,910.49 L823.26,876.37 L815.00,840.16 L868.51,841.62 L881.90,882.04 L849.54,948.67" stroke="#7A8B94"/>
+</g>
+<g id="routes-rapid-casing" fill="none" stroke="#FFFFFF" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M663.87,540.82 L676.11,585.53 L686.34,625.99 L710.18,662.01 L726.18,693.86 L748.21,740.59 L776.34,806.46 L822.10,876.38 L826.43,910.51 L848.38,948.68 L896.14,1018.57 L926.04,1065.18"/>
+<path d="M648.48,722.56 L685.37,707.17 L726.18,693.86 L759.21,682.78 L790.31,673.85 L832.95,651.96 L895.03,625.54 L963.04,605.43 L1065.96,572.02"/>
+<path d="M489.51,987.11 L586.90,964.65 L742.66,926.49 L826.43,910.51 L880.74,882.05 L952.25,825.60 L1000.25,765.16 L1042.33,700.51 L1129.76,673.70"/>
+<path d="M686.34,625.99 L740.76,610.38 L777.39,575.75 L817.61,517.57 L840.14,448.93 L810.53,263.46 L790.44,214.58"/>
+<path d="M822.10,876.38 L813.84,840.17 L803.52,795.44 L796.88,731.44 L790.31,673.85 L740.76,610.38"/>
+<path d="M686.34,625.99 L777.39,575.75 L845.63,574.90 L895.03,625.54 L963.82,665.23 L1042.33,700.51"/>
+</g>
+<g id="routes-rapid" fill="none" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M663.87,540.82 L676.11,585.53 L686.34,625.99 L710.18,662.01 L726.18,693.86 L748.21,740.59 L776.34,806.46 L822.10,876.38 L826.43,910.51 L848.38,948.68 L896.14,1018.57 L926.04,1065.18" stroke="#0072CE" data-route="1"/>
+<path d="M648.48,722.56 L685.37,707.17 L726.18,693.86 L759.21,682.78 L790.31,673.85 L832.95,651.96 L895.03,625.54 L963.04,605.43 L1065.96,572.02" stroke="#E4002B" data-route="2"/>
+<path d="M489.51,987.11 L586.90,964.65 L742.66,926.49 L826.43,910.51 L880.74,882.05 L952.25,825.60 L1000.25,765.16 L1042.33,700.51 L1129.76,673.70" stroke="#FF8200" data-route="3"/>
+<path d="M686.34,625.99 L740.76,610.38 L777.39,575.75 L817.61,517.57 L840.14,448.93 L810.53,263.46 L790.44,214.58" stroke="#FFC72C" data-route="4"/>
+<path d="M822.10,876.38 L813.84,840.17 L803.52,795.44 L796.88,731.44 L790.31,673.85 L740.76,610.38" stroke="#009A44" data-route="5"/>
+<path d="M686.34,625.99 L777.39,575.75 L845.63,574.90 L895.03,625.54 L963.82,665.23 L1042.33,700.51" stroke="#8A3FA0" data-route="6"/>
+</g>
+</g>
+<g id="stations">
+<g id="stations-regular" fill="#FFFFFF" stroke-width="2.2">
+<circle cx="676.11" cy="585.53" r="4.2" stroke="#0072CE"/>
+<circle cx="790.44" cy="214.58" r="4.2" stroke="#FFC72C"/>
+<circle cx="810.53" cy="263.46" r="4.2" stroke="#FFC72C"/>
+<circle cx="896.14" cy="1018.57" r="4.2" stroke="#0072CE"/>
+<circle cx="926.04" cy="1065.18" r="4.2" stroke="#0072CE"/>
+<circle cx="817.61" cy="517.57" r="4.2" stroke="#FFC72C"/>
+<circle cx="776.34" cy="806.46" r="4.2" stroke="#0072CE"/>
+<circle cx="1065.96" cy="572.02" r="4.2" stroke="#E4002B"/>
+<circle cx="1129.76" cy="673.7" r="4.2" stroke="#FF8200"/>
+<circle cx="963.04" cy="605.43" r="4.2" stroke="#E4002B"/>
+<circle cx="710.18" cy="662.01" r="4.2" stroke="#0072CE"/>
+<circle cx="832.95" cy="651.96" r="4.2" stroke="#E4002B"/>
+<circle cx="840.14" cy="448.93" r="4.2" stroke="#FFC72C"/>
+<circle cx="963.82" cy="665.23" r="4.2" stroke="#8A3FA0"/>
+<circle cx="663.87" cy="540.82" r="4.2" stroke="#0072CE"/>
+<circle cx="742.66" cy="926.49" r="4.2" stroke="#FF8200"/>
+<circle cx="586.9" cy="964.65" r="4.2" stroke="#FF8200"/>
+<circle cx="489.51" cy="987.11" r="4.2" stroke="#FF8200"/>
+<circle cx="759.21" cy="682.78" r="4.2" stroke="#E4002B"/>
+<circle cx="803.52" cy="795.44" r="4.2" stroke="#009A44"/>
+</g>
+<g id="stations-interchange" fill="#FFFFFF" stroke="#1D2127" stroke-width="2.6">
+<circle cx="848.96" cy="948.67" r="6.5"/>
+<circle cx="740.76" cy="610.38" r="6.5"/>
+<circle cx="895.61" cy="625.53" r="6.5"/>
+<circle cx="952.82" cy="825.59" r="6.5"/>
+<circle cx="686.34" cy="625.99" r="6.5"/>
+<circle cx="790.31" cy="673.85" r="6.5"/>
+<circle cx="685.95" cy="707.16" r="6.5"/>
+<circle cx="649.06" cy="722.55" r="6.5"/>
+<circle cx="814.42" cy="840.17" r="6.5"/>
+<circle cx="881.32" cy="882.05" r="6.5"/>
+<circle cx="846.21" cy="574.89" r="6.5"/>
+<circle cx="777.39" cy="575.75" r="6.5"/>
+<circle cx="822.68" cy="876.38" r="6.5"/>
+<circle cx="1042.9" cy="700.51" r="6.5"/>
+<circle cx="726.18" cy="693.86" r="6.5"/>
+<circle cx="748.79" cy="740.58" r="6.5"/>
+<circle cx="827.01" cy="910.5" r="6.5"/>
+<circle cx="1000.83" cy="765.15" r="6.5"/>
+<circle cx="797.45" cy="731.44" r="6.5"/>
+<circle cx="868.51" cy="841.62" r="6.5"/>
+</g>
+</g>
+</g>
+<g id="station-labels" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif" fill="#1D2127" stroke="#F6F4EF" stroke-width="3.2" stroke-linejoin="round" paint-order="stroke">
+<text x="857" y="952.9" text-anchor="start" font-size="12" font-weight="600">Al Batha</text>
+<text x="748.8" y="614.6" text-anchor="start" font-size="12" font-weight="600">Al Ghadir</text>
+<text x="903.6" y="629.7" text-anchor="start" font-size="12" font-weight="600">Al Hamra</text>
+<text x="960.8" y="829.8" text-anchor="start" font-size="12" font-weight="600">Al Jazirah</text>
+<text x="694.3" y="630.2" text-anchor="start" font-size="12" font-weight="600">KAFD</text>
+<text x="798.3" y="678" text-anchor="start" font-size="12" font-weight="600">King Abdulaziz Rd</text>
+<text x="677.9" y="711.4" text-anchor="end" font-size="12" font-weight="600">King Salman Oasis</text>
+<text x="641.1" y="726.8" text-anchor="end" font-size="12" font-weight="600">King Saud University</text>
+<text x="806.4" y="844.4" text-anchor="end" font-size="12" font-weight="600">Al Murabba</text>
+<text x="889.3" y="886.2" text-anchor="start" font-size="12" font-weight="600">Al Marqab</text>
+<text x="854.2" y="579.1" text-anchor="start" font-size="12" font-weight="600">Al Nada</text>
+<text x="785.4" y="579.9" text-anchor="start" font-size="12" font-weight="600">Al Nafl</text>
+<text x="814.7" y="880.6" text-anchor="end" font-size="12" font-weight="600">National Museum</text>
+<text x="1050.9" y="704.7" text-anchor="start" font-size="12" font-weight="600">Al Naseem</text>
+<text x="740.8" y="744.8" text-anchor="end" font-size="12" font-weight="600">Al Olaya</text>
+<text x="835" y="914.7" text-anchor="start" font-size="12" font-weight="600">Qasr Al Hokm</text>
+<text x="1008.8" y="769.4" text-anchor="start" font-size="12" font-weight="600">Al Rawdah</text>
+<text x="805.5" y="735.6" text-anchor="start" font-size="12" font-weight="600">Al Sulimaniyah</text>
+<text x="876.5" y="845.8" text-anchor="start" font-size="12" font-weight="600">Al Malaz</text>
+</g>
+<g id="legend" transform="translate(52.0,827.0)" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif">
+<rect x="0" y="0" width="330" height="321" rx="6" fill="#FFFFFF" fill-opacity="0.92" stroke="#C8C0B2" stroke-width="0.8"/>
+<text x="14" y="24" font-size="10.5" font-weight="700" letter-spacing="1.4" fill="#5E6570">LEGEND</text>
+<g transform="translate(14,44.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#0072CE" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="48.5" font-size="11.5" fill="#1D2127">Line 1 · Blue Line</text>
+<g transform="translate(14,65.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#E4002B" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="69.5" font-size="11.5" fill="#1D2127">Line 2 · Red Line</text>
+<g transform="translate(14,86.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#FF8200" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="90.5" font-size="11.5" fill="#1D2127">Line 3 · Orange Line</text>
+<g transform="translate(14,107.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#FFC72C" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="111.5" font-size="11.5" fill="#1D2127">Line 4 · Yellow Line</text>
+<g transform="translate(14,128.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#009A44" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="132.5" font-size="11.5" fill="#1D2127">Line 5 · Green Line</text>
+<g transform="translate(14,149.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#8A3FA0" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="153.5" font-size="11.5" fill="#1D2127">Line 6 · Purple Line</text>
+<g transform="translate(14,170.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#98A4AE" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="6 3"/></g>
+<text x="52" y="174.5" font-size="11.5" fill="#1D2127">Bus 150</text>
+<g transform="translate(14,191.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#5E6A71" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="6 3"/></g>
+<text x="52" y="195.5" font-size="11.5" fill="#1D2127">Bus 7</text>
+<g transform="translate(14,212.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#7A8B94" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="6 3"/></g>
+<text x="52" y="216.5" font-size="11.5" fill="#1D2127">Bus 9</text>
+<g transform="translate(14,233.5)"><circle cx="14" cy="0" r="4.2" fill="#FFFFFF" stroke="#1D2127" stroke-width="2.2"/></g>
+<text x="52" y="237.5" font-size="11.5" fill="#1D2127">Station</text>
+<g transform="translate(14,254.5)"><circle cx="14" cy="0" r="6.5" fill="#FFFFFF" stroke="#1D2127" stroke-width="2.6"/></g>
+<text x="52" y="258.5" font-size="11.5" fill="#1D2127">Interchange</text>
+<g transform="translate(14,275.5)"><circle cx="14" cy="0" r="7" fill="#0072CE" fill-opacity="0.25" stroke="#0072CE" stroke-opacity="0.6"/></g>
+<text x="52" y="279.5" font-size="11.5" fill="#1D2127">500 m walk catchment</text>
+<g transform="translate(14,296.5)"><rect x="2" y="-6" width="24" height="12" fill="#EFEBE3" stroke="#C8C0B2"/></g>
+<text x="52" y="300.5" font-size="11.5" fill="#1D2127">District boundary</text>
+</g>
+<g id="scale-bar" transform="translate(1343.2,1134.0)" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif">
+<rect x="0" y="0" width="48.21" height="6" fill="#1D2127" stroke="#1D2127" stroke-width="0.8"/>
+<rect x="48.21" y="0" width="48.21" height="6" fill="#FBFAF7" stroke="#1D2127" stroke-width="0.8"/>
+<rect x="96.42" y="0" width="48.21" height="6" fill="#1D2127" stroke="#1D2127" stroke-width="0.8"/>
+<rect x="144.63" y="0" width="48.21" height="6" fill="#FBFAF7" stroke="#1D2127" stroke-width="0.8"/>
+<text x="0" y="-5" text-anchor="middle" font-size="10.5" fill="#1D2127">0</text>
+<text x="96.42" y="-5" text-anchor="middle" font-size="10.5" fill="#1D2127">5</text>
+<text x="192.83" y="-5" text-anchor="middle" font-size="10.5" fill="#1D2127">10 km</text>
+</g>
+<g id="north-arrow" transform="translate(1530.0,152.0)" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif">
+<path d="M0,-16 L8,8 L0,3 L-8,8 Z" fill="#1D2127"/>
+<text x="0" y="24" text-anchor="middle" font-size="11" font-weight="700" fill="#1D2127">N</text>
+</g>
+<g id="title-block" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif">
+<rect x="36" y="30" width="4" height="58" fill="#0072CE" rx="2"/>
+<text x="54" y="58" font-size="30" font-weight="700" fill="#1D2127" letter-spacing="-0.3">Riyadh Transit Network</text>
+<text x="54" y="84" font-size="14" fill="#5E6570">9 routes · 44 stations · 500 m catchments · EPSG:32638</text>
+<text x="1564" y="84" font-size="11" fill="#5E6570" text-anchor="end">GTFS: riyadh_sample_gtfs.zip · riyadh-transit-scope 0.1.0 · 2026-09-28</text>
+</g>
+</svg>

@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "disclaimer": "Indicative, rounded figures compiled for comparative research demonstration. Values mix published agency statistics and analyst estimates of differing years and definitions; verify against primary sources before citing. Override with `transit benchmark --data your_profiles.json`.",
+  "cities": [
+    {
+      "key": "riyadh",
+      "name": "Riyadh",
+      "country": "Saudi Arabia",
+      "aliases": ["ruh", "riyadh-metro"],
+      "data_year": 2025,
+      "population_m": 7.0,
+      "urban_extent_km2": 1800,
+      "network_coverage_km2": 720,
+      "coverage_definition": "Union of 1 km (rail) and 500 m (bus) stop catchments",
+      "rapid_transit": {"route_km": 176, "lines": 6, "fleet_vehicles": 452, "peak_headway_min": 5.0},
+      "light_rail": null,
+      "bus": {"route_km": 1900, "lines": 80, "fleet_vehicles": 842, "peak_headway_min": 15.0},
+      "transit_modal_split_pct": 2.0,
+      "currency": "SAR",
+      "monthly_pass_local": 140,
+      "monthly_pass_usd": 37.3,
+      "median_monthly_household_income_usd": 4300,
+      "sources": [
+        "Royal Commission for Riyadh City — Riyadh Metro & bus programme fact sheets",
+        "GASTAT household income & expenditure survey (national, scaled)",
+        "Modal split: pre-metro household travel surveys (≈1–2%)"
+      ],
+      "notes": "Metro opened in phases from Dec 2024; modal split reflects pre-opening baseline."
+    },
+    {
+      "key": "melbourne",
+      "name": "Melbourne",
+      "country": "Australia",
+      "aliases": ["mel", "melb"],
+      "data_year": 2024,
+      "population_m": 5.2,
+      "urban_extent_km2": 2540,
+      "network_coverage_km2": 1900,
+      "coverage_definition": "Union of 800 m (rail/tram) and 400 m (bus) stop catchments",
+      "rapid_transit": {"route_km": 405, "lines": 16, "fleet_vehicles": 1320, "peak_headway_min": 10.0},
+      "light_rail": {"route_km": 250, "lines": 24, "fleet_vehicles": 475, "peak_headway_min": 8.0},
+      "bus": {"route_km": 6500, "lines": 340, "fleet_vehicles": 1900, "peak_headway_min": 20.0},
+      "transit_modal_split_pct": 12.0,
+      "currency": "AUD",
+      "monthly_pass_local": 191,
+      "monthly_pass_usd": 125,
+      "median_monthly_household_income_usd": 5400,
+      "sources": [
+        "Department of Transport and Planning Victoria — network statistics",
+        "ABS Census — method of travel to work",
+        "Public Transport Victoria — myki Pass fares (28+ day rate)"
+      ],
+      "notes": "Tram network (world's largest) is street-running and reported as light rail."
+    },
+    {
+      "key": "la",
+      "name": "Los Angeles",
+      "country": "United States",
+      "aliases": ["los-angeles", "losangeles", "lax"],
+      "data_year": 2024,
+      "population_m": 10.0,
+      "urban_extent_km2": 3700,
+      "network_coverage_km2": 2300,
+      "coverage_definition": "Union of 800 m (rail/BRT) and 400 m (bus) stop catchments, LA Metro service area",
+      "rapid_transit": {"route_km": 175, "lines": 6, "fleet_vehicles": 450, "peak_headway_min": 9.0},
+      "light_rail": null,
+      "bus": {"route_km": 3800, "lines": 117, "fleet_vehicles": 2300, "peak_headway_min": 15.0},
+      "transit_modal_split_pct": 5.0,
+      "currency": "USD",
+      "monthly_pass_local": 72,
+      "monthly_pass_usd": 72,
+      "median_monthly_household_income_usd": 6900,
+      "sources": [
+        "LA Metro — facts at a glance",
+        "US Census ACS — means of transportation to work (LA County)",
+        "LA Metro fare capping (monthly equivalent)"
+      ],
+      "notes": "Rapid transit includes heavy rail (B/D) and grade-separated light rail lines (A/C/E/K)."
+    }
+  ]
+}
