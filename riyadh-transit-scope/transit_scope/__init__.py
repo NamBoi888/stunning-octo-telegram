@@ -3,7 +3,7 @@
 Sub-packages
 ------------
 gtfs          GTFS ingestion and network KPI engine.
-benchmark     Multi-city comparative benchmarking (Riyadh, Melbourne, Los Angeles).
+riyadh        Riyadh data pipeline: OSM snapshots + official reference -> validated GTFS.
 microclimate  Heat-stress corridor walkability simulator (EWCS).
 gis_svg       GeoJSON/GTFS to publication-ready SVG map renderer.
 """

@@ -3,13 +3,16 @@
 Commands
 --------
 analyze            Parse a GTFS feed, print network KPIs, export a JSON report.
-benchmark          Compare Riyadh / Melbourne / Los Angeles (or custom) networks.
+validate           Check the Riyadh dataset against official figures (0 mismatches required).
 simulate-corridor  Heat-penalised walkability (EWCS) for a station access corridor.
 export-svg         Render a styled standalone SVG map from GeoJSON + GTFS.
-report-html        Compile everything into one self-contained HTML report.
-sample-data        Copy the bundled mock data into a working directory.
+report-html        One self-contained HTML report with an interactive Riyadh map.
+build-riyadh       Rebuild the bundled Riyadh data from the OSM snapshots.
+fetch-osm          Refresh the OpenStreetMap snapshots via Overpass (network).
+sample-data        Copy the bundled Riyadh data into a working directory.
 
-Every command runs out-of-the-box against bundled Riyadh sample data.
+Every command runs out-of-the-box against the bundled Riyadh Metro data (built
+from OpenStreetMap and validated against published official figures).
 """
 
 from __future__ import annotations
@@ -30,14 +33,17 @@ from rich.text import Text
 from transit_scope import __version__
 from transit_scope.errors import TransitScopeError
 from transit_scope.paths import (
-    benchmark_cities_path,
+    DATA_DIR,
+    VALIDATION_NAME,
+    riyadh_bus_path,
+    riyadh_stations_path,
     sample_districts_path,
     sample_gtfs_path,
 )
 
 app = typer.Typer(
     name="transit",
-    help="[bold]riyadh-transit-scope[/bold] — GTFS analytics, multi-city benchmarking, "
+    help="[bold]riyadh-transit-scope[/bold] — Riyadh public transport GTFS analytics, "
     "heat-stress walkability and SVG mapping for urban transit research.",
     no_args_is_help=True,
     rich_markup_mode="rich",
@@ -116,7 +122,7 @@ def main(
                      help="Show version and exit."),
     ] = False,
 ) -> None:
-    """Urban transit research toolkit (Riyadh · Melbourne · Los Angeles)."""
+    """Riyadh public transport research toolkit."""
 
 
 # --------------------------------------------------------------------------- #
@@ -202,7 +208,7 @@ def analyze(
     ),
     peaks: Annotated[
         str, typer.Option(help="Comma-separated peak windows (HH:MM-HH:MM).")
-    ] = "07:00-09:00,16:00-19:00",
+    ] = "06:30-09:00,15:30-19:00",
     radii: Annotated[str, typer.Option(help="Catchment radii in metres.")] = "500,1000",
     crs: Annotated[
         str | None, typer.Option(help="Metric CRS (default: auto UTM, EPSG:32638 for Riyadh).")
@@ -250,44 +256,6 @@ def analyze(
     if catchments_geojson:
         geo = _write(catchments_geojson, result.catchments_geojson())
         console.print(f"[green]✓[/green] Catchment polygons written to [bold]{geo}[/bold]")
-
-
-# --------------------------------------------------------------------------- #
-# benchmark
-# --------------------------------------------------------------------------- #
-
-
-@app.command()
-@_handle_errors
-def benchmark(
-    cities: Annotated[
-        str, typer.Option(help="Comma-separated city keys or aliases.")
-    ] = "riyadh,melbourne,la",
-    out: Annotated[Path, typer.Option("--out", "-o", help="Markdown report path.")] = Path(
-        "benchmark_report.md"
-    ),
-    data: Annotated[
-        Path | None,
-        typer.Option(help="Extra/override city profiles JSON (same schema as bundled data)."),
-    ] = None,
-    json_out: Annotated[
-        Path | None, typer.Option("--json", help="Also export derived metrics as JSON.")
-    ] = None,
-) -> None:
-    """Compare transit networks side by side and export a Markdown report."""
-    from transit_scope.benchmark import markdown_report, rich_table, run_benchmark
-
-    dataset, profiles, metrics = run_benchmark(cities.split(","), data)
-    console.print(rich_table(metrics))
-    if dataset.disclaimer:
-        console.print(Panel(dataset.disclaimer, title="Data note", border_style="yellow"))
-
-    written = _write(out, markdown_report(dataset, profiles, metrics))
-    console.print(f"[green]✓[/green] Markdown report written to [bold]{written}[/bold]")
-    if json_out:
-        payload = json.dumps([m.model_dump() for m in metrics], indent=2)
-        written_json = _write(json_out, payload)
-        console.print(f"[green]✓[/green] Metrics JSON written to [bold]{written_json}[/bold]")
 
 
 # --------------------------------------------------------------------------- #
@@ -513,13 +481,11 @@ def report_html(
         "riyadh_transit_scope.html"
     ),
     gtfs: Annotated[
-        Path | None, typer.Option(help="GTFS feed. Defaults to the bundled sample.")
+        Path | None, typer.Option(help="GTFS feed. Defaults to the bundled Riyadh Metro feed.")
     ] = None,
     geojson: Annotated[
-        Path | None, typer.Option(help="District GeoJSON. Defaults to the bundled sample.")
+        Path | None, typer.Option(help="District GeoJSON. Defaults to OSM Riyadh neighbourhoods.")
     ] = None,
-    cities: Annotated[str, typer.Option(help="Benchmark cities.")] = "riyadh,melbourne,la",
-    data: Annotated[Path | None, typer.Option(help="Extra benchmark profiles JSON.")] = None,
     temp: Annotated[float, typer.Option(help="Heat-walk scenario air temperature (°C).")] = 44.0,
     shade: Annotated[float, typer.Option(help="Heat-walk scenario shade (%).")] = 35.0,
     distance: Annotated[float, typer.Option(help="Heat-walk scenario length (m).")] = 800.0,
@@ -528,12 +494,12 @@ def report_html(
         bool, typer.Option(help="Omit the <html>/<head>/<body> wrapper (for embedding).")
     ] = False,
 ) -> None:
-    """Compile network KPIs, map, benchmark and heat-walk simulator into one HTML file."""
+    """Compile validation, interactive map, network KPIs and heat-walk simulator into one HTML."""
     from transit_scope.html_report import ReportInputs, build_html_report
 
     inputs = ReportInputs(
-        gtfs=gtfs, geojson=geojson, cities=tuple(c for c in cities.split(",") if c.strip()),
-        benchmark_data=data, temp_c=temp, shade_pct=shade, distance_m=distance, title=title,
+        gtfs=gtfs, geojson=geojson, temp_c=temp, shade_pct=shade, distance_m=distance,
+        title=title,
     )
     with console.status("[cyan]Running every module and compiling the report…"):
         html = build_html_report(inputs, fragment=fragment)
@@ -554,11 +520,12 @@ def sample_data(
     out_dir: Annotated[Path, typer.Argument(help="Destination directory.")] = Path("data"),
     force: Annotated[bool, typer.Option(help="Overwrite existing files.")] = False,
 ) -> None:
-    """Copy the bundled mock Riyadh GTFS, districts and benchmark profiles to a directory."""
+    """Copy the bundled Riyadh GTFS, stations, districts and bus layers to a directory."""
     out_dir = out_dir.expanduser()
     out_dir.mkdir(parents=True, exist_ok=True)
     table = Table("File", "Status", header_style="bold magenta")
-    for src in (sample_gtfs_path(), sample_districts_path(), benchmark_cities_path()):
+    for src in (sample_gtfs_path(), riyadh_stations_path(), sample_districts_path(),
+                riyadh_bus_path()):
         dest = out_dir / src.name
         if dest.exists() and not force:
             table.add_row(str(dest), "[yellow]exists (use --force)[/yellow]")
@@ -566,7 +533,91 @@ def sample_data(
         shutil.copyfile(src, dest)
         table.add_row(str(dest), "[green]copied[/green]")
     console.print(table)
-    console.print("[dim]Note: sample GTFS and districts are mock data for demonstration.[/dim]")
+    console.print("[dim]Geometry © OpenStreetMap contributors (ODbL). Timetables are generated "
+                  "from the published service parameters; see `transit validate`.[/dim]")
+
+
+# --------------------------------------------------------------------------- #
+# Riyadh data pipeline
+# --------------------------------------------------------------------------- #
+
+_STATUS_STYLE = {"pass": "green", "resolved": "cyan", "note": "yellow", "mismatch": "red",
+                 "error": "bold red"}
+
+
+def _print_validation(rep, show_pass: bool) -> None:
+    table = Table(title="Riyadh dataset validation", header_style="bold magenta",
+                  title_justify="left", show_lines=False)
+    for col in ("Status", "Check", "Subject", "Detail", "Expected", "Actual"):
+        table.add_column(col, overflow="fold")
+    for f in rep.findings:
+        if f.status == "pass" and not show_pass:
+            continue
+        style = _STATUS_STYLE[f.status]
+        table.add_row(f"[{style}]{f.status}[/]", f.check, f.subject, f.detail,
+                      f.expected or "", f.actual or "")
+    console.print(table)
+    counts = rep.counts
+    summary = "  ".join(f"[{_STATUS_STYLE[k]}]{k} {v}[/]" for k, v in counts.items())
+    verdict = ("[bold green]✓ accepted: no mismatches or errors[/]" if rep.ok
+               else "[bold red]✗ rejected: fix the mismatches/errors above[/]")
+    console.print(Panel(f"{summary}\n{verdict}", title="Summary",
+                        border_style="green" if rep.ok else "red"))
+
+
+@app.command()
+@_handle_errors
+def validate(
+    show_pass: Annotated[bool, typer.Option("--all", help="Also list passing checks.")] = False,
+    json_out: Annotated[
+        Path | None, typer.Option("--json", help="Write the full report as JSON.")
+    ] = None,
+) -> None:
+    """Validate the Riyadh dataset against official figures and independent sources."""
+    from transit_scope.riyadh.build import assemble
+    from transit_scope.riyadh.validate import validate_dataset
+
+    with console.status("[cyan]Rebuilding from OSM snapshots and validating…"):
+        rep = validate_dataset(assemble(), sample_gtfs_path())
+    _print_validation(rep, show_pass)
+    if json_out:
+        console.print(f"[green]✓[/green] Report written to "
+                      f"[bold]{_write(json_out, rep.model_dump_json(indent=2))}[/bold]")
+    if not rep.ok:
+        raise typer.Exit(code=1)
+
+
+@app.command("build-riyadh")
+@_handle_errors
+def build_riyadh(
+    out_dir: Annotated[Path, typer.Option(help="Output directory.")] = DATA_DIR,
+) -> None:
+    """Rebuild the bundled Riyadh data from the OSM snapshots and validate it."""
+    from transit_scope.riyadh.build import assemble, write_dataset
+    from transit_scope.riyadh.validate import validate_dataset
+
+    with console.status("[cyan]Reconciling OSM with the official reference…"):
+        ds = assemble()
+        paths = write_dataset(ds, out_dir)
+        rep = validate_dataset(ds, paths["gtfs"])
+    _write(out_dir / VALIDATION_NAME, rep.model_dump_json(indent=2))
+    for key, path in paths.items():
+        console.print(f"[green]✓[/green] {key:9s} {path}")
+    _print_validation(rep, show_pass=False)
+    if not rep.ok:
+        raise typer.Exit(code=1)
+
+
+@app.command("fetch-osm")
+@_handle_errors
+def fetch_osm() -> None:
+    """Download fresh OpenStreetMap snapshots via Overpass (takes a few minutes)."""
+    from transit_scope.riyadh.osm import fetch_snapshots
+    from transit_scope.riyadh.reference import load_reference
+
+    ids = [r for line in load_reference().lines for r in line.osm_relations]
+    fetch_snapshots(ids, log=lambda m: console.print(f"[cyan]•[/cyan] {m}"))
+    console.print("[green]✓[/green] Snapshots updated. Run `transit build-riyadh` next.")
 
 
 if __name__ == "__main__":  # pragma: no cover

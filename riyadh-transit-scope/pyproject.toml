@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "riyadh-transit-scope"
 version = "0.1.0"
-description = "GTFS network analytics, multi-city transit benchmarking, heat-stress walkability modelling and SVG map rendering for urban transit research."
+description = "Riyadh public transport research toolkit: validated Riyadh Metro GTFS from OpenStreetMap + official figures, network KPIs, heat-stress walkability and interactive maps."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }

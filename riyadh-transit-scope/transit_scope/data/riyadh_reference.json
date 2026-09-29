@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "accessed": "2026-09-29",
+  "sources": {
+    "rcrc": {"title": "Royal Commission for Riyadh City (RCRC) statements via Saudi Press Agency, as reported by Gulf News (6 Sep 2025) and Gulf Business", "url": "https://gulfnews.com/world/gulf/saudi/saudi-arabia-riyadh-metro-adjusts-schedule-to-530am-in-push-to-ease-traffic-1.500259210"},
+    "wikipedia_system": {"title": "Wikipedia: Riyadh Metro (per-line length, stations, opening; cites RCRC)", "url": "https://en.wikipedia.org/wiki/Riyadh_Metro"},
+    "wikipedia_lines": {"title": "Wikipedia: Line 1–6 (Riyadh Metro) station tables", "url": "https://en.wikipedia.org/wiki/Line_1_(Riyadh_Metro)"},
+    "urbanrail": {"title": "UrbanRail.net: Riyadh (independently measured line lengths)", "url": "https://urbanrail.net/as/riyadh/riyadh.htm"},
+    "rcrc_bus": {"title": "RCRC Riyadh Bus figures (842 buses, 80 routes, 2,860 stops) via Gulf Business", "url": "https://gulfbusiness.com/en/2024/saudi-arabia/riyadh-metro-5-ways-boost-transport"},
+    "hours": {"title": "Riyadh Metro operating hours (Sat–Thu 06:00–00:00, Fri 08:00–00:00; 05:30 start from Sep 2025)", "url": "https://platinumlist.net/guide/riyadh-metro-changes-operating-hours-on-fridays-starting-july-4/"},
+    "osm": {"title": "OpenStreetMap contributors, ODbL 1.0 — Riyadh Metro route relations, stations, bus routes/stops, district boundaries", "url": "https://www.openstreetmap.org/copyright"}
+  },
+  "system": {
+    "total_length_km": 176,
+    "stations": 85,
+    "headway_min_range": [3, 7],
+    "fleet_cars": 586,
+    "source": "rcrc"
+  },
+  "bus": {"routes": 80, "stops": 2860, "buses": 842, "source": "rcrc_bus"},
+  "lines": [
+    {"ref": "1", "name": "Blue Line", "name_ar": "المسار الأزرق", "osm_relations": [8857089, 17168709],
+     "termini": ["SAB Bank", "Ad Dar Al Baida"], "length_km": 38.0, "measured_km_urbanrail": 36.7,
+     "stations": 25, "opened": "2024-12-01",
+     "station_list": ["SAB Bank", "Dr Sulaiman Al Habib", "KAFD", "Al Murooj", "King Fahad District",
+       "King Fahad District 2", "STC", "Al Wurud 2", "Al Urubah", "Alinma Bank", "Bank Albilad",
+       "King Fahad Library", "Ministry of Interior", "Al Murabba", "Passport Department",
+       "National Museum", "Al Bat'ha", "Qasr Al Hokm", "Al Owd", "Skirinah", "Manfouhah",
+       "Al Iman Hospital", "Transportation Center", "Al Aziziah", "Ad Dar Al Baida"]},
+    {"ref": "2", "name": "Red Line", "name_ar": "المسار الأحمر", "osm_relations": [8857429, 17169524],
+     "termini": ["King Saud University", "King Fahd Sports City"], "length_km": 25.3,
+     "measured_km_urbanrail": 24.2, "stations": 15, "opened": "2024-12-15",
+     "station_list": ["King Saud University", "King Salman Oasis", "KACST", "At Takhassusi", "STC",
+       "Al Wurud", "King Abdulaziz Road", "Ministry of Education", "An Nuzhah",
+       "Riyadh Exhibition Center", "Khalid Bin Alwaleed Road", "Al Hamra", "Al Khaleej",
+       "City Centre Ishbiliyah", "King Fahd Sports City"]},
+    {"ref": "3", "name": "Orange Line", "name_ar": "المسار البرتقالي", "osm_relations": [8857387, 17172396],
+     "termini": ["Jeddah Road", "Khashm Al An"], "length_km": 40.7, "measured_km_urbanrail": 39.8,
+     "stations": 22, "opened": "2025-01-05",
+     "station_list": ["Jeddah Road", "Tuwaiq", "Ad Douh", "Western Station",
+       "Aishah bint Abi Bakr Street", "Dhahrat Al Badiah", "Sultanah", "Al Jarradiyah",
+       "Courts Complex", "Qasr Al Hokm", "Al Hilla", "Al Margab", "As Salhiyah",
+       "First Industrial City", "Railway Station", "Al Malaz", "Jarir District",
+       "Al Rajhi Grand Mosque", "Harun Ar Rashid Road", "An Naseem", "Hassan Bin Thabit Street",
+       "Khashm Al An"]},
+    {"ref": "4", "name": "Yellow Line", "name_ar": "المسار الأصفر", "osm_relations": [8857389, 18367296],
+     "termini": ["KAFD", "Airport T1-2"], "length_km": 29.6, "measured_km_urbanrail": 29.1,
+     "stations": 9, "opened": "2024-12-01",
+     "station_list": ["KAFD", "Ar Rabi", "Uthman Bin Affan Road", "SABIC", "PNU",
+       "Governmental Complex", "Airport T5", "Airport T3-4", "Airport T1-2"]},
+    {"ref": "5", "name": "Green Line", "name_ar": "المسار الأخضر", "osm_relations": [8857090, 18359081],
+     "termini": ["Ministry of Education", "National Museum"], "length_km": 12.9,
+     "measured_km_urbanrail": 12.6, "stations": 12, "opened": "2024-12-15",
+     "station_list": ["Ministry of Education", "Salahaddin", "As Sulimaniyah", "Ad Dhabab",
+       "Abu Dhabi Square", "Officers Club", "GOSI", "Al Wizarat", "Ministry of Defense", "MEW&A",
+       "Ministry of Finance", "National Museum"]},
+    {"ref": "6", "name": "Purple Line", "name_ar": "المسار البنفسجي", "osm_relations": [8857388, 18360763],
+     "termini": ["KAFD", "An Naseem"], "length_km": 29.9, "measured_km_urbanrail": 28.9,
+     "stations": 11, "opened": "2024-12-01",
+     "station_list": ["KAFD", "Ar Rabi", "Uthman Bin Affan Road", "SABIC", "Granada", "Al Yarmuk",
+       "Al Hamra", "Al Andalus", "Khurais Road", "As Salam", "An Naseem"]}
+  ],
+  "interchanges": {
+    "KAFD": ["1", "4", "6"], "STC": ["1", "2"], "National Museum": ["1", "5"],
+    "Qasr Al Hokm": ["1", "3"], "Ministry of Education": ["2", "5"], "Al Hamra": ["2", "6"],
+    "An Naseem": ["3", "6"], "Ar Rabi": ["4", "6"], "Uthman Bin Affan Road": ["4", "6"],
+    "SABIC": ["4", "6"]
+  },
+  "service_plan": {
+    "assumption": true,
+    "note": "RCRC publishes operating hours and a network headway range (3–7 min) but no per-line timetable. Per-line headways and running speed are modelling assumptions inside the published range; busiest lines (Blue, then Red and Orange, per RCRC ridership) get the shortest headways.",
+    "calendars": {
+      "SATTHU": {"days": ["saturday", "sunday", "monday", "tuesday", "wednesday", "thursday"], "start": "05:30", "end": "24:00"},
+      "FRI": {"days": ["friday"], "start": "08:00", "end": "24:00"}
+    },
+    "peak_windows": ["06:30-09:00", "15:30-19:00"],
+    "headways_min": {
+      "1": {"peak": 3, "offpeak": 6}, "2": {"peak": 4, "offpeak": 7}, "3": {"peak": 4, "offpeak": 7},
+      "4": {"peak": 6, "offpeak": 7}, "5": {"peak": 5, "offpeak": 7}, "6": {"peak": 6, "offpeak": 7}
+    },
+    "friday_headway_min": 7,
+    "running_speed_kmh": 55,
+    "dwell_s": 30
+  }
+}

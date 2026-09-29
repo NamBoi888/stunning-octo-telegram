@@ -1,0 +1,1085 @@
+{
+  "findings": [
+    {
+      "check": "lines",
+      "subject": "network",
+      "status": "pass",
+      "detail": "metro lines present in OSM",
+      "expected": "6",
+      "actual": "6"
+    },
+    {
+      "check": "directions",
+      "subject": "Line 1 Blue Line",
+      "status": "pass",
+      "detail": "both directions mapped",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "check": "station-count",
+      "subject": "Line 1 Blue Line",
+      "status": "pass",
+      "detail": "stations on the line (official)",
+      "expected": "25",
+      "actual": "25"
+    },
+    {
+      "check": "direction-symmetry",
+      "subject": "Line 1 Blue Line",
+      "status": "pass",
+      "detail": "reverse direction serves the same number of stops",
+      "expected": "25",
+      "actual": "25"
+    },
+    {
+      "check": "station-name",
+      "subject": "Line 1 Blue Line",
+      "status": "pass",
+      "detail": "2 spelling variants matched (e.g. transliteration)",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "check": "termini",
+      "subject": "Line 1 Blue Line",
+      "status": "pass",
+      "detail": "terminal stations",
+      "expected": "SAB Bank ↔ Ad Dar Al Baida",
+      "actual": "SAB Bank ↔ Ad Dar Al Baida"
+    },
+    {
+      "check": "stop-on-alignment",
+      "subject": "Line 1 Blue Line",
+      "status": "pass",
+      "detail": "max distance from stop to alignment (m)",
+      "expected": "≤ 30",
+      "actual": "0.0"
+    },
+    {
+      "check": "stop-order",
+      "subject": "Line 1 Blue Line",
+      "status": "pass",
+      "detail": "stops ordered along the alignment",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "check": "stop-spacing",
+      "subject": "Line 1 Blue Line",
+      "status": "pass",
+      "detail": "inter-station spacing within 400–12000 m",
+      "expected": null,
+      "actual": "581–5309 m"
+    },
+    {
+      "check": "length-official",
+      "subject": "Line 1 Blue Line",
+      "status": "pass",
+      "detail": "station-to-station length vs official route length (official includes tail tracks)",
+      "expected": "38.0 km",
+      "actual": "36.61 km (-3.7%)"
+    },
+    {
+      "check": "length-independent",
+      "subject": "Line 1 Blue Line",
+      "status": "pass",
+      "detail": "length vs independent measurement (UrbanRail.net)",
+      "expected": "36.7 km",
+      "actual": "36.61 km (-0.3%)"
+    },
+    {
+      "check": "direction-length",
+      "subject": "Line 1 Blue Line",
+      "status": "pass",
+      "detail": "both directions within 1% length",
+      "expected": null,
+      "actual": "0.00%"
+    },
+    {
+      "check": "colour",
+      "subject": "Line 1 Blue Line",
+      "status": "pass",
+      "detail": "line colour tagged in OSM",
+      "expected": null,
+      "actual": "#00AEE6"
+    },
+    {
+      "check": "directions",
+      "subject": "Line 2 Red Line",
+      "status": "pass",
+      "detail": "both directions mapped",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "check": "station-count",
+      "subject": "Line 2 Red Line",
+      "status": "pass",
+      "detail": "stations on the line (official)",
+      "expected": "15",
+      "actual": "15"
+    },
+    {
+      "check": "direction-symmetry",
+      "subject": "Line 2 Red Line",
+      "status": "pass",
+      "detail": "reverse direction serves the same number of stops",
+      "expected": "15",
+      "actual": "15"
+    },
+    {
+      "check": "station-name",
+      "subject": "Line 2 Red Line · stop 15",
+      "status": "resolved",
+      "detail": "OSM name differs from the official list at this position; official name used",
+      "expected": "King Fahd Sports City",
+      "actual": "King Fahad Stadium"
+    },
+    {
+      "check": "station-name",
+      "subject": "Line 2 Red Line",
+      "status": "pass",
+      "detail": "2 spelling variants matched (e.g. transliteration)",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "check": "termini",
+      "subject": "Line 2 Red Line",
+      "status": "pass",
+      "detail": "terminal stations",
+      "expected": "King Saud University ↔ King Fahd Sports City",
+      "actual": "King Saud University ↔ King Fahd Sports City"
+    },
+    {
+      "check": "stop-on-alignment",
+      "subject": "Line 2 Red Line",
+      "status": "pass",
+      "detail": "max distance from stop to alignment (m)",
+      "expected": "≤ 30",
+      "actual": "0.0"
+    },
+    {
+      "check": "stop-order",
+      "subject": "Line 2 Red Line",
+      "status": "pass",
+      "detail": "stops ordered along the alignment",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "check": "stop-spacing",
+      "subject": "Line 2 Red Line",
+      "status": "pass",
+      "detail": "inter-station spacing within 400–12000 m",
+      "expected": null,
+      "actual": "861–3581 m"
+    },
+    {
+      "check": "length-official",
+      "subject": "Line 2 Red Line",
+      "status": "pass",
+      "detail": "station-to-station length vs official route length (official includes tail tracks)",
+      "expected": "25.3 km",
+      "actual": "24.21 km (-4.3%)"
+    },
+    {
+      "check": "length-independent",
+      "subject": "Line 2 Red Line",
+      "status": "pass",
+      "detail": "length vs independent measurement (UrbanRail.net)",
+      "expected": "24.2 km",
+      "actual": "24.21 km (+0.1%)"
+    },
+    {
+      "check": "direction-length",
+      "subject": "Line 2 Red Line",
+      "status": "pass",
+      "detail": "both directions within 1% length",
+      "expected": null,
+      "actual": "0.04%"
+    },
+    {
+      "check": "colour",
+      "subject": "Line 2 Red Line",
+      "status": "pass",
+      "detail": "line colour tagged in OSM",
+      "expected": null,
+      "actual": "#EF3434"
+    },
+    {
+      "check": "directions",
+      "subject": "Line 3 Orange Line",
+      "status": "pass",
+      "detail": "both directions mapped",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "check": "station-count",
+      "subject": "Line 3 Orange Line",
+      "status": "pass",
+      "detail": "stations on the line (official)",
+      "expected": "22",
+      "actual": "22"
+    },
+    {
+      "check": "direction-symmetry",
+      "subject": "Line 3 Orange Line",
+      "status": "pass",
+      "detail": "reverse direction serves the same number of stops",
+      "expected": "22",
+      "actual": "22"
+    },
+    {
+      "check": "termini",
+      "subject": "Line 3 Orange Line",
+      "status": "pass",
+      "detail": "terminal stations",
+      "expected": "Jeddah Road ↔ Khashm Al An",
+      "actual": "Jeddah Road ↔ Khashm Al An"
+    },
+    {
+      "check": "stop-on-alignment",
+      "subject": "Line 3 Orange Line",
+      "status": "pass",
+      "detail": "max distance from stop to alignment (m)",
+      "expected": "≤ 30",
+      "actual": "0.0"
+    },
+    {
+      "check": "stop-order",
+      "subject": "Line 3 Orange Line",
+      "status": "pass",
+      "detail": "stops ordered along the alignment",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "check": "stop-spacing",
+      "subject": "Line 3 Orange Line",
+      "status": "pass",
+      "detail": "inter-station spacing within 400–12000 m",
+      "expected": null,
+      "actual": "455–3637 m"
+    },
+    {
+      "check": "length-official",
+      "subject": "Line 3 Orange Line",
+      "status": "pass",
+      "detail": "station-to-station length vs official route length (official includes tail tracks)",
+      "expected": "40.7 km",
+      "actual": "39.76 km (-2.3%)"
+    },
+    {
+      "check": "length-independent",
+      "subject": "Line 3 Orange Line",
+      "status": "pass",
+      "detail": "length vs independent measurement (UrbanRail.net)",
+      "expected": "39.8 km",
+      "actual": "39.76 km (-0.1%)"
+    },
+    {
+      "check": "direction-length",
+      "subject": "Line 3 Orange Line",
+      "status": "pass",
+      "detail": "both directions within 1% length",
+      "expected": null,
+      "actual": "0.04%"
+    },
+    {
+      "check": "colour",
+      "subject": "Line 3 Orange Line",
+      "status": "pass",
+      "detail": "line colour tagged in OSM",
+      "expected": null,
+      "actual": "#ED872D"
+    },
+    {
+      "check": "directions",
+      "subject": "Line 4 Yellow Line",
+      "status": "pass",
+      "detail": "both directions mapped",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "check": "station-count",
+      "subject": "Line 4 Yellow Line",
+      "status": "pass",
+      "detail": "stations on the line (official)",
+      "expected": "9",
+      "actual": "9"
+    },
+    {
+      "check": "direction-symmetry",
+      "subject": "Line 4 Yellow Line",
+      "status": "pass",
+      "detail": "reverse direction serves the same number of stops",
+      "expected": "9",
+      "actual": "9"
+    },
+    {
+      "check": "station-name",
+      "subject": "Line 4 Yellow Line · stop 6",
+      "status": "resolved",
+      "detail": "OSM name differs from the official list at this position; official name used",
+      "expected": "Governmental Complex",
+      "actual": "PNU 2"
+    },
+    {
+      "check": "station-name",
+      "subject": "Line 4 Yellow Line",
+      "status": "pass",
+      "detail": "3 stops lack an English name on the route relation; official names applied by position, 3 confirmed by a separately mapped OSM station feature",
+      "expected": "3",
+      "actual": "3"
+    },
+    {
+      "check": "station-name",
+      "subject": "Line 4 Yellow Line",
+      "status": "pass",
+      "detail": "1 spelling variants matched (e.g. transliteration)",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "check": "termini",
+      "subject": "Line 4 Yellow Line",
+      "status": "pass",
+      "detail": "terminal stations",
+      "expected": "KAFD ↔ Airport T1-2",
+      "actual": "KAFD ↔ Airport T1-2"
+    },
+    {
+      "check": "stop-on-alignment",
+      "subject": "Line 4 Yellow Line",
+      "status": "pass",
+      "detail": "max distance from stop to alignment (m)",
+      "expected": "≤ 30",
+      "actual": "0.0"
+    },
+    {
+      "check": "stop-order",
+      "subject": "Line 4 Yellow Line",
+      "status": "pass",
+      "detail": "stops ordered along the alignment",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "check": "stop-spacing",
+      "subject": "Line 4 Yellow Line",
+      "status": "pass",
+      "detail": "inter-station spacing within 400–12000 m",
+      "expected": null,
+      "actual": "675–10929 m"
+    },
+    {
+      "check": "length-official",
+      "subject": "Line 4 Yellow Line",
+      "status": "pass",
+      "detail": "station-to-station length vs official route length (official includes tail tracks)",
+      "expected": "29.6 km",
+      "actual": "28.99 km (-2.0%)"
+    },
+    {
+      "check": "length-independent",
+      "subject": "Line 4 Yellow Line",
+      "status": "pass",
+      "detail": "length vs independent measurement (UrbanRail.net)",
+      "expected": "29.1 km",
+      "actual": "28.99 km (-0.4%)"
+    },
+    {
+      "check": "direction-length",
+      "subject": "Line 4 Yellow Line",
+      "status": "pass",
+      "detail": "both directions within 1% length",
+      "expected": null,
+      "actual": "0.01%"
+    },
+    {
+      "check": "colour",
+      "subject": "Line 4 Yellow Line",
+      "status": "pass",
+      "detail": "line colour tagged in OSM",
+      "expected": null,
+      "actual": "#FFD009"
+    },
+    {
+      "check": "directions",
+      "subject": "Line 5 Green Line",
+      "status": "pass",
+      "detail": "both directions mapped",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "check": "station-count",
+      "subject": "Line 5 Green Line",
+      "status": "pass",
+      "detail": "stations on the line (official)",
+      "expected": "12",
+      "actual": "12"
+    },
+    {
+      "check": "direction-symmetry",
+      "subject": "Line 5 Green Line",
+      "status": "pass",
+      "detail": "reverse direction serves the same number of stops",
+      "expected": "12",
+      "actual": "12"
+    },
+    {
+      "check": "termini",
+      "subject": "Line 5 Green Line",
+      "status": "pass",
+      "detail": "terminal stations",
+      "expected": "Ministry of Education ↔ National Museum",
+      "actual": "Ministry of Education ↔ National Museum"
+    },
+    {
+      "check": "stop-on-alignment",
+      "subject": "Line 5 Green Line",
+      "status": "pass",
+      "detail": "max distance from stop to alignment (m)",
+      "expected": "≤ 30",
+      "actual": "0.0"
+    },
+    {
+      "check": "stop-order",
+      "subject": "Line 5 Green Line",
+      "status": "pass",
+      "detail": "stops ordered along the alignment",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "check": "stop-spacing",
+      "subject": "Line 5 Green Line",
+      "status": "pass",
+      "detail": "inter-station spacing within 400–12000 m",
+      "expected": null,
+      "actual": "811–2163 m"
+    },
+    {
+      "check": "length-official",
+      "subject": "Line 5 Green Line",
+      "status": "pass",
+      "detail": "station-to-station length vs official route length (official includes tail tracks)",
+      "expected": "12.9 km",
+      "actual": "12.52 km (-3.0%)"
+    },
+    {
+      "check": "length-independent",
+      "subject": "Line 5 Green Line",
+      "status": "pass",
+      "detail": "length vs independent measurement (UrbanRail.net)",
+      "expected": "12.6 km",
+      "actual": "12.52 km (-0.6%)"
+    },
+    {
+      "check": "direction-length",
+      "subject": "Line 5 Green Line",
+      "status": "pass",
+      "detail": "both directions within 1% length",
+      "expected": null,
+      "actual": "0.00%"
+    },
+    {
+      "check": "colour",
+      "subject": "Line 5 Green Line",
+      "status": "pass",
+      "detail": "line colour tagged in OSM",
+      "expected": null,
+      "actual": "#008000"
+    },
+    {
+      "check": "directions",
+      "subject": "Line 6 Purple Line",
+      "status": "pass",
+      "detail": "both directions mapped",
+      "expected": "2",
+      "actual": "2"
+    },
+    {
+      "check": "station-count",
+      "subject": "Line 6 Purple Line",
+      "status": "pass",
+      "detail": "stations on the line (official)",
+      "expected": "11",
+      "actual": "11"
+    },
+    {
+      "check": "direction-symmetry",
+      "subject": "Line 6 Purple Line",
+      "status": "pass",
+      "detail": "reverse direction serves the same number of stops",
+      "expected": "11",
+      "actual": "11"
+    },
+    {
+      "check": "station-name",
+      "subject": "Line 6 Purple Line",
+      "status": "pass",
+      "detail": "6 stops lack an English name on the route relation; official names applied by position, 6 confirmed by a separately mapped OSM station feature",
+      "expected": "6",
+      "actual": "6"
+    },
+    {
+      "check": "termini",
+      "subject": "Line 6 Purple Line",
+      "status": "pass",
+      "detail": "terminal stations",
+      "expected": "KAFD ↔ An Naseem",
+      "actual": "KAFD ↔ An Naseem"
+    },
+    {
+      "check": "stop-on-alignment",
+      "subject": "Line 6 Purple Line",
+      "status": "pass",
+      "detail": "max distance from stop to alignment (m)",
+      "expected": "≤ 30",
+      "actual": "0.0"
+    },
+    {
+      "check": "stop-order",
+      "subject": "Line 6 Purple Line",
+      "status": "pass",
+      "detail": "stops ordered along the alignment",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "check": "stop-spacing",
+      "subject": "Line 6 Purple Line",
+      "status": "pass",
+      "detail": "inter-station spacing within 400–12000 m",
+      "expected": null,
+      "actual": "1478–4630 m"
+    },
+    {
+      "check": "length-official",
+      "subject": "Line 6 Purple Line",
+      "status": "pass",
+      "detail": "station-to-station length vs official route length (official includes tail tracks)",
+      "expected": "29.9 km",
+      "actual": "29.06 km (-2.8%)"
+    },
+    {
+      "check": "length-independent",
+      "subject": "Line 6 Purple Line",
+      "status": "pass",
+      "detail": "length vs independent measurement (UrbanRail.net)",
+      "expected": "28.9 km",
+      "actual": "29.06 km (+0.5%)"
+    },
+    {
+      "check": "direction-length",
+      "subject": "Line 6 Purple Line",
+      "status": "pass",
+      "detail": "both directions within 1% length",
+      "expected": null,
+      "actual": "0.06%"
+    },
+    {
+      "check": "colour",
+      "subject": "Line 6 Purple Line",
+      "status": "pass",
+      "detail": "line colour tagged in OSM",
+      "expected": null,
+      "actual": "#7F00FF"
+    },
+    {
+      "check": "length-official",
+      "subject": "network",
+      "status": "pass",
+      "detail": "total station-to-station length vs official network length",
+      "expected": "176.0 km",
+      "actual": "171.1 km (-2.8%)"
+    },
+    {
+      "check": "station-count",
+      "subject": "network (per-line sum)",
+      "status": "pass",
+      "detail": "sum of per-line station counts",
+      "expected": "94",
+      "actual": "94"
+    },
+    {
+      "check": "station-count",
+      "subject": "network (distinct)",
+      "status": "pass",
+      "detail": "distinct stations implied by the official per-line lists and interchanges",
+      "expected": "83",
+      "actual": "83"
+    },
+    {
+      "check": "station-count",
+      "subject": "network (headline)",
+      "status": "note",
+      "detail": "RCRC's headline total is 85, but the official per-line counts (94) minus shared interchange stations give 83. No published source reconciles the two; the per-line lists are used.",
+      "expected": "85",
+      "actual": "83"
+    },
+    {
+      "check": "interchanges",
+      "subject": "network",
+      "status": "pass",
+      "detail": "interchange stations and the lines they join",
+      "expected": "10 interchanges",
+      "actual": "10 interchanges"
+    },
+    {
+      "check": "interchange-spread",
+      "subject": "KAFD",
+      "status": "pass",
+      "detail": "distance between the lines' platforms",
+      "expected": "≤ 350 m",
+      "actual": "19 m"
+    },
+    {
+      "check": "interchange-spread",
+      "subject": "National Museum",
+      "status": "pass",
+      "detail": "distance between the lines' platforms",
+      "expected": "≤ 350 m",
+      "actual": "43 m"
+    },
+    {
+      "check": "interchange-spread",
+      "subject": "Qasr Al Hokm",
+      "status": "pass",
+      "detail": "distance between the lines' platforms",
+      "expected": "≤ 350 m",
+      "actual": "40 m"
+    },
+    {
+      "check": "interchange-spread",
+      "subject": "STC",
+      "status": "pass",
+      "detail": "distance between the lines' platforms",
+      "expected": "≤ 350 m",
+      "actual": "10 m"
+    },
+    {
+      "check": "interchange-spread",
+      "subject": "Al Hamra",
+      "status": "pass",
+      "detail": "distance between the lines' platforms",
+      "expected": "≤ 350 m",
+      "actual": "2 m"
+    },
+    {
+      "check": "interchange-spread",
+      "subject": "Ministry of Education",
+      "status": "pass",
+      "detail": "distance between the lines' platforms",
+      "expected": "≤ 350 m",
+      "actual": "94 m"
+    },
+    {
+      "check": "interchange-spread",
+      "subject": "An Naseem",
+      "status": "pass",
+      "detail": "distance between the lines' platforms",
+      "expected": "≤ 350 m",
+      "actual": "5 m"
+    },
+    {
+      "check": "interchange-spread",
+      "subject": "Ar Rabi",
+      "status": "pass",
+      "detail": "distance between the lines' platforms",
+      "expected": "≤ 350 m",
+      "actual": "0 m"
+    },
+    {
+      "check": "interchange-spread",
+      "subject": "SABIC",
+      "status": "pass",
+      "detail": "distance between the lines' platforms",
+      "expected": "≤ 350 m",
+      "actual": "0 m"
+    },
+    {
+      "check": "interchange-spread",
+      "subject": "Uthman Bin Affan Road",
+      "status": "pass",
+      "detail": "distance between the lines' platforms",
+      "expected": "≤ 350 m",
+      "actual": "0 m"
+    },
+    {
+      "check": "duplicate-stations",
+      "subject": "network",
+      "status": "pass",
+      "detail": "no two differently named stations closer than 400 m",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "check": "station-feature",
+      "subject": "King Fahd Sports City",
+      "status": "note",
+      "detail": "the OSM station feature at this position uses a different name; the official list name is used and the OSM name kept as an alias",
+      "expected": "King Fahd Sports City",
+      "actual": "King Fahad Stadium (0 m)"
+    },
+    {
+      "check": "station-feature",
+      "subject": "Governmental Complex",
+      "status": "note",
+      "detail": "the OSM station feature at this position uses a different name; the official list name is used and the OSM name kept as an alias",
+      "expected": "Governmental Complex",
+      "actual": "PNU 2 (0 m)"
+    },
+    {
+      "check": "station-feature",
+      "subject": "network",
+      "status": "pass",
+      "detail": "stations whose position and name are confirmed by an independent OSM station feature within 250 m",
+      "expected": "83",
+      "actual": "81"
+    },
+    {
+      "check": "arabic-script",
+      "subject": "network",
+      "status": "pass",
+      "detail": "Arabic names contain no Latin script",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "check": "arabic-names",
+      "subject": "network",
+      "status": "pass",
+      "detail": "every station has an Arabic name",
+      "expected": "83",
+      "actual": "83"
+    },
+    {
+      "check": "district-join",
+      "subject": "network",
+      "status": "note",
+      "detail": "stations inside an OSM neighbourhood polygon; OSM has no neighbourhood boundary at 5 stations (Airport T1-2, Airport T3-4, Airport T5, Governmental Complex, PNU); municipality or airport/campus area used instead",
+      "expected": "83",
+      "actual": "78"
+    },
+    {
+      "check": "municipality-join",
+      "subject": "network",
+      "status": "pass",
+      "detail": "every station inside a neighbourhood, municipality or named airport/campus area",
+      "expected": "83",
+      "actual": "83"
+    },
+    {
+      "check": "gtfs-load",
+      "subject": "riyadh_metro_gtfs.zip",
+      "status": "pass",
+      "detail": "feed loads with no warnings",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "check": "gtfs-files",
+      "subject": "riyadh_metro_gtfs.zip",
+      "status": "pass",
+      "detail": "required and shape files present",
+      "expected": "agency.txt, calendar.txt, routes.txt, shapes.txt, stop_times.txt, stops.txt, trips.txt",
+      "actual": "agency.txt, calendar.txt, feed_info.txt, routes.txt, shapes.txt, stop_times.txt, stops.txt, translations.txt, trips.txt"
+    },
+    {
+      "check": "gtfs-shape-length",
+      "subject": "Line 1",
+      "status": "pass",
+      "detail": "GTFS shape length equals the OSM alignment",
+      "expected": "36.61 km",
+      "actual": "36.60 km"
+    },
+    {
+      "check": "headway-band",
+      "subject": "Line 1",
+      "status": "pass",
+      "detail": "timetabled headways within the published 3–7 min range",
+      "expected": "3–7 min",
+      "actual": "3.0, 6.0"
+    },
+    {
+      "check": "service-hours",
+      "subject": "Line 1",
+      "status": "pass",
+      "detail": "first departure matches published opening time",
+      "expected": "05:30",
+      "actual": "05:30"
+    },
+    {
+      "check": "commercial-speed",
+      "subject": "Line 1",
+      "status": "pass",
+      "detail": "end-to-end commercial speed plausible for an automated metro (30–60 km/h)",
+      "expected": "30–60 km/h",
+      "actual": "42.7 km/h"
+    },
+    {
+      "check": "gtfs-stations",
+      "subject": "Line 1",
+      "status": "pass",
+      "detail": "GTFS stops served per line",
+      "expected": "25",
+      "actual": "25"
+    },
+    {
+      "check": "gtfs-shape-length",
+      "subject": "Line 2",
+      "status": "pass",
+      "detail": "GTFS shape length equals the OSM alignment",
+      "expected": "24.21 km",
+      "actual": "24.21 km"
+    },
+    {
+      "check": "headway-band",
+      "subject": "Line 2",
+      "status": "pass",
+      "detail": "timetabled headways within the published 3–7 min range",
+      "expected": "3–7 min",
+      "actual": "4.0, 7.0"
+    },
+    {
+      "check": "service-hours",
+      "subject": "Line 2",
+      "status": "pass",
+      "detail": "first departure matches published opening time",
+      "expected": "05:30",
+      "actual": "05:30"
+    },
+    {
+      "check": "commercial-speed",
+      "subject": "Line 2",
+      "status": "pass",
+      "detail": "end-to-end commercial speed plausible for an automated metro (30–60 km/h)",
+      "expected": "30–60 km/h",
+      "actual": "44.1 km/h"
+    },
+    {
+      "check": "gtfs-stations",
+      "subject": "Line 2",
+      "status": "pass",
+      "detail": "GTFS stops served per line",
+      "expected": "15",
+      "actual": "15"
+    },
+    {
+      "check": "gtfs-shape-length",
+      "subject": "Line 3",
+      "status": "pass",
+      "detail": "GTFS shape length equals the OSM alignment",
+      "expected": "39.76 km",
+      "actual": "39.75 km"
+    },
+    {
+      "check": "headway-band",
+      "subject": "Line 3",
+      "status": "pass",
+      "detail": "timetabled headways within the published 3–7 min range",
+      "expected": "3–7 min",
+      "actual": "4.0, 7.0"
+    },
+    {
+      "check": "service-hours",
+      "subject": "Line 3",
+      "status": "pass",
+      "detail": "first departure matches published opening time",
+      "expected": "05:30",
+      "actual": "05:30"
+    },
+    {
+      "check": "commercial-speed",
+      "subject": "Line 3",
+      "status": "pass",
+      "detail": "end-to-end commercial speed plausible for an automated metro (30–60 km/h)",
+      "expected": "30–60 km/h",
+      "actual": "44.7 km/h"
+    },
+    {
+      "check": "gtfs-stations",
+      "subject": "Line 3",
+      "status": "pass",
+      "detail": "GTFS stops served per line",
+      "expected": "22",
+      "actual": "22"
+    },
+    {
+      "check": "gtfs-shape-length",
+      "subject": "Line 4",
+      "status": "pass",
+      "detail": "GTFS shape length equals the OSM alignment",
+      "expected": "28.99 km",
+      "actual": "28.99 km"
+    },
+    {
+      "check": "headway-band",
+      "subject": "Line 4",
+      "status": "pass",
+      "detail": "timetabled headways within the published 3–7 min range",
+      "expected": "3–7 min",
+      "actual": "6.0, 7.0"
+    },
+    {
+      "check": "service-hours",
+      "subject": "Line 4",
+      "status": "pass",
+      "detail": "first departure matches published opening time",
+      "expected": "05:30",
+      "actual": "05:30"
+    },
+    {
+      "check": "commercial-speed",
+      "subject": "Line 4",
+      "status": "pass",
+      "detail": "end-to-end commercial speed plausible for an automated metro (30–60 km/h)",
+      "expected": "30–60 km/h",
+      "actual": "49.5 km/h"
+    },
+    {
+      "check": "gtfs-stations",
+      "subject": "Line 4",
+      "status": "pass",
+      "detail": "GTFS stops served per line",
+      "expected": "9",
+      "actual": "9"
+    },
+    {
+      "check": "gtfs-shape-length",
+      "subject": "Line 5",
+      "status": "pass",
+      "detail": "GTFS shape length equals the OSM alignment",
+      "expected": "12.52 km",
+      "actual": "12.52 km"
+    },
+    {
+      "check": "headway-band",
+      "subject": "Line 5",
+      "status": "pass",
+      "detail": "timetabled headways within the published 3–7 min range",
+      "expected": "3–7 min",
+      "actual": "5.0, 7.0"
+    },
+    {
+      "check": "service-hours",
+      "subject": "Line 5",
+      "status": "pass",
+      "detail": "first departure matches published opening time",
+      "expected": "05:30",
+      "actual": "05:30"
+    },
+    {
+      "check": "commercial-speed",
+      "subject": "Line 5",
+      "status": "pass",
+      "detail": "end-to-end commercial speed plausible for an automated metro (30–60 km/h)",
+      "expected": "30–60 km/h",
+      "actual": "40.3 km/h"
+    },
+    {
+      "check": "gtfs-stations",
+      "subject": "Line 5",
+      "status": "pass",
+      "detail": "GTFS stops served per line",
+      "expected": "12",
+      "actual": "12"
+    },
+    {
+      "check": "gtfs-shape-length",
+      "subject": "Line 6",
+      "status": "pass",
+      "detail": "GTFS shape length equals the OSM alignment",
+      "expected": "29.06 km",
+      "actual": "29.06 km"
+    },
+    {
+      "check": "headway-band",
+      "subject": "Line 6",
+      "status": "pass",
+      "detail": "timetabled headways within the published 3–7 min range",
+      "expected": "3–7 min",
+      "actual": "6.0, 7.0"
+    },
+    {
+      "check": "service-hours",
+      "subject": "Line 6",
+      "status": "pass",
+      "detail": "first departure matches published opening time",
+      "expected": "05:30",
+      "actual": "05:30"
+    },
+    {
+      "check": "commercial-speed",
+      "subject": "Line 6",
+      "status": "pass",
+      "detail": "end-to-end commercial speed plausible for an automated metro (30–60 km/h)",
+      "expected": "30–60 km/h",
+      "actual": "48.2 km/h"
+    },
+    {
+      "check": "gtfs-stations",
+      "subject": "Line 6",
+      "status": "pass",
+      "detail": "GTFS stops served per line",
+      "expected": "11",
+      "actual": "11"
+    },
+    {
+      "check": "gtfs-stations",
+      "subject": "network",
+      "status": "pass",
+      "detail": "GTFS station nodes (parent stations) equal distinct stations",
+      "expected": "83",
+      "actual": "83"
+    },
+    {
+      "check": "service-plan",
+      "subject": "network",
+      "status": "note",
+      "detail": "RCRC publishes operating hours and a network headway range (3–7 min) but no per-line timetable. Per-line headways and running speed are modelling assumptions inside the published range; busiest lines (Blue, then Red and Orange, per RCRC ridership) get the shortest headways.",
+      "expected": null,
+      "actual": null
+    },
+    {
+      "check": "bus-coverage",
+      "subject": "Riyadh Bus",
+      "status": "note",
+      "detail": "OSM maps 7 of 80 official bus routes and 548 of 2,860 stops (19%). Bus data is shown as a partial layer and excluded from timetable KPIs.",
+      "expected": "80 routes / 2,860 stops",
+      "actual": "7 routes / 548 stops"
+    },
+    {
+      "check": "district-repair",
+      "subject": "OSM boundaries",
+      "status": "resolved",
+      "detail": "7 boundary relations have broken rings in OSM; gaps bridged (largest 474 m, Al Murabba District)",
+      "expected": null,
+      "actual": "Al Aziziyah District, Al Deerah District, Al Futah District, Al Madhar ash Shamali District, Al Murabba District, Al Nahdhah District, Al Olaya District"
+    },
+    {
+      "check": "district-repair",
+      "subject": "OSM boundaries",
+      "status": "note",
+      "detail": "8 boundary relations could not be assembled (fragments too far apart) and are omitted",
+      "expected": null,
+      "actual": "Municipality of Olaya, Al Batha Muncipality, Al Malaz Municipality, Al Aziziyah Municipality, Municipality of Shifa, An Nasiriyah District, Al Faruq District, Al Faisaliah District"
+    },
+    {
+      "check": "districts",
+      "subject": "OSM neighbourhoods",
+      "status": "pass",
+      "detail": "144 neighbourhood polygons, all valid",
+      "expected": null,
+      "actual": null
+    }
+  ],
+  "osm_timestamp": "osm-2026-09-29T17:14:35Z"
+}

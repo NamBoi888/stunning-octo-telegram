@@ -1,8 +1,8 @@
-"""Locations of bundled sample data, with on-demand regeneration fallback.
+"""Locations of the bundled Riyadh data, with on-demand rebuild fallback.
 
-All CLI commands default to the files in ``transit_scope/data`` so the tool
-runs out-of-the-box. If a bundled file is missing (e.g. a stripped install)
-it is regenerated deterministically into a user cache directory.
+The bundled files are built from OpenStreetMap snapshots plus published
+official figures (see :mod:`transit_scope.riyadh`). If a built file is
+missing, it is rebuilt from the snapshots into a user cache directory.
 """
 
 from __future__ import annotations
@@ -12,9 +12,11 @@ from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
 
-SAMPLE_GTFS_NAME = "riyadh_sample_gtfs.zip"
-SAMPLE_DISTRICTS_NAME = "riyadh_districts.geojson"
-BENCHMARK_CITIES_NAME = "benchmark_cities.json"
+GTFS_NAME = "riyadh_metro_gtfs.zip"
+DISTRICTS_NAME = "riyadh_districts.geojson"
+STATIONS_NAME = "riyadh_stations.geojson"
+BUS_NAME = "riyadh_bus_osm.geojson"
+VALIDATION_NAME = "riyadh_validation.json"
 
 
 def _cache_dir() -> Path:
@@ -24,32 +26,36 @@ def _cache_dir() -> Path:
     return path
 
 
-def sample_gtfs_path() -> Path:
-    """Return the bundled Riyadh sample GTFS zip, generating it if absent."""
-    bundled = DATA_DIR / SAMPLE_GTFS_NAME
+def _resolve(name: str) -> Path:
+    bundled = DATA_DIR / name
     if bundled.exists():
         return bundled
-    from transit_scope.sample_data import build_sample_gtfs
-
-    target = _cache_dir() / SAMPLE_GTFS_NAME
+    target = _cache_dir() / name
     if not target.exists():
-        build_sample_gtfs(target)
+        from transit_scope.riyadh.build import assemble, write_dataset
+
+        write_dataset(assemble(), _cache_dir())
     return target
 
 
-def sample_districts_path() -> Path:
-    """Return the bundled Riyadh district GeoJSON, generating it if absent."""
-    bundled = DATA_DIR / SAMPLE_DISTRICTS_NAME
-    if bundled.exists():
-        return bundled
-    from transit_scope.sample_data import build_sample_districts
-
-    target = _cache_dir() / SAMPLE_DISTRICTS_NAME
-    if not target.exists():
-        build_sample_districts(target)
-    return target
+def riyadh_gtfs_path() -> Path:
+    """GTFS for the six Riyadh Metro lines (built from OSM + official figures)."""
+    return _resolve(GTFS_NAME)
 
 
-def benchmark_cities_path() -> Path:
-    """Return the bundled benchmark city profile JSON."""
-    return DATA_DIR / BENCHMARK_CITIES_NAME
+def riyadh_districts_path() -> Path:
+    """OSM neighbourhood boundaries (admin level 10) for Riyadh."""
+    return _resolve(DISTRICTS_NAME)
+
+
+def riyadh_stations_path() -> Path:
+    return _resolve(STATIONS_NAME)
+
+
+def riyadh_bus_path() -> Path:
+    return _resolve(BUS_NAME)
+
+
+# Backwards-compatible names used across the CLI and tests.
+sample_gtfs_path = riyadh_gtfs_path
+sample_districts_path = riyadh_districts_path

@@ -35,12 +35,12 @@ def test_full_map_is_valid_svg(sample_result, sample_districts, theme):
     svg = render_svg(layers, RenderOptions(theme=theme, catchment_radii_m=[500, 1000]))
     ids = _ids(svg)
     for group in ("background", "districts", "district-labels", "catchment-500m",
-                  "catchment-1000m", "routes-rapid", "routes-surface", "stations",
+                  "catchment-1000m", "routes-rapid", "stations",
                   "station-labels", "legend", "scale-bar", "north-arrow", "title-block"):
         assert group in ids, group
     assert 'viewBox="0 0 1600 1200"' in svg
     assert "Riyadh Transit Network" in svg
-    assert "#0072CE" in svg  # Blue line colour from routes.txt
+    assert "#00AEE6" in svg  # Blue Line colour from OSM
     assert "EPSG:32638" in svg
 
 

@@ -18,40 +18,42 @@ from transit_scope.utils.timeutil import format_seconds, parse_hhmm
 def test_sample_summary(sample_result):
     s = sample_result.report.summary
     assert s.metric_crs == "EPSG:32638"  # UTM 38N for Riyadh
-    assert s.routes_by_mode == {"metro": 6, "bus": 3}
+    assert s.routes_by_mode == {"metro": 6}
     assert s.service_day == "busiest weekday (sunday)"
-    assert 140 < s.route_km_by_mode["metro"] < 170
-    assert s.trips_per_day > 1000
-    assert s.transfer_nodes >= 10
+    assert s.station_nodes == 83 and s.stops == 94  # parent stations / line platforms
+    assert 168 < s.route_km_total < 176  # official 176 km includes tail tracks
+    assert s.transfer_nodes == 10
 
 
-def test_sample_headways_match_generator(sample_result):
+def test_headways_follow_service_plan(sample_result):
     by_name = {r.name: r for r in sample_result.report.routes}
-    assert by_name["1"].peak_headway_min == pytest.approx(4.0, abs=0.1)
-    assert by_name["1"].offpeak_headway_min == pytest.approx(8.0, abs=0.1)
-    assert by_name["150"].peak_headway_min == pytest.approx(15.0, abs=0.1)
-    assert by_name["1"].avg_speed_kmh < 42  # dwell times slow the 42 km/h cruise
+    assert by_name["1"].peak_headway_min == pytest.approx(3.0, abs=0.05)
+    assert by_name["1"].offpeak_headway_min == pytest.approx(6.0, abs=0.05)
+    assert by_name["6"].peak_headway_min == pytest.approx(6.0, abs=0.05)
+    for r in by_name.values():
+        assert 3 <= r.peak_headway_min <= 7 and 3 <= r.offpeak_headway_min <= 7
+        assert r.first_departure == "05:30"
 
 
 def test_routes_are_naturally_sorted(sample_result):
-    names = [r.name for r in sample_result.report.routes if r.mode == "bus"]
-    assert names == ["7", "9", "150"]
+    assert [r.name for r in sample_result.report.routes] == ["1", "2", "3", "4", "5", "6"]
 
 
-def test_interchange_clusters_bus_and_metro(sample_result):
+def test_interchange_uses_parent_station(sample_result):
     stations = {s.name: s for s in sample_result.report.stations}
-    qhk = stations["Qasr Al Hokm"]
-    assert set(qhk.stop_ids) == {"QHK", "BUS_QHK"}
-    assert set(qhk.modes) == {"bus", "metro"}
-    assert qhk.routes == ["1", "3", "9"]
+    kafd = stations["KAFD"]
+    assert set(kafd.stop_ids) == {"L1_KAFD", "L4_KAFD", "L6_KAFD"}
+    assert kafd.routes == ["1", "4", "6"]
+    assert stations["Qasr Al Hokm"].routes == ["1", "3"]
 
 
 def test_transfer_friction_index(sample_result):
     nodes = {t.name: t for t in sample_result.report.transfer_nodes}
     kafd = nodes["KAFD"]
     assert kafd.routes_served == 3 and kafd.transfer_pairs == 3
-    # Metro-only, zero spread: TFI = pairs × wait exactly.
-    assert kafd.transfer_friction_index == pytest.approx(3 * kafd.expected_transfer_wait_min)
+    # Single mode: TFI = pairs × wait × (1 + spread/200).
+    expected = 3 * kafd.expected_transfer_wait_min * (1 + kafd.intra_node_spread_m / 200)
+    assert kafd.transfer_friction_index == pytest.approx(expected, abs=0.01)
     assert max(t.hub_score for t in nodes.values()) == 100
 
 
@@ -68,12 +70,12 @@ def test_report_json_roundtrip(sample_result):
     from transit_scope.gtfs import NetworkReport
 
     text = sample_result.report.model_dump_json()
-    assert NetworkReport.model_validate_json(text).summary.routes == 9
+    assert NetworkReport.model_validate_json(text).summary.routes == 6
 
 
 def test_service_date_selects_weekend(sample_gtfs):
     feed = load_feed(sample_gtfs)
-    fri = analyze_feed(feed, AnalysisConfig(service_date="20260925")).report
+    fri = analyze_feed(feed, AnalysisConfig(service_date="20260925")).report  # a Friday
     assert "friday" in fri.summary.service_day
     sun = analyze_feed(feed).report
     assert fri.summary.trips_per_day < sun.summary.trips_per_day

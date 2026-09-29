@@ -1,19 +1,50 @@
 # riyadh-transit-scope
 
-A terminal toolkit for urban transit research. It brings four workflows together behind one `transit` command:
+A terminal toolkit for researching Riyadh's public transport, built around one `transit` command. It ships with a **validated Riyadh Metro dataset**:
+- Real station positions, alignments and Arabic names come from OpenStreetMap.
+- Station names and counts come from the official per-line lists.
+- The whole dataset is checked against RCRC's published figures and an independent length survey.
 
 | Module | What it does |
 |---|---|
-| **GTFS engine** (`transit_scope/gtfs/`) | Reads a GTFS feed and computes network KPIs: route-km, headways, station activity, walk catchments and transfer friction |
-| **Benchmarking** (`transit_scope/benchmark/`) | Compares Riyadh, Melbourne and Los Angeles (or your own profiles) side by side |
+| **Riyadh data** (`transit_scope/riyadh/`) | Builds a GTFS feed and map layers from OSM snapshots and the official reference, then validates them |
+| **GTFS engine** (`transit_scope/gtfs/`) | Computes network KPIs: route-km, headways, station activity, walk catchments and transfer friction |
 | **Microclimate** (`transit_scope/microclimate/`) | Models walkability to a station in extreme heat and scores it with the Effective Walkable Catchment Score (EWCS) |
-| **GIS → SVG** (`transit_scope/gis_svg/`) | Draws print-quality vector maps (dark or light theme) from GeoJSON and GTFS |
+| **Maps** (`transit_scope/gis_svg/`, `html_report.py`) | Produces a static SVG map and a single-file HTML report with a fully interactive map |
 
-Every command works immediately after install because the package ships with mock sample data for Riyadh.
+![Riyadh Metro, dark theme](docs/riyadh_map_dark.svg)
 
-![Riyadh sample network, dark theme](docs/riyadh_map_dark.svg)
+## The data, and how far to trust it
 
-> **Sample data notice.** The bundled Riyadh GTFS feed and district polygons are **mock data** for demonstration and testing. Station positions and alignments roughly follow the Riyadh Metro, and the timetables are synthetic. The benchmark figures are rounded, indicative values. Check them against primary sources before you cite them.
+| Part | Source | Status |
+|---|---|---|
+| Line alignments, station positions, station codes, Arabic names | OpenStreetMap route relations and station features (snapshot bundled, ODbL) | Real, validated |
+| Station names, order and per-line counts | Official per-line lists (Wikipedia line articles, which cite RCRC) | Real |
+| Network totals (176 km, 85 stations), operating hours, 3–7 min headway range | RCRC statements reported by SPA and news outlets | Real |
+| Per-line headways and running speed | Modelled within the published range (RCRC publishes no timetable or GTFS) | **Assumption, labelled** |
+| Neighbourhood boundaries | OSM admin level 10 (146 of them); broken rings repaired only across gaps under 500 m | Real, with gaps |
+| Riyadh Bus | OSM maps 7 of the 80 official routes and 548 of 2,860 stops | **Partial**, shown as a map layer only |
+
+**Why OSM plus published figures?** No official GTFS feed is published: none appears in the Mobility Database catalogue. The RCRC and Riyadh Metro websites also block automated access.
+
+### Validation
+
+`transit validate` rebuilds the dataset from the snapshots and runs about 135 checks. A build is accepted only with **zero mismatches and zero errors**. The current bundled build passes: 125 pass · 3 resolved · 7 notes · 0 mismatches · 0 errors.
+
+**What is checked:**
+- **Station counts.** Each line has exactly its official number of stations: 25 / 15 / 22 / 9 / 12 / 11.
+- **Station identity.** Every station's name and order match the official list, and 81 of 83 are confirmed by a separately mapped OSM station feature within 250 m.
+- **Line lengths.**
+  - Against UrbanRail.net's independent survey: within 0.6% on every line.
+  - Against the official route lengths: 2–4% shorter. That is expected, because the official figures include tail track beyond the end stations.
+- **Interchanges.** The 10 interchanges and the lines they join match the official lists, with platforms 0–94 m apart.
+- **Timetable.** Headways fall within the published 3–7 minute range, and the first departure is at 05:30.
+- **Integrity.** The GTFS loads cleanly, shape lengths equal the OSM alignments, speeds are plausible, Arabic names are genuinely Arabic script, and the build is deterministic.
+
+**Documented notes, not hidden:**
+- **Station total, 83 vs 85.** RCRC's headline figure is 85 stations. The official per-line lists (94 entries, minus shared interchange stations) give 83, and no published source reconciles the two.
+- **Two station names differ between sources.** OSM calls them "King Fahad Stadium" and "PNU 2"; the official lists say "King Fahd Sports City" and "Governmental Complex". The official names are used, and the OSM names are kept as aliases.
+- **Airport and campus stations.** Five stations serving the airport and Princess Nourah University lie outside any municipal district. They are placed in the airport or campus polygon instead.
 
 ---
 
@@ -24,229 +55,130 @@ You need Python 3.11 or newer.
 ```bash
 cd riyadh-transit-scope
 python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"      # installs the `transit` and `riyadh-transit-scope` commands
+pip install -e ".[dev]"      # installs the `transit` command
 ```
 
-Dependencies: `typer`, `rich`, `pandas`, `geopandas`, `shapely`, `pyproj`, `pydantic`. The SVG output is plain XML written by the tool, so no drawing library is needed.
+Dependencies: `typer`, `rich`, `pandas`, `geopandas`, `shapely`, `pyproj`, `pydantic`.
 
 ## Quick start
 
 ```bash
-transit analyze                                         # KPIs for the bundled Riyadh sample
-transit benchmark --cities riyadh,melbourne,la          # comparison table + benchmark_report.md
+transit validate                                   # check the bundled data against official figures
+transit report-html                                # single-file report with the interactive map
+transit analyze                                    # network KPIs for the six metro lines
 transit simulate-corridor --temp 44 --shade 35 --distance 800
-transit export-svg --out map.svg --theme dark           # map over the bundled district boundaries
-transit report-html                                     # everything above in one self-contained HTML file
-transit sample-data ./data                              # copy the sample files so you can edit them
-```
-
-To use your own inputs, pass their paths:
-
-```bash
-transit analyze path/to/gtfs.zip --out report.json --catchments-geojson catchments.geojson
-transit export-svg --geojson districts.geojson --gtfs path/to/gtfs.zip --out map.svg --theme light
+transit export-svg --out map.svg --theme dark      # static print map
+transit build-riyadh                               # rebuild the data from the OSM snapshots
+transit fetch-osm                                  # refresh the snapshots from Overpass (network)
+transit sample-data ./data                         # copy the data files out for other tools
 ```
 
 ---
 
 ## Commands
 
-### `transit analyze [GTFS_PATH]`
-
-Reads a GTFS `.zip` or an unzipped directory, prints summary tables with Rich, and writes a JSON report.
-
-| Option | Default | Meaning |
-|---|---|---|
-| `--out, -o` | `transit_report.json` | Where to write the JSON report |
-| `--peaks` | `07:00-09:00,16:00-19:00` | Peak windows. They must not overlap |
-| `--radii` | `500,1000` | Walk-catchment radii in metres |
-| `--crs` | auto | Metric CRS used for lengths and buffers. By default the tool picks the local UTM zone (**EPSG:32638** for Riyadh) |
-| `--date` | busiest weekday | Service date as `YYYYMMDD`. Applies `calendar.txt` and `calendar_dates.txt` |
-| `--cluster-radius` | `150` | Stops within this many metres of each other are grouped into one interchange node |
-| `--top` | `10` | Number of rows in the station and transfer tables |
-| `--catchments-geojson` | – | Also write the dissolved catchment polygons as WGS84 GeoJSON |
-
-**What the GTFS loader handles:**
-- zips with the files inside a sub-folder
-- UTF-8 files with a byte-order mark (BOM)
-- `frequencies.txt` (template trips are expanded into individual departures)
-- feeds that only have `calendar_dates.txt`
-- trips that run past midnight (e.g. `25:10:00`)
-- stops with blank times (non-timepoints)
-- missing `shapes.txt` (route geometry is rebuilt from the stop sequence)
-- platforms grouped under `parent_station`
-- invalid `route_color` values (a colour is chosen from the route's mode)
-
-Rows that point to unknown trips or stops are skipped, and each skip is listed in the report's warnings.
-
-### `transit benchmark --cities riyadh,melbourne,la`
-
-Prints the comparison as a Rich table (★ marks the best value in each row) and writes `benchmark_report.md`. The report contains the comparison table, key findings, a per-mode supply breakdown, the methodology and sources.
-
-- City names are matched without regard to case, and aliases work: `la`, `los-angeles`, `mel`, `ruh`.
-- `--data custom.json` adds new cities or replaces bundled ones. The file uses the same schema as `transit_scope/data/benchmark_cities.json`, and every profile is checked by Pydantic when loaded.
-- `--json metrics.json` also exports the derived metrics.
-
-### `transit simulate-corridor --temp 44 --shade 35 --distance 800`
-
-Runs the heat-penalised walking model for one access corridor.
-
-**Options:**
-- `--solar` — irradiance in W/m² (default 950)
-- `--humidity`, `--wind`, `--walk-speed`
-- `--shade-type` — one of `mixed`, `trees`, `arcade`, `sail`
-- `--target` — the EWCS you want; the tool solves for the shade % needed to reach it
-- `--no-sensitivity` — hide the temperature × shade grid
-- `--json out.json` — save the results
-
-### `transit export-svg --geojson <path> --gtfs <path> --out <file.svg> --theme dark`
-
-Writes a single self-contained SVG file.
-
-**What the map shows:**
-- route lines coloured by line (rapid transit is drawn thick with an outline; buses are dashed)
-- station markers, with interchanges highlighted
-- walk-catchment circles
-- district boundaries and names
-- an automatic legend, scale bar, north arrow and title block
-
-Labels are placed so they don't overlap each other or the legend. Each layer is a named `<g id="…">` group, so the file can be edited in Inkscape or Illustrator.
-
-| Option | Default | Meaning |
-|---|---|---|
-| `--theme` | `dark` | `dark` or `light` |
-| `--catchment` | `500` | Catchment radii to draw, comma-separated. Use `0` for none |
-| `--labels` | `interchanges` | Which stations get labels: `all`, `interchanges` or `none` |
-| `--width / --height` | `1600 × 1200` | Canvas size in pixels |
-| `--show-bus-stops` | off | Also draw stops served only by buses |
-| `--all-station-catchments` | off | Draw catchments around bus stops too, not only rapid transit |
-| `--no-gtfs` | off | Draw only the GeoJSON layers |
-
-GeoJSON input is sorted by geometry type:
-- **Polygons** become districts.
-- **Points and lines** are drawn as overlay features. A line's `color` property is used as its colour.
-
-Feature names are read from `name`, `NAME`, `name_en`, `district`, `label` or `title`, whichever each feature has.
-
 ### `transit report-html`
 
-Runs all four modules and writes one self-contained HTML file (default `riyadh_transit_scope.html`, about 95 KB). It contains:
+Writes one self-contained HTML file (about 220 KB). Only the fonts are fetched from the web, with fallbacks, so the file also opens offline.
 
-- the network summary and the route, station and transfer tables
-- the SVG map, which switches between the light and dark versions to match the viewer's theme
-- the benchmark table, with a bar in each cell, plus key findings and sources
-- a live heat-walk simulator: the EWCS model runs in the browser, with sliders for temperature, shade, length and sun, and a temperature × shade sensitivity grid
+**The interactive map** is plain JavaScript over SVG, with no map library or tile server:
+- **Navigate.** Drag to pan, and zoom with the mouse wheel, a pinch, double-click, the buttons or the keyboard (arrow keys, `+` / `-`, `0` to fit, `Esc` to clear).
+- **Stations.** Hover for a tooltip. Click for English and Arabic names, station codes, the neighbourhood, departures per day, combined peak headway and transfer friction. The panel also gives the heat-adjusted walk distance.
+- **Lines.** Hover to highlight a line. Click to compare its official, independent and mapped lengths and to see its station list; each station in the list is clickable.
+- **Neighbourhoods.** Click for area, the metro stations inside, and the share of the neighbourhood within 800 m of a station. A **coverage choropleth** colours every neighbourhood by that share.
+- **Controls.**
+  - line toggles
+  - search across stations and neighbourhoods, in English or Arabic
+  - a walk-catchment radius slider from 250 to 1,500 m
+  - **heat-adjusted catchments**, which shrink with the heat-walk simulator's temperature and shade settings on the same page
+  - the partial OSM bus routes and stops
+  - label toggles
+- **Everything else in the report:** the validation results, network tables with links back to the map, the heat-walk simulator, and all sources.
 
-Only the fonts are fetched from the web (with system fallbacks), so the file opens straight from disk. Options include `--gtfs`, `--geojson`, `--cities`, `--data`, and `--temp/--shade/--distance` for the starting scenario, plus `--fragment` to omit the `<html>` wrapper when embedding. An example is at `docs/riyadh_transit_scope.html`.
+Options include `--gtfs` and `--geojson` for other data, `--temp` / `--shade` / `--distance` for the starting heat scenario, and `--fragment` to embed the report in another page.
 
-### `transit sample-data [DIR]`
+### `transit validate [--all] [--json out.json]`
 
-Copies the bundled GTFS zip, district GeoJSON and benchmark profiles into `DIR` (default `./data`), so you can inspect or edit them.
+Prints the validation findings, with `--all` including passes. It exits with status 1 if any mismatch or error remains, so it can gate CI.
+
+### `transit build-riyadh` and `transit fetch-osm`
+
+- **`fetch-osm`** downloads fresh OSM snapshots through Overpass, trying several mirrors: the metro relations and stops, station features, neighbourhood and municipality boundaries, airport and campus areas, and bus routes and stops.
+- **`build-riyadh`** reconciles the snapshots with `transit_scope/data/riyadh_reference.json`. It then writes these files into `transit_scope/data/`, validates them, and refuses the build (exit code 1) if anything mismatches:
+  - `riyadh_metro_gtfs.zip`: parent stations plus one platform per line, `translations.txt` with Arabic names, shapes, and a timetable from the service plan
+  - `riyadh_stations.geojson`
+  - `riyadh_districts.geojson`
+  - `riyadh_bus_osm.geojson`
+  - `riyadh_validation.json`
+
+To update the official figures or the service plan, edit the reference JSON. It is checked by a Pydantic schema, for example that each station list matches its line's station count and that every interchange appears in its lines' lists.
+
+### `transit analyze [GTFS_PATH]`
+
+Prints the network KPIs and writes a JSON report. It works on the bundled feed or on any GTFS file. The loader handles:
+- zips with the files in a sub-folder, and files with a byte-order mark
+- `frequencies.txt`, and feeds that use only `calendar_dates.txt`
+- times after midnight, and stops with no times
+- missing shapes, parent stations, and invalid route colours
+
+Options: `--out`, `--peaks` (default `06:30-09:00,15:30-19:00`), `--radii`, `--crs` (automatic UTM, EPSG:32638 for Riyadh), `--date`, `--cluster-radius`, `--top`, and `--catchments-geojson`.
+
+### `transit simulate-corridor`
+
+Runs the heat-penalised walking model for one access corridor. It reports the EWCS and its grade, nominal, heat-adjusted and perceived walk times, the effective catchment radius and the catchment area lost, the heat dose, the shade needed to reach a target score, and a temperature × shade sensitivity grid.
+
+### `transit export-svg`
+
+Writes a static, print-quality SVG in a dark or light theme. It includes a legend, scale bar, north arrow, catchments, and labels that avoid overlapping each other.
 
 ---
 
 ## Methodology
 
-### GTFS network KPIs
+- **Headway** is the average gap between consecutive departures on a route in one direction, split into peak and off-peak by the time of the earlier departure. The Riyadh peak windows are 06:30–09:00 and 15:30–19:00.
+- **Transfer Friction Index:**
 
-- **Service day.** The analysis uses one service day. By default this is the weekday with the most trips (ties go to Sunday, the first day of Riyadh's working week). Pass `--date` to choose a specific date.
-- **Route length.** For each route and direction, the most common shape is used. If there is no `shapes.txt`, the most common stop sequence is used instead. Lengths are measured in the metric CRS. `length_km` is the average of the directions, and the route-km total adds these up across routes.
-- **Vehicle-km per day.** The sum of the lengths of all trips that run on the service day.
-- **Headway.** The average gap between consecutive trip departures within the same route and direction. Each gap is counted in the peak or off-peak period according to when the earlier departure leaves. Gaps longer than 2 hours are treated as breaks in service and ignored. A route's headway is the average of its directions.
-- **Station nodes.** Stops are first grouped by `parent_station`. The remaining stops are clustered by starting from the busiest rapid-transit stops and pulling in every unassigned stop within the cluster radius. This keeps a node no wider than twice the radius, even along dense bus corridors. A node's combined headway includes every route and direction serving it.
-- **Walk catchments.** Buffers of 500 m and 1000 m are drawn around each node in UTM (EPSG:32638 for Riyadh) and merged. The area is reported for all nodes and for rapid-transit nodes only.
-- **Transfer Friction Index (TFI).** Computed for every node served by two or more routes:
+  `TFI = pairs × expected_wait × (1 + spread_m/200) × (1 + 0.25·(modes − 1))`
 
-  `TFI = pairs × expected_wait × (1 + spread_m/200) × (1 + 0.25 × (modes − 1))`
+  The **hub score** (0–100) is `routes × √(peak departures)`, scaled so the busiest node is 100.
+- **District coverage** is the share of each neighbourhood's area within 800 m of a station, measured in UTM 38N.
+- **The EWCS heat model:**
+  1. Radiant load in sun or shade adjusts a feels-like temperature (the corridor thermal index).
+  2. Walking pace drops by 0.8% for every °C above 32.
+  3. Above 40 °C, each unshaded metre is weighted by `1 + (T−40)(0.12·G/1000 + 0.04·km unshaded)`.
+  4. `EWCS = 100 × nominal ÷ perceived walk time`.
 
-  Here `pairs = n(n−1)/2`, and `expected_wait` is the average of half the peak headway of the routes at the node. A higher TFI means a larger transfer burden.
-
-  The **hub score** (0–100) ranks how important a node is, separately from friction: `routes × √(peak departures)`, scaled so the busiest node is 100.
-
-### Benchmark metrics
-
-**How the metrics are calculated:**
-- **Coverage vs. urban extent** = catchment area ÷ built-up urban area.
-- **Route density** = route-km across all modes ÷ urban extent.
-- **Mean peak headway** = modal peak headways averaged, weighted by route-km.
-- **Rapid : bus fleet ratio** = rapid-transit vehicles ÷ buses.
-- **Fare accessibility index** = `100 × (1 − burden / 10%)`, clamped to 0–100, where burden = monthly pass ÷ median monthly household income.
-
-Urban extent is shown for context and is not ranked.
-
-### Corridor microclimate model (EWCS)
-
-This is a simple screening model for comparing corridor designs. It does not replace a full UTCI or PET simulation. It walks the shaded and unshaded parts of the corridor separately:
-
-1. **Radiant load.**
-   - In sun: `ΔTmrt = 26 °C × G/1000`.
-   - In shade: this is reduced by `85% × q`, where `q` is the shade quality (trees 1.0 > arcade 0.95 > mixed 0.9 > sail 0.8).
-   - Trees and mixed shade also cool the air slightly through evaporation.
-2. **Corridor Thermal Index (a "feels-like" temperature):**
-
-   `CTI = Ta + 0.30·ΔTmrt + humidity term − wind relief`
-
-   Above 35 °C, wind gives only a little relief. CTI is mapped to UTCI-style heat-stress bands.
-3. **Walking pace.** `f = clamp(1 − 0.008·(CTI − 32), 0.6, 1)`.
-4. **Distance penalty.** This applies only when **Ta > 40 °C**:
-   - Unshaded: `p_u = 1 + (Ta − 40)·(0.12·G/1000 + 0.04·D_unshaded_km)`.
-   - Shaded: `p_s = 1 + 0.03·(Ta − 40)`.
-
-   The penalty rises smoothly from zero at 40 °C, so there is no jump at the threshold.
-5. **Results:**
-   - nominal, heat-adjusted and perceived walk times
-   - **EWCS = 100 × nominal ÷ perceived time**, graded A–F
-   - effective catchment radius and the lost catchment area `1 − (r_eff/r)²`
-   - heat exposure dose in °C·min above 32 °C
-   - the shade % needed to reach a target EWCS
-
-All calibration constants are in `ModelParameters`, so they can be changed for sensitivity studies.
-
----
-
-## Python API
-
-```python
-from transit_scope.gtfs import load_feed, analyze_feed, AnalysisConfig
-from transit_scope.microclimate import CorridorInput, simulate_corridor
-from transit_scope.gis_svg import layers_from_analysis, load_geojson, render_svg, RenderOptions
-
-result = analyze_feed(load_feed("gtfs.zip"), AnalysisConfig(catchment_radii_m=[400, 800]))
-print(result.report.summary.route_km_total)
-
-sim = simulate_corridor(CorridorInput(distance_m=600, shade_pct=50, temp_c=46))
-print(sim.ewcs, sim.shade_needed_for_target_pct)
-
-svg = render_svg(layers_from_analysis(result, load_geojson("districts.geojson")),
-                 RenderOptions(theme="light", title="My Network"))
-```
+  This is a screening model for comparing designs, not a substitute for UTCI or PET simulation.
 
 ## Project layout
 
 ```
 riyadh-transit-scope/
-├── pyproject.toml
 ├── transit_scope/
-│   ├── cli.py                 # Typer app (`transit …`)
-│   ├── html_report.py         # single-file HTML report (`transit report-html`)
-│   ├── errors.py, paths.py    # error types, locations of the bundled data
-│   ├── sample_data.py         # deterministic generator for the mock Riyadh data
-│   ├── data/                  # riyadh_sample_gtfs.zip, riyadh_districts.geojson, benchmark_cities.json
-│   ├── gtfs/                  # loader.py, service.py, kpis.py, models.py
-│   ├── benchmark/             # engine.py, report.py, models.py
-│   ├── microclimate/          # model.py
-│   ├── gis_svg/               # geojson_io.py, projection.py, renderer.py, themes.py
-│   └── utils/                 # time parsing, geodesy / UTM selection
-├── docs/                      # example maps, benchmark report, single-file HTML report
-└── tests/                     # pytest suite (unit + CLI end-to-end)
+│   ├── cli.py                 # `transit …`
+│   ├── html_report.py         # single-file report + interactive map
+│   ├── riyadh/                # osm.py (snapshots, parsing, ring repair) · reference.py · build.py · validate.py
+│   ├── gtfs/                  # loader, service-day selection, KPIs
+│   ├── microclimate/          # EWCS model
+│   ├── gis_svg/               # static SVG renderer
+│   └── data/                  # osm/*.json.gz snapshots, riyadh_reference.json, built GTFS + GeoJSON, validation
+├── docs/                      # example maps and HTML report
+└── tests/                     # unit, pipeline, CLI and browser (Playwright) tests
 ```
 
 ## Development
 
 ```bash
-pytest                               # 77 tests
+pytest          # 77 tests; the browser tests skip unless Playwright + Chromium are available
 ruff check .
-python -m transit_scope.sample_data  # rebuild the bundled sample data (the output is identical each run)
+transit build-riyadh && transit validate
 ```
 
-A synthetic feed with 900k `stop_times` rows (150 routes, 4.5k stops) loads and analyses in about 7 seconds.
+The build is deterministic: rebuilding from the same snapshots gives byte-identical files, and a test enforces it.
+
+## Sources and licences
+
+- **Geometry, names and boundaries:** © OpenStreetMap contributors, [ODbL 1.0](https://www.openstreetmap.org/copyright). OSM snapshot taken 2026-09-29.
+- **Official figures:** RCRC statements via SPA ([Gulf News](https://gulfnews.com/world/gulf/saudi/saudi-arabia-riyadh-metro-adjusts-schedule-to-530am-in-push-to-ease-traffic-1.500259210), [Gulf Business](https://gulfbusiness.com/en/2024/saudi-arabia/riyadh-metro-5-ways-boost-transport)), and the [Riyadh Metro](https://en.wikipedia.org/wiki/Riyadh_Metro) and [Line 1–6](https://en.wikipedia.org/wiki/Line_1_(Riyadh_Metro)) articles.
+- **Independent line lengths:** [UrbanRail.net](https://urbanrail.net/as/riyadh/riyadh.htm).
+- **Operating hours:** [Platinumlist guide](https://platinumlist.net/guide/riyadh-metro-changes-operating-hours-on-fridays-starting-july-4/).

@@ -18,9 +18,5 @@ class GTFSValidationError(TransitScopeError):
     """A GTFS feed is structurally invalid (missing tables/columns, bad values)."""
 
 
-class BenchmarkDataError(TransitScopeError):
-    """City benchmark profiles are missing or invalid."""
-
-
 class RenderError(TransitScopeError):
     """The SVG renderer received data it cannot draw."""

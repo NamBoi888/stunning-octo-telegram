@@ -135,9 +135,10 @@ class TimeWindow(BaseModel):
 
 
 def _default_peaks() -> list[TimeWindow]:
+    """Riyadh peak windows used by the service plan (see riyadh_reference.json)."""
     return [
-        TimeWindow(label="AM peak", start_s=7 * 3600, end_s=9 * 3600),
-        TimeWindow(label="PM peak", start_s=16 * 3600, end_s=19 * 3600),
+        TimeWindow(label="AM peak", start_s=6 * 3600 + 1800, end_s=9 * 3600),
+        TimeWindow(label="PM peak", start_s=15 * 3600 + 1800, end_s=19 * 3600),
     ]
 
 

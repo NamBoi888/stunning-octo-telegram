@@ -22,7 +22,7 @@ def test_analyze_default_sample(tmp_path):
     assert res.exit_code == 0, res.output
     assert "Network summary" in res.output and "EPSG:32638" in res.output
     report = json.loads(out.read_text())
-    assert report["summary"]["routes"] == 9
+    assert report["summary"]["routes"] == 6
     assert json.loads(geo.read_text())["type"] == "FeatureCollection"
 
 
@@ -32,20 +32,13 @@ def test_analyze_missing_file(tmp_path):
     assert "not found" in res.output
 
 
-def test_benchmark(tmp_path):
-    out = tmp_path / "bench.md"
-    js = tmp_path / "bench.json"
-    res = invoke("benchmark", "--cities", "riyadh,melbourne,la", "--out", str(out),
-                 "--json", str(js))
+def test_validate_accepts_bundled_data(tmp_path):
+    js = tmp_path / "validation.json"
+    res = invoke("validate", "--json", str(js))
     assert res.exit_code == 0, res.output
-    assert "Melbourne" in res.output
-    assert out.read_text().startswith("# Multi-City Transit Benchmark")
-    assert len(json.loads(js.read_text())) == 3
-
-
-def test_benchmark_unknown_city(tmp_path):
-    res = invoke("benchmark", "--cities", "atlantis", "--out", str(tmp_path / "x.md"))
-    assert res.exit_code == 1 and "Unknown city" in res.output
+    assert "accepted" in res.output
+    data = json.loads(js.read_text())
+    assert not [f for f in data["findings"] if f["status"] in ("mismatch", "error")]
 
 
 def test_simulate_corridor(tmp_path):
@@ -66,11 +59,12 @@ def test_simulate_corridor_invalid():
 def test_export_svg(tmp_path):
     out = tmp_path / "map.svg"
     res = invoke("export-svg", "--out", str(out), "--theme", "light", "--catchment", "500,1000",
-                 "--labels", "all", "--show-bus-stops")
+                 "--labels", "all")
     assert res.exit_code == 0, res.output
     svg = out.read_text()
     assert svg.startswith("<?xml") and svg.rstrip().endswith("</svg>")
-    assert 'id="bus-stops"' in svg
+    assert svg.count('data-route="') == 6  # six metro lines
+    assert "KAFD" in svg  # interchange labels placed
 
 
 def test_export_svg_geojson_only(tmp_path):
@@ -88,7 +82,8 @@ def test_export_svg_bad_theme(tmp_path):
 def test_sample_data(tmp_path):
     res = invoke("sample-data", str(tmp_path / "data"))
     assert res.exit_code == 0, res.output
-    assert (tmp_path / "data" / "riyadh_sample_gtfs.zip").exists()
+    assert (tmp_path / "data" / "riyadh_metro_gtfs.zip").exists()
+    assert (tmp_path / "data" / "riyadh_stations.geojson").exists()
     again = invoke("sample-data", str(tmp_path / "data"))
     assert "exists" in again.output
 
@@ -104,10 +99,12 @@ def test_report_html(tmp_path):
     assert res.exit_code == 0, res.output
     html = out.read_text()
     assert html.startswith("<!doctype html>") and html.rstrip().endswith("</html>")
-    for anchor in ('id="network"', 'id="map"', 'id="benchmark"', 'id="heat"', 'id="method"'):
+    for anchor in ('id="map"', 'id="validation"', 'id="network"', 'id="heat"', 'id="sources"'):
         assert anchor in html
-    assert html.count("<svg") == 2 and 'id="lt-map-frame"' in html and 'id="dk-map-frame"' in html
+    assert 'id="map-svg"' in html and "0 mismatches" in html
+    assert "قصر الحكم" in html  # Arabic station names reach the map data
     assert '"in-temp": 46.0' in html  # scenario defaults reach the simulator
+    assert "Melbourne" not in html
     frag = tmp_path / "frag.html"
     assert invoke("report-html", "--fragment", "--out", str(frag)).exit_code == 0
     assert frag.read_text().startswith("<title>")
