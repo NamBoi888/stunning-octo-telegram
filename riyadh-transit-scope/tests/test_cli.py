@@ -96,3 +96,18 @@ def test_sample_data(tmp_path):
 def test_version():
     res = invoke("--version")
     assert res.exit_code == 0 and "0.1.0" in res.output
+
+
+def test_report_html(tmp_path):
+    out = tmp_path / "report.html"
+    res = invoke("report-html", "--out", str(out), "--temp", "46")
+    assert res.exit_code == 0, res.output
+    html = out.read_text()
+    assert html.startswith("<!doctype html>") and html.rstrip().endswith("</html>")
+    for anchor in ('id="network"', 'id="map"', 'id="benchmark"', 'id="heat"', 'id="method"'):
+        assert anchor in html
+    assert html.count("<svg") == 2 and 'id="lt-map-frame"' in html and 'id="dk-map-frame"' in html
+    assert '"in-temp": 46.0' in html  # scenario defaults reach the simulator
+    frag = tmp_path / "frag.html"
+    assert invoke("report-html", "--fragment", "--out", str(frag)).exit_code == 0
+    assert frag.read_text().startswith("<title>")

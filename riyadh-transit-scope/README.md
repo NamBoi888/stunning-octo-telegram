@@ -36,6 +36,7 @@ transit analyze                                         # KPIs for the bundled R
 transit benchmark --cities riyadh,melbourne,la          # comparison table + benchmark_report.md
 transit simulate-corridor --temp 44 --shade 35 --distance 800
 transit export-svg --out map.svg --theme dark           # map over the bundled district boundaries
+transit report-html                                     # everything above in one self-contained HTML file
 transit sample-data ./data                              # copy the sample files so you can edit them
 ```
 
@@ -127,6 +128,17 @@ GeoJSON input is sorted by geometry type:
 
 Feature names are read from `name`, `NAME`, `name_en`, `district`, `label` or `title`, whichever each feature has.
 
+### `transit report-html`
+
+Runs all four modules and writes one self-contained HTML file (default `riyadh_transit_scope.html`, about 95 KB). It contains:
+
+- the network summary and the route, station and transfer tables
+- the SVG map, which switches between the light and dark versions to match the viewer's theme
+- the benchmark table, with a bar in each cell, plus key findings and sources
+- a live heat-walk simulator: the EWCS model runs in the browser, with sliders for temperature, shade, length and sun, and a temperature × shade sensitivity grid
+
+Only the fonts are fetched from the web (with system fallbacks), so the file opens straight from disk. Options include `--gtfs`, `--geojson`, `--cities`, `--data`, and `--temp/--shade/--distance` for the starting scenario, plus `--fragment` to omit the `<html>` wrapper when embedding. An example is at `docs/riyadh_transit_scope.html`.
+
 ### `transit sample-data [DIR]`
 
 Copies the bundled GTFS zip, district GeoJSON and benchmark profiles into `DIR` (default `./data`), so you can inspect or edit them.
@@ -216,6 +228,7 @@ riyadh-transit-scope/
 ├── pyproject.toml
 ├── transit_scope/
 │   ├── cli.py                 # Typer app (`transit …`)
+│   ├── html_report.py         # single-file HTML report (`transit report-html`)
 │   ├── errors.py, paths.py    # error types, locations of the bundled data
 │   ├── sample_data.py         # deterministic generator for the mock Riyadh data
 │   ├── data/                  # riyadh_sample_gtfs.zip, riyadh_districts.geojson, benchmark_cities.json
@@ -224,14 +237,14 @@ riyadh-transit-scope/
 │   ├── microclimate/          # model.py
 │   ├── gis_svg/               # geojson_io.py, projection.py, renderer.py, themes.py
 │   └── utils/                 # time parsing, geodesy / UTM selection
-├── docs/                      # example maps and benchmark report
+├── docs/                      # example maps, benchmark report, single-file HTML report
 └── tests/                     # pytest suite (unit + CLI end-to-end)
 ```
 
 ## Development
 
 ```bash
-pytest                               # 76 tests
+pytest                               # 77 tests
 ruff check .
 python -m transit_scope.sample_data  # rebuild the bundled sample data (the output is identical each run)
 ```

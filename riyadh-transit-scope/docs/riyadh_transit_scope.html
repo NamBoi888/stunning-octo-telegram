@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Riyadh Transit Scope</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; the sticky nav is drawn as a metro line whose stops are the sections */
+:root {
+  --bg: #F3F5F6; --surface: #FFFFFF; --ink: #14202B; --muted: #5B6875; --rule: #D8DEE3;
+  --accent: #0068BD; --heat: #C2410C; --on-heat: #FFFFFF;
+  --good: #1D7A4C; --warn: #A86A0C; --crit: #B42318;
+  --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0B1016; --surface: #111922; --ink: #E4EAF0; --muted: #93A1AF; --rule: #243140;
+  --accent: #5AA9F2; --heat: #F28C4E; --on-heat: #1B0D04;
+  --good: #4FC08A; --warn: #E3AE4F; --crit: #F07468; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0B1016; --surface: #111922; --ink: #E4EAF0; --muted: #93A1AF; --rule: #243140;
+  --accent: #5AA9F2; --heat: #F28C4E; --on-heat: #1B0D04;
+  --good: #4FC08A; --warn: #E3AE4F; --crit: #F07468; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--body); margin: 0; }
+.page { max-width: 1120px; margin: 0 auto; padding: 0 20px 64px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); line-height: 1; letter-spacing: -0.01em; }
+h2 { font-size: 2rem; line-height: 1.1; }
+h3 { font-size: 1.3rem; margin: 28px 0 10px; }
+p { margin: 0; }
+code, pre { font-family: var(--mono); font-size: 0.86em; }
+pre { background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px;
+  overflow-x: auto; margin-top: 8px; }
+.muted { color: var(--muted); }
+.eyebrow { font: 600 0.74rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent); }
+.lede { color: var(--muted); max-width: 68ch; }
+.note { color: var(--muted); font-size: 0.86rem; margin-top: 8px; max-width: 70ch; }
+
+/* Masthead */
+.masthead { padding-block: 40px 20px; display: grid; gap: 12px; }
+.masthead .meta { font: 0.8rem var(--mono); color: var(--muted); }
+.notice { border-left: 3px solid var(--warn); padding: 8px 12px; background: var(--surface);
+  color: var(--muted); font-size: 0.88rem; max-width: 80ch; }
+
+/* Metro-line nav */
+.linenav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--bg); border-bottom: 1px solid var(--rule); margin: 0 -20px; padding: 0 20px; }
+.linenav ol { list-style: none; margin: 0; padding: 14px 0 10px; display: flex; gap: 0;
+  overflow-x: auto; position: relative; }
+.linenav li { flex: 1 0 auto; position: relative; min-width: 96px; }
+.linenav li::before { content: ""; position: absolute; left: 0; right: 0; top: 7px; height: 4px;
+  background: var(--accent); }
+.linenav li:first-child::before { left: 7px; }
+.linenav li:last-child::before { right: calc(100% - 11px); }
+.linenav a { position: relative; display: grid; gap: 6px; justify-items: start;
+  color: var(--ink); text-decoration: none; font: 600 0.95rem var(--display);
+  letter-spacing: 0.04em; text-transform: uppercase; padding-right: 12px; }
+.linenav a::before { content: ""; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--surface); border: 4px solid var(--accent); box-sizing: border-box; }
+.linenav a:hover::before, .linenav a:focus-visible::before { background: var(--accent); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Sections */
+.section { padding-block: 44px 8px; border-bottom: 1px solid var(--rule); scroll-margin-top: 70px; }
+.section-head { display: grid; gap: 8px; margin-bottom: 20px; }
+.two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 0 32px; }
+.two-col > div { min-width: 0; }
+
+/* Facts strip */
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  margin: 0; border-top: 4px solid var(--accent); background: var(--surface); }
+.fact { padding: 14px 16px; border-right: 1px solid var(--rule); display: grid; gap: 4px; }
+.fact dt { font: 600 0.72rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); }
+.fact dd { margin: 0; display: grid; }
+.fact .big { font: 600 1.9rem/1 var(--display); font-variant-numeric: tabular-nums; }
+.fact .unit { font-size: 0.8rem; color: var(--muted); }
+
+/* Tables */
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule);
+  border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { padding: 7px 10px; text-align: left; border-bottom: 1px solid var(--rule);
+  white-space: nowrap; vertical-align: middle; }
+thead th { font: 600 0.7rem var(--mono); letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--muted); background: var(--bg); }
+tbody tr:last-child td, tbody tr:last-child th { border-bottom: 0; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+td.c { text-align: center; font-variant-numeric: tabular-nums; }
+.roundel { display: inline-grid; place-items: center; min-width: 24px; height: 24px;
+  padding: 0 6px; border-radius: 12px; font: 700 0.82rem var(--display); }
+.roundels { display: inline-flex; gap: 4px; }
+.meter { display: inline-block; width: 44px; height: 6px; border-radius: 3px; margin-right: 8px;
+  vertical-align: middle; background: linear-gradient(90deg, var(--accent) var(--v), var(--rule) var(--v)); }
+.warnings { color: var(--warn); }
+
+/* Map */
+.map { margin: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--rule); }
+.map svg { display: block; width: 100%; height: auto; }
+.map-dark { display: none; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .map-dark { display: block; }
+  :root:not([data-theme="light"]) .map-light { display: none; } }
+:root[data-theme="dark"] .map-dark { display: block; }
+:root[data-theme="dark"] .map-light { display: none; }
+
+/* Benchmark */
+.bench tbody th { font-weight: 500; white-space: normal; min-width: 180px; }
+.bench .dir { display: block; font: 0.7rem var(--mono); color: var(--muted); }
+.bench .yr { display: block; font-weight: 400; letter-spacing: 0; }
+.bench td { min-width: 120px; }
+.bench .val { display: block; }
+.bench .bar { display: block; height: 6px; margin-top: 4px; margin-left: auto; width: var(--w);
+  border-radius: 0 3px 3px 0; background: var(--muted); opacity: 0.45; }
+.bench td.best .val { font-weight: 600; color: var(--ink); }
+.bench td.best .bar { background: var(--accent); opacity: 1; }
+.findings, .sources { padding-left: 18px; display: grid; gap: 6px; font-size: 0.9rem; }
+.sources { color: var(--muted); }
+
+/* Simulator */
+.sim { display: grid; grid-template-columns: minmax(0, 330px) minmax(0, 1fr); gap: 24px; }
+@media (max-width: 760px) { .sim { grid-template-columns: 1fr; } }
+.controls { display: grid; gap: 6px; align-content: start; background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 6px; padding: 16px; }
+.controls label { display: flex; justify-content: space-between; gap: 8px; font-size: 0.86rem;
+  font-weight: 500; }
+.controls output { font: 500 0.86rem var(--mono); color: var(--accent); }
+.controls input[type=range] { width: 100%; accent-color: var(--accent); margin-bottom: 8px; }
+.controls .row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.controls .row label { display: block; margin-bottom: 4px; font-size: 0.78rem; }
+.controls select, .controls input[type=number] { width: 100%; font: inherit; font-size: 0.86rem;
+  padding: 5px 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--bg);
+  color: var(--ink); }
+.controls button { margin-top: 10px; font: 500 0.84rem var(--body); padding: 7px 10px;
+  border: 1px solid var(--accent); color: var(--accent); background: transparent;
+  border-radius: 4px; cursor: pointer; }
+.controls button:hover { background: var(--accent); color: var(--surface); }
+.result { display: grid; gap: 16px; min-width: 0; align-content: start; }
+.score { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.score-num { font: 700 4.2rem/0.9 var(--display); font-variant-numeric: tabular-nums; }
+.score-meta { display: grid; gap: 6px; font-size: 0.86rem; }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px;
+  border-radius: 999px; border: 1px solid currentColor; font-weight: 600; width: max-content; }
+.pill .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.pill.good { color: var(--good); } .pill.warn { color: var(--warn); } .pill.crit { color: var(--crit); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0;
+  margin: 0; border-top: 1px solid var(--rule); }
+.stats div { padding: 8px 10px 8px 0; border-bottom: 1px solid var(--rule); }
+.stats dt { font-size: 0.76rem; color: var(--muted); }
+.stats dd { margin: 0; font: 600 1.15rem var(--display); font-variant-numeric: tabular-nums; }
+
+/* Heat grid */
+table.heat td { text-align: center; font-variant-numeric: tabular-nums; min-width: 56px;
+  background: color-mix(in oklab, var(--heat) var(--p), var(--surface)); color: var(--ink);
+  border: 2px solid var(--surface); }
+table.heat td.deep { color: var(--on-heat); }
+table.heat td.here { outline: 2px solid var(--ink); outline-offset: -3px; }
+table.heat th { text-align: center; }
+table.heat tbody th { text-align: right; }
+
+.method { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+.method p { font-size: 0.9rem; color: var(--muted); }
+.method h3 { margin-top: 0; }
+footer.colophon { padding-block: 24px; font: 0.78rem var(--mono); color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="masthead">
+    <p class="eyebrow">Urban transit research report</p>
+    <h1>Riyadh Transit Scope</h1>
+    <p class="lede">GTFS network analysis, a Riyadh–Melbourne–Los Angeles benchmark, heat-stress
+      walkability and a vector network map, compiled from one run of
+      <code>riyadh-transit-scope</code>.</p>
+    <p class="meta">Generated 2026-09-29 · riyadh-transit-scope 0.1.0 ·
+      feed riyadh_sample_gtfs.zip · districts riyadh_districts.geojson</p>
+    <p class="notice">The bundled Riyadh GTFS feed and district polygons are mock data: stations
+      approximate the Riyadh Metro and timetables are synthetic. Benchmark figures are rounded,
+      indicative values. Check primary sources before citing.</p>
+  </header>
+  <nav class="linenav" aria-label="Sections"><ol>
+    <li><a href="#network">Network</a></li><li><a href="#map">Map</a></li>
+    <li><a href="#benchmark">Benchmark</a></li><li><a href="#heat">Heat walk</a></li>
+    <li><a href="#method">Method</a></li></ol></nav>
+  
+<section id="network" class="section">
+  <header class="section-head">
+    <p class="eyebrow">GTFS network</p>
+    <h2>Riyadh Transit Sample (mock data)</h2>
+    <p class="lede">Busiest weekday (sunday) · 9 routes
+      (6 metro, 3 bus) ·
+      lengths and buffers in EPSG:32638.</p>
+  </header>
+  <dl class="facts"><div class="fact"><dt>Route length</dt><dd><span class="big">215.1</span><span class="unit">km one-way</span></dd></div><div class="fact"><dt>Trips</dt><dd><span class="big">1,866</span><span class="unit">per service day</span></dd></div><div class="fact"><dt>Station nodes</dt><dd><span class="big">44</span><span class="unit">20 interchanges</span></dd></div><div class="fact"><dt>Peak headway</dt><dd><span class="big">7.9</span><span class="unit">min, mean of routes</span></dd></div><div class="fact"><dt>Off-peak headway</dt><dd><span class="big">14.9</span><span class="unit">min, mean of routes</span></dd></div><div class="fact"><dt>1,000 m catchment</dt><dd><span class="big">137.0</span><span class="unit">km² walkable</span></dd></div></dl>
+  <h3>Routes</h3>
+  <div class="table-wrap"><table class=""><thead><tr><th class="">Line</th><th class="">Name</th><th class="">Mode</th><th class="n">Length km</th><th class="n">Stops</th><th class="n">Trips/day</th><th class="n">Peak hw</th><th class="n">Off-peak hw</th><th class="c">Span</th><th class="n">Speed km/h</th></tr></thead><tbody><tr><td class=""><span class="roundel" style="background:#0072CE;color:#FFFFFF">1</span></td><td class="">Blue Line</td><td class="">metro</td><td class="n">30.7</td><td class="n">12</td><td class="n">336</td><td class="n">4.0′</td><td class="n">8.0′</td><td class="c">06:00–23:24</td><td class="n">37.6</td></tr><tr><td class=""><span class="roundel" style="background:#E4002B;color:#FFFFFF">2</span></td><td class="">Red Line</td><td class="">metro</td><td class="n">23.1</td><td class="n">9</td><td class="n">272</td><td class="n">5.0′</td><td class="n">10.0′</td><td class="c">06:00–23:30</td><td class="n">38.0</td></tr><tr><td class=""><span class="roundel" style="background:#FF8200;color:#FFFFFF">3</span></td><td class="">Orange Line</td><td class="">metro</td><td class="n">38.6</td><td class="n">9</td><td class="n">272</td><td class="n">5.0′</td><td class="n">10.0′</td><td class="c">06:00–23:30</td><td class="n">39.5</td></tr><tr><td class=""><span class="roundel" style="background:#FFC72C;color:#111111">4</span></td><td class="">Yellow Line</td><td class="">metro</td><td class="n">25.4</td><td class="n">7</td><td class="n">226</td><td class="n">6.0′</td><td class="n">12.0′</td><td class="c">06:00–23:24</td><td class="n">39.2</td></tr><tr><td class=""><span class="roundel" style="background:#009A44;color:#FFFFFF">5</span></td><td class="">Green Line</td><td class="">metro</td><td class="n">14.8</td><td class="n">6</td><td class="n">226</td><td class="n">6.0′</td><td class="n">12.0′</td><td class="c">06:00–23:24</td><td class="n">38.2</td></tr><tr><td class=""><span class="roundel" style="background:#8A3FA0;color:#FFFFFF">6</span></td><td class="">Purple Line</td><td class="">metro</td><td class="n">21.2</td><td class="n">6</td><td class="n">202</td><td class="n">8.0′</td><td class="n">12.0′</td><td class="c">06:00–23:28</td><td class="n">39.4</td></tr><tr><td class=""><span class="roundel" style="background:#5E6A71;color:#FFFFFF">7</span></td><td class="">Diriyah – Olaya Connector</td><td class="">bus</td><td class="n">14.5</td><td class="n">6</td><td class="n">128</td><td class="n">10.0′</td><td class="n">20.0′</td><td class="c">06:00–22:00</td><td class="n">16.3</td></tr><tr><td class=""><span class="roundel" style="background:#7A8B94;color:#FFFFFF">9</span></td><td class="">Batha Circulator</td><td class="">bus</td><td class="n">14.8</td><td class="n">6</td><td class="n">118</td><td class="n">12.0′</td><td class="n">20.0′</td><td class="c">06:00–22:00</td><td class="n">16.1</td></tr><tr><td class=""><span class="roundel" style="background:#98A4AE;color:#111111">150</span></td><td class="">Eastern Crosstown</td><td class="">bus</td><td class="n">32.0</td><td class="n">8</td><td class="n">86</td><td class="n">15.0′</td><td class="n">30.0′</td><td class="c">06:00–22:00</td><td class="n">16.4</td></tr></tbody></table></div>
+  <h3>Busiest stations</h3>
+  <div class="table-wrap"><table class=""><thead><tr><th class="">Station</th><th class="">Lines</th><th class="n">Departures/day</th><th class="n">Peak deps</th><th class="n">Combined peak hw</th></tr></thead><tbody><tr><td class="">Qasr Al Hokm</td><td class=""><span class="roundels"><span class="roundel" style="background:#0072CE;color:#FFFFFF">1</span><span class="roundel" style="background:#FF8200;color:#FFFFFF">3</span><span class="roundel" style="background:#7A8B94;color:#FFFFFF">9</span></span></td><td class="n">726</td><td class="n">292</td><td class="n">1.03′</td></tr><tr><td class="">Olaya – King Abdullah Rd</td><td class=""><span class="roundels"><span class="roundel" style="background:#0072CE;color:#FFFFFF">1</span><span class="roundel" style="background:#E4002B;color:#FFFFFF">2</span></span></td><td class="n">608</td><td class="n">248</td><td class="n">1.21′</td></tr><tr><td class="">National Museum</td><td class=""><span class="roundels"><span class="roundel" style="background:#0072CE;color:#FFFFFF">1</span><span class="roundel" style="background:#009A44;color:#FFFFFF">5</span><span class="roundel" style="background:#7A8B94;color:#FFFFFF">9</span></span></td><td class="n">567</td><td class="n">232</td><td class="n">1.29′</td></tr><tr><td class="">Al Hamra</td><td class=""><span class="roundels"><span class="roundel" style="background:#E4002B;color:#FFFFFF">2</span><span class="roundel" style="background:#8A3FA0;color:#FFFFFF">6</span><span class="roundel" style="background:#98A4AE;color:#111111">150</span></span></td><td class="n">560</td><td class="n">219</td><td class="n">1.55′</td></tr><tr><td class="">KAFD</td><td class=""><span class="roundels"><span class="roundel" style="background:#0072CE;color:#FFFFFF">1</span><span class="roundel" style="background:#FFC72C;color:#111111">4</span><span class="roundel" style="background:#8A3FA0;color:#FFFFFF">6</span></span></td><td class="n">550</td><td class="n">224</td><td class="n">1.42′</td></tr><tr><td class="">King Abdulaziz Rd</td><td class=""><span class="roundels"><span class="roundel" style="background:#E4002B;color:#FFFFFF">2</span><span class="roundel" style="background:#009A44;color:#FFFFFF">5</span></span></td><td class="n">498</td><td class="n">210</td><td class="n">1.40′</td></tr><tr><td class="">Al Olaya</td><td class=""><span class="roundels"><span class="roundel" style="background:#0072CE;color:#FFFFFF">1</span><span class="roundel" style="background:#5E6A71;color:#FFFFFF">7</span></span></td><td class="n">464</td><td class="n">192</td><td class="n">2.29′</td></tr><tr><td class="">Al Naseem</td><td class=""><span class="roundels"><span class="roundel" style="background:#FF8200;color:#FFFFFF">3</span><span class="roundel" style="background:#8A3FA0;color:#FFFFFF">6</span><span class="roundel" style="background:#98A4AE;color:#111111">150</span></span></td><td class="n">459</td><td class="n">178</td><td class="n">1.69′</td></tr><tr><td class="">Al Batha</td><td class=""><span class="roundels"><span class="roundel" style="background:#0072CE;color:#FFFFFF">1</span><span class="roundel" style="background:#7A8B94;color:#FFFFFF">9</span></span></td><td class="n">454</td><td class="n">186</td><td class="n">1.86′</td></tr><tr><td class="">Al Nafl</td><td class=""><span class="roundels"><span class="roundel" style="background:#FFC72C;color:#111111">4</span><span class="roundel" style="background:#8A3FA0;color:#FFFFFF">6</span></span></td><td class="n">428</td><td class="n">164</td><td class="n">1.83′</td></tr></tbody></table></div>
+  <h3>Transfer nodes</h3>
+  <div class="table-wrap"><table class=""><thead><tr><th class="">Interchange</th><th class="">Lines</th><th class="n">Pairs</th><th class="n">Exp. wait</th><th class="n">Spread m</th><th class="n">TFI</th><th class="n">Hub score</th></tr></thead><tbody><tr><td class="">Qasr Al Hokm</td><td class=""><span class="roundels"><span class="roundel" style="background:#0072CE;color:#FFFFFF">1</span><span class="roundel" style="background:#FF8200;color:#FFFFFF">3</span><span class="roundel" style="background:#7A8B94;color:#FFFFFF">9</span></span></td><td class="n">3</td><td class="n">3.5′</td><td class="n">60</td><td class="n">17.1</td><td class="n"><span class="meter" style="--v:100%" title="Hub score 100 / 100"></span>100</td></tr><tr><td class="">National Museum</td><td class=""><span class="roundels"><span class="roundel" style="background:#0072CE;color:#FFFFFF">1</span><span class="roundel" style="background:#009A44;color:#FFFFFF">5</span><span class="roundel" style="background:#7A8B94;color:#FFFFFF">9</span></span></td><td class="n">3</td><td class="n">3.7′</td><td class="n">60</td><td class="n">17.9</td><td class="n"><span class="meter" style="--v:89%" title="Hub score 89 / 100"></span>89</td></tr><tr><td class="">KAFD</td><td class=""><span class="roundels"><span class="roundel" style="background:#0072CE;color:#FFFFFF">1</span><span class="roundel" style="background:#FFC72C;color:#111111">4</span><span class="roundel" style="background:#8A3FA0;color:#FFFFFF">6</span></span></td><td class="n">3</td><td class="n">3.0′</td><td class="n">0</td><td class="n">9.0</td><td class="n"><span class="meter" style="--v:88%" title="Hub score 88 / 100"></span>88</td></tr><tr><td class="">Al Hamra</td><td class=""><span class="roundels"><span class="roundel" style="background:#E4002B;color:#FFFFFF">2</span><span class="roundel" style="background:#8A3FA0;color:#FFFFFF">6</span><span class="roundel" style="background:#98A4AE;color:#111111">150</span></span></td><td class="n">3</td><td class="n">4.7′</td><td class="n">60</td><td class="n">22.8</td><td class="n"><span class="meter" style="--v:87%" title="Hub score 87 / 100"></span>87</td></tr><tr><td class="">Al Naseem</td><td class=""><span class="roundels"><span class="roundel" style="background:#FF8200;color:#FFFFFF">3</span><span class="roundel" style="background:#8A3FA0;color:#FFFFFF">6</span><span class="roundel" style="background:#98A4AE;color:#111111">150</span></span></td><td class="n">3</td><td class="n">4.7′</td><td class="n">60</td><td class="n">22.8</td><td class="n"><span class="meter" style="--v:78%" title="Hub score 78 / 100"></span>78</td></tr><tr><td class="">Olaya – King Abdullah Rd</td><td class=""><span class="roundels"><span class="roundel" style="background:#0072CE;color:#FFFFFF">1</span><span class="roundel" style="background:#E4002B;color:#FFFFFF">2</span></span></td><td class="n">1</td><td class="n">2.2′</td><td class="n">0</td><td class="n">2.2</td><td class="n"><span class="meter" style="--v:61%" title="Hub score 61 / 100"></span>61</td></tr><tr><td class="">King Abdulaziz Rd</td><td class=""><span class="roundels"><span class="roundel" style="background:#E4002B;color:#FFFFFF">2</span><span class="roundel" style="background:#009A44;color:#FFFFFF">5</span></span></td><td class="n">1</td><td class="n">2.8′</td><td class="n">0</td><td class="n">2.8</td><td class="n"><span class="meter" style="--v:56%" title="Hub score 56 / 100"></span>56</td></tr><tr><td class="">Al Olaya</td><td class=""><span class="roundels"><span class="roundel" style="background:#0072CE;color:#FFFFFF">1</span><span class="roundel" style="background:#5E6A71;color:#FFFFFF">7</span></span></td><td class="n">1</td><td class="n">3.5′</td><td class="n">60</td><td class="n">5.7</td><td class="n"><span class="meter" style="--v:54%" title="Hub score 54 / 100"></span>54</td></tr><tr><td class="">Al Batha</td><td class=""><span class="roundels"><span class="roundel" style="background:#0072CE;color:#FFFFFF">1</span><span class="roundel" style="background:#7A8B94;color:#FFFFFF">9</span></span></td><td class="n">1</td><td class="n">4.0′</td><td class="n">60</td><td class="n">6.5</td><td class="n"><span class="meter" style="--v:53%" title="Hub score 53 / 100"></span>53</td></tr><tr><td class="">King Salman Oasis</td><td class=""><span class="roundels"><span class="roundel" style="background:#E4002B;color:#FFFFFF">2</span><span class="roundel" style="background:#5E6A71;color:#FFFFFF">7</span></span></td><td class="n">1</td><td class="n">3.8′</td><td class="n">60</td><td class="n">6.1</td><td class="n"><span class="meter" style="--v:51%" title="Hub score 51 / 100"></span>51</td></tr></tbody></table></div>
+  <p class="note">TFI = transfer pairs × expected wait × walk penalty × mode penalty.
+    Higher means a heavier transfer burden. Hub score ranks importance, 0–100.</p>
+  
+</section>
+  
+<section id="map" class="section">
+  <header class="section-head">
+    <p class="eyebrow">Vector map</p>
+    <h2>Network over district boundaries</h2>
+    <p class="lede">Rapid-transit lines with 500 m and 1,000 m walk catchments, bus routes dashed,
+      34 districts. The map follows your light or dark theme; the same file is
+      produced by <code>transit export-svg</code>.</p>
+  </header>
+  <figure class="map">
+    <div class="map-light"><svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+<title>Riyadh Transit Network</title>
+<desc>Transit map rendered by riyadh-transit-scope in EPSG:32638</desc>
+<defs><clipPath id="lt-map-frame"><rect x="36" y="126" width="1528" height="1038" rx="6"/></clipPath></defs>
+<g id="lt-background">
+<rect x="0" y="0" width="1600" height="1200" fill="#F6F4EF"/>
+<rect x="36" y="126" width="1528" height="1038" fill="#FBFAF7" rx="6"/>
+</g>
+<g id="lt-map" clip-path="url(#lt-map-frame)">
+<g id="lt-districts">
+<path d="M714.17,838.70 L679.45,831.68 L712.03,717.56 L717.67,714.61 L777.14,722.92 L800.37,795.48 L714.17,838.70Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M777.14,722.92 L813.14,693.60 L886.92,719.16 L879.96,762.13 L829.93,795.11 L800.37,795.48 L777.14,722.92Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M879.96,762.13 L914.82,799.38 L915.37,842.06 L851.74,878.01 L850.11,877.37 L829.93,795.11 L879.96,762.13Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M800.37,795.48 L829.93,795.11 L850.11,877.37 L779.52,907.73 L714.17,838.70 L800.37,795.48Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M779.52,907.73 L850.11,877.37 L851.74,878.01 L906.59,951.26 L905.02,956.51 L828.65,999.66 L786.20,972.19 L779.52,907.73Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M828.65,999.66 L905.02,956.51 L1001.67,1071.30 L881.86,1125.56 L839.81,1122.78 L828.65,999.66Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M679.45,831.68 L714.17,838.70 L779.52,907.73 L786.20,972.19 L665.44,1018.02 L626.45,849.33 L679.45,831.68Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M626.45,849.33 L665.44,1018.02 L630.05,1108.96 L608.09,1107.51 L574.83,1093.41 L458.99,836.57 L550.63,826.20 L626.45,849.33Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M458.99,836.57 L574.83,1093.41 L411.80,1024.28 L390.42,853.65 L398.01,824.71 L458.99,836.57Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M616.18,655.80 L550.63,826.20 L458.99,836.57 L398.01,824.71 L446.61,639.44 L512.06,516.63 L616.18,655.80Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M550.63,826.20 L616.18,655.80 L644.81,657.64 L712.03,717.56 L679.45,831.68 L626.45,849.33 L550.63,826.20Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M697.50,616.54 L753.87,646.53 L717.67,714.61 L712.03,717.56 L644.81,657.64 L697.50,616.54Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M512.06,516.63 L512.30,516.18 L703.09,571.75 L697.50,616.54 L644.81,657.64 L616.18,655.80 L512.06,516.63Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M746.23,488.25 L751.09,504.14 L734.92,546.21 L703.09,571.75 L512.30,516.18 L561.14,424.54 L565.37,415.78 L746.23,488.25Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M734.92,546.21 L789.46,627.00 L784.96,635.46 L753.87,646.53 L697.50,616.54 L703.09,571.75 L734.92,546.21Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M751.09,504.14 L815.55,532.59 L827.74,604.53 L789.46,627.00 L734.92,546.21 L751.09,504.14Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M784.96,635.46 L813.14,693.60 L777.14,722.92 L717.67,714.61 L753.87,646.53 L784.96,635.46Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M789.46,627.00 L827.74,604.53 L856.40,609.97 L900.35,700.59 L899.76,704.73 L886.92,719.16 L813.14,693.60 L784.96,635.46 L789.46,627.00Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M856.40,609.97 L912.85,565.87 L924.99,570.13 L947.45,638.75 L900.35,700.59 L856.40,609.97Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M912.85,565.87 L856.40,609.97 L827.74,604.53 L815.55,532.59 L882.46,505.44 L912.85,565.87Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1008.81,540.21 L924.99,570.13 L912.85,565.87 L882.46,505.44 L920.87,357.85 L1007.79,312.04 L1027.67,333.27 L1048.94,358.46 L1008.81,540.21Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1048.90,618.12 L1025.39,637.73 L947.45,638.75 L924.99,570.13 L1008.81,540.21 L1048.90,618.12Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M900.35,700.59 L947.45,638.75 L1025.39,637.73 L1002.28,726.74 L899.76,704.73 L900.35,700.59Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M899.76,704.73 L1002.28,726.74 L1050.19,797.63 L914.82,799.38 L879.96,762.13 L886.92,719.16 L899.76,704.73Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M914.82,799.38 L1050.19,797.63 L1154.73,869.05 L959.80,901.35 L915.37,842.06 L914.82,799.38Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1050.19,797.63 L1002.28,726.74 L1025.39,637.73 L1048.90,618.12 L1074.09,622.69 L1169.13,872.54 L1168.88,872.99 L1154.73,869.05 L1050.19,797.63Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1074.09,622.69 L1206.14,554.67 L1209.58,800.78 L1169.13,872.54 L1074.09,622.69Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1074.09,622.69 L1048.90,618.12 L1008.81,540.21 L1048.94,358.46 L1206.00,544.47 L1206.14,554.67 L1074.09,622.69Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M751.09,504.14 L746.23,488.25 L837.78,365.80 L920.87,357.85 L882.46,505.44 L815.55,532.59 L751.09,504.14Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M837.78,365.80 L746.23,488.25 L565.37,415.78 L635.51,270.49 L837.78,365.80Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M920.87,357.85 L837.78,365.80 L635.51,270.49 L675.22,188.23 L869.64,164.44 L1007.79,312.04 L920.87,357.85Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M915.37,842.06 L959.80,901.35 L906.59,951.26 L851.74,878.01 L915.37,842.06Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M905.02,956.51 L906.59,951.26 L959.80,901.35 L1154.73,869.05 L1168.88,872.99 L1076.11,1037.59 L1001.67,1071.30 L905.02,956.51Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M665.44,1018.02 L786.20,972.19 L828.65,999.66 L839.81,1122.78 L630.05,1108.96 L665.44,1018.02Z" fill="#EFEBE3" stroke="#C8C0B2" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+</g>
+<g id="lt-district-labels" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif" font-weight="500" font-size="9.5" letter-spacing="0.8" fill="#9C9384">
+<text x="744.4" y="762.5" text-anchor="middle">AL OLAYA</text>
+<text x="875.7" y="824" text-anchor="middle">AL MALAZ</text>
+<text x="788.9" y="861.4" text-anchor="middle">AL MURABBA</text>
+<text x="836" y="932.8" text-anchor="middle">AL BATHA</text>
+<text x="901.7" y="1038.8" text-anchor="middle">AL AZIZIYAH</text>
+<text x="715.1" y="943.3" text-anchor="middle">AL SHUMAISI</text>
+<text x="574.4" y="937" text-anchor="middle">AL SUWAIDI</text>
+<text x="453.1" y="942.3" text-anchor="middle">TUWAIQ</text>
+<text x="501.9" y="743.6" text-anchor="middle">DIRIYAH</text>
+<text x="634" y="775.2" text-anchor="middle">KING SAUD UNIVERSITY</text>
+<text x="635.2" y="597.5" text-anchor="middle">AL AQIQ</text>
+<text x="635.8" y="499.5" text-anchor="middle">AL SAHAFAH</text>
+<text x="733.8" y="597.5" text-anchor="middle">AL GHADIR</text>
+<text x="861.4" y="552.6" text-anchor="middle">AL NADA</text>
+<text x="967.1" y="435.3" text-anchor="middle">AL YARMUK</text>
+<text x="984.7" y="597.4" text-anchor="middle">AL KHALEEJ</text>
+<text x="948.5" y="747.8" text-anchor="middle">AL RAWDAH</text>
+<text x="1030.2" y="858.9" text-anchor="middle">AL JAZIRAH</text>
+<text x="1158.1" y="715.1" text-anchor="middle">KHASHM AL AN</text>
+<text x="1077.3" y="452.7" text-anchor="middle">AL QADISIYAH</text>
+<text x="847.4" y="430.3" text-anchor="middle">IMAM UNIVERSITY</text>
+<text x="698.3" y="394.1" text-anchor="middle">AL QIRAWAN</text>
+<text x="792.9" y="232.7" text-anchor="middle">AIRPORT</text>
+<text x="1019.1" y="1000.4" text-anchor="middle">AL FAISALIYAH</text>
+<text x="741.1" y="1066.8" text-anchor="middle">NAMAR</text>
+</g>
+<g id="lt-catchments">
+<g id="lt-catchment-1000m" fill="#0072CE" fill-opacity="0.07" stroke="#0072CE" stroke-opacity="0.3" stroke-width="0.8" stroke-dasharray="4 3">
+<circle cx="676.11" cy="585.53" r="19.28"/>
+<circle cx="790.44" cy="214.58" r="19.28"/>
+<circle cx="810.53" cy="263.46" r="19.28"/>
+<circle cx="896.14" cy="1018.57" r="19.28"/>
+<circle cx="848.96" cy="948.67" r="19.28"/>
+<circle cx="926.04" cy="1065.18" r="19.28"/>
+<circle cx="740.76" cy="610.38" r="19.28"/>
+<circle cx="895.61" cy="625.53" r="19.28"/>
+<circle cx="817.61" cy="517.57" r="19.28"/>
+<circle cx="952.82" cy="825.59" r="19.28"/>
+<circle cx="686.34" cy="625.99" r="19.28"/>
+<circle cx="790.31" cy="673.85" r="19.28"/>
+<circle cx="776.34" cy="806.46" r="19.28"/>
+<circle cx="1065.96" cy="572.02" r="19.28"/>
+<circle cx="1129.76" cy="673.7" r="19.28"/>
+<circle cx="963.04" cy="605.43" r="19.28"/>
+<circle cx="685.95" cy="707.16" r="19.28"/>
+<circle cx="649.06" cy="722.55" r="19.28"/>
+<circle cx="814.42" cy="840.17" r="19.28"/>
+<circle cx="881.32" cy="882.05" r="19.28"/>
+<circle cx="710.18" cy="662.01" r="19.28"/>
+<circle cx="846.21" cy="574.89" r="19.28"/>
+<circle cx="777.39" cy="575.75" r="19.28"/>
+<circle cx="822.68" cy="876.38" r="19.28"/>
+<circle cx="1042.9" cy="700.51" r="19.28"/>
+<circle cx="832.95" cy="651.96" r="19.28"/>
+<circle cx="726.18" cy="693.86" r="19.28"/>
+<circle cx="748.79" cy="740.58" r="19.28"/>
+<circle cx="840.14" cy="448.93" r="19.28"/>
+<circle cx="827.01" cy="910.5" r="19.28"/>
+<circle cx="963.82" cy="665.23" r="19.28"/>
+<circle cx="1000.83" cy="765.15" r="19.28"/>
+<circle cx="663.87" cy="540.82" r="19.28"/>
+<circle cx="742.66" cy="926.49" r="19.28"/>
+<circle cx="797.45" cy="731.44" r="19.28"/>
+<circle cx="586.9" cy="964.65" r="19.28"/>
+<circle cx="489.51" cy="987.11" r="19.28"/>
+<circle cx="759.21" cy="682.78" r="19.28"/>
+<circle cx="803.52" cy="795.44" r="19.28"/>
+</g>
+<g id="lt-catchment-500m" fill="#0072CE" fill-opacity="0.11" stroke="#0072CE" stroke-opacity="0.3" stroke-width="0.8">
+<circle cx="676.11" cy="585.53" r="9.64"/>
+<circle cx="790.44" cy="214.58" r="9.64"/>
+<circle cx="810.53" cy="263.46" r="9.64"/>
+<circle cx="896.14" cy="1018.57" r="9.64"/>
+<circle cx="848.96" cy="948.67" r="9.64"/>
+<circle cx="926.04" cy="1065.18" r="9.64"/>
+<circle cx="740.76" cy="610.38" r="9.64"/>
+<circle cx="895.61" cy="625.53" r="9.64"/>
+<circle cx="817.61" cy="517.57" r="9.64"/>
+<circle cx="952.82" cy="825.59" r="9.64"/>
+<circle cx="686.34" cy="625.99" r="9.64"/>
+<circle cx="790.31" cy="673.85" r="9.64"/>
+<circle cx="776.34" cy="806.46" r="9.64"/>
+<circle cx="1065.96" cy="572.02" r="9.64"/>
+<circle cx="1129.76" cy="673.7" r="9.64"/>
+<circle cx="963.04" cy="605.43" r="9.64"/>
+<circle cx="685.95" cy="707.16" r="9.64"/>
+<circle cx="649.06" cy="722.55" r="9.64"/>
+<circle cx="814.42" cy="840.17" r="9.64"/>
+<circle cx="881.32" cy="882.05" r="9.64"/>
+<circle cx="710.18" cy="662.01" r="9.64"/>
+<circle cx="846.21" cy="574.89" r="9.64"/>
+<circle cx="777.39" cy="575.75" r="9.64"/>
+<circle cx="822.68" cy="876.38" r="9.64"/>
+<circle cx="1042.9" cy="700.51" r="9.64"/>
+<circle cx="832.95" cy="651.96" r="9.64"/>
+<circle cx="726.18" cy="693.86" r="9.64"/>
+<circle cx="748.79" cy="740.58" r="9.64"/>
+<circle cx="840.14" cy="448.93" r="9.64"/>
+<circle cx="827.01" cy="910.5" r="9.64"/>
+<circle cx="963.82" cy="665.23" r="9.64"/>
+<circle cx="1000.83" cy="765.15" r="9.64"/>
+<circle cx="663.87" cy="540.82" r="9.64"/>
+<circle cx="742.66" cy="926.49" r="9.64"/>
+<circle cx="797.45" cy="731.44" r="9.64"/>
+<circle cx="586.9" cy="964.65" r="9.64"/>
+<circle cx="489.51" cy="987.11" r="9.64"/>
+<circle cx="759.21" cy="682.78" r="9.64"/>
+<circle cx="803.52" cy="795.44" r="9.64"/>
+</g>
+</g>
+<g id="lt-routes">
+<g id="lt-routes-surface" fill="none" stroke-width="1.8" stroke-opacity="0.85" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 3">
+<path d="M942.46,522.39 L846.79,574.88 L896.19,625.52 L925.22,697.78 L1043.48,700.50 L1001.41,765.14 L953.40,825.58 L868.51,841.62" stroke="#98A4AE"/>
+<path d="M556.45,693.73 L649.64,722.55 L686.52,707.16 L711.29,753.85 L749.36,740.57 L798.03,731.43" stroke="#5E6A71"/>
+<path d="M849.54,948.67 L827.59,910.49 L823.26,876.37 L815.00,840.16 L868.51,841.62 L881.90,882.04 L849.54,948.67" stroke="#7A8B94"/>
+</g>
+<g id="lt-routes-rapid-casing" fill="none" stroke="#FFFFFF" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M663.87,540.82 L676.11,585.53 L686.34,625.99 L710.18,662.01 L726.18,693.86 L748.21,740.59 L776.34,806.46 L822.10,876.38 L826.43,910.51 L848.38,948.68 L896.14,1018.57 L926.04,1065.18"/>
+<path d="M648.48,722.56 L685.37,707.17 L726.18,693.86 L759.21,682.78 L790.31,673.85 L832.95,651.96 L895.03,625.54 L963.04,605.43 L1065.96,572.02"/>
+<path d="M489.51,987.11 L586.90,964.65 L742.66,926.49 L826.43,910.51 L880.74,882.05 L952.25,825.60 L1000.25,765.16 L1042.33,700.51 L1129.76,673.70"/>
+<path d="M686.34,625.99 L740.76,610.38 L777.39,575.75 L817.61,517.57 L840.14,448.93 L810.53,263.46 L790.44,214.58"/>
+<path d="M822.10,876.38 L813.84,840.17 L803.52,795.44 L796.88,731.44 L790.31,673.85 L740.76,610.38"/>
+<path d="M686.34,625.99 L777.39,575.75 L845.63,574.90 L895.03,625.54 L963.82,665.23 L1042.33,700.51"/>
+</g>
+<g id="lt-routes-rapid" fill="none" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M663.87,540.82 L676.11,585.53 L686.34,625.99 L710.18,662.01 L726.18,693.86 L748.21,740.59 L776.34,806.46 L822.10,876.38 L826.43,910.51 L848.38,948.68 L896.14,1018.57 L926.04,1065.18" stroke="#0072CE" data-route="1"/>
+<path d="M648.48,722.56 L685.37,707.17 L726.18,693.86 L759.21,682.78 L790.31,673.85 L832.95,651.96 L895.03,625.54 L963.04,605.43 L1065.96,572.02" stroke="#E4002B" data-route="2"/>
+<path d="M489.51,987.11 L586.90,964.65 L742.66,926.49 L826.43,910.51 L880.74,882.05 L952.25,825.60 L1000.25,765.16 L1042.33,700.51 L1129.76,673.70" stroke="#FF8200" data-route="3"/>
+<path d="M686.34,625.99 L740.76,610.38 L777.39,575.75 L817.61,517.57 L840.14,448.93 L810.53,263.46 L790.44,214.58" stroke="#FFC72C" data-route="4"/>
+<path d="M822.10,876.38 L813.84,840.17 L803.52,795.44 L796.88,731.44 L790.31,673.85 L740.76,610.38" stroke="#009A44" data-route="5"/>
+<path d="M686.34,625.99 L777.39,575.75 L845.63,574.90 L895.03,625.54 L963.82,665.23 L1042.33,700.51" stroke="#8A3FA0" data-route="6"/>
+</g>
+</g>
+<g id="lt-stations">
+<g id="lt-stations-regular" fill="#FFFFFF" stroke-width="2.2">
+<circle cx="676.11" cy="585.53" r="4.2" stroke="#0072CE"/>
+<circle cx="790.44" cy="214.58" r="4.2" stroke="#FFC72C"/>
+<circle cx="810.53" cy="263.46" r="4.2" stroke="#FFC72C"/>
+<circle cx="896.14" cy="1018.57" r="4.2" stroke="#0072CE"/>
+<circle cx="926.04" cy="1065.18" r="4.2" stroke="#0072CE"/>
+<circle cx="817.61" cy="517.57" r="4.2" stroke="#FFC72C"/>
+<circle cx="776.34" cy="806.46" r="4.2" stroke="#0072CE"/>
+<circle cx="1065.96" cy="572.02" r="4.2" stroke="#E4002B"/>
+<circle cx="1129.76" cy="673.7" r="4.2" stroke="#FF8200"/>
+<circle cx="963.04" cy="605.43" r="4.2" stroke="#E4002B"/>
+<circle cx="710.18" cy="662.01" r="4.2" stroke="#0072CE"/>
+<circle cx="832.95" cy="651.96" r="4.2" stroke="#E4002B"/>
+<circle cx="840.14" cy="448.93" r="4.2" stroke="#FFC72C"/>
+<circle cx="963.82" cy="665.23" r="4.2" stroke="#8A3FA0"/>
+<circle cx="663.87" cy="540.82" r="4.2" stroke="#0072CE"/>
+<circle cx="742.66" cy="926.49" r="4.2" stroke="#FF8200"/>
+<circle cx="586.9" cy="964.65" r="4.2" stroke="#FF8200"/>
+<circle cx="489.51" cy="987.11" r="4.2" stroke="#FF8200"/>
+<circle cx="759.21" cy="682.78" r="4.2" stroke="#E4002B"/>
+<circle cx="803.52" cy="795.44" r="4.2" stroke="#009A44"/>
+</g>
+<g id="lt-stations-interchange" fill="#FFFFFF" stroke="#1D2127" stroke-width="2.6">
+<circle cx="848.96" cy="948.67" r="6.5"/>
+<circle cx="740.76" cy="610.38" r="6.5"/>
+<circle cx="895.61" cy="625.53" r="6.5"/>
+<circle cx="952.82" cy="825.59" r="6.5"/>
+<circle cx="686.34" cy="625.99" r="6.5"/>
+<circle cx="790.31" cy="673.85" r="6.5"/>
+<circle cx="685.95" cy="707.16" r="6.5"/>
+<circle cx="649.06" cy="722.55" r="6.5"/>
+<circle cx="814.42" cy="840.17" r="6.5"/>
+<circle cx="881.32" cy="882.05" r="6.5"/>
+<circle cx="846.21" cy="574.89" r="6.5"/>
+<circle cx="777.39" cy="575.75" r="6.5"/>
+<circle cx="822.68" cy="876.38" r="6.5"/>
+<circle cx="1042.9" cy="700.51" r="6.5"/>
+<circle cx="726.18" cy="693.86" r="6.5"/>
+<circle cx="748.79" cy="740.58" r="6.5"/>
+<circle cx="827.01" cy="910.5" r="6.5"/>
+<circle cx="1000.83" cy="765.15" r="6.5"/>
+<circle cx="797.45" cy="731.44" r="6.5"/>
+<circle cx="868.51" cy="841.62" r="6.5"/>
+</g>
+</g>
+</g>
+<g id="lt-station-labels" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif" fill="#1D2127" stroke="#F6F4EF" stroke-width="3.2" stroke-linejoin="round" paint-order="stroke">
+<text x="857" y="952.9" text-anchor="start" font-size="12" font-weight="600">Al Batha</text>
+<text x="748.8" y="614.6" text-anchor="start" font-size="12" font-weight="600">Al Ghadir</text>
+<text x="903.6" y="629.7" text-anchor="start" font-size="12" font-weight="600">Al Hamra</text>
+<text x="960.8" y="829.8" text-anchor="start" font-size="12" font-weight="600">Al Jazirah</text>
+<text x="694.3" y="630.2" text-anchor="start" font-size="12" font-weight="600">KAFD</text>
+<text x="798.3" y="678" text-anchor="start" font-size="12" font-weight="600">King Abdulaziz Rd</text>
+<text x="677.9" y="711.4" text-anchor="end" font-size="12" font-weight="600">King Salman Oasis</text>
+<text x="641.1" y="726.8" text-anchor="end" font-size="12" font-weight="600">King Saud University</text>
+<text x="806.4" y="844.4" text-anchor="end" font-size="12" font-weight="600">Al Murabba</text>
+<text x="889.3" y="886.2" text-anchor="start" font-size="12" font-weight="600">Al Marqab</text>
+<text x="854.2" y="579.1" text-anchor="start" font-size="12" font-weight="600">Al Nada</text>
+<text x="785.4" y="579.9" text-anchor="start" font-size="12" font-weight="600">Al Nafl</text>
+<text x="814.7" y="880.6" text-anchor="end" font-size="12" font-weight="600">National Museum</text>
+<text x="1050.9" y="704.7" text-anchor="start" font-size="12" font-weight="600">Al Naseem</text>
+<text x="740.8" y="744.8" text-anchor="end" font-size="12" font-weight="600">Al Olaya</text>
+<text x="835" y="914.7" text-anchor="start" font-size="12" font-weight="600">Qasr Al Hokm</text>
+<text x="1008.8" y="769.4" text-anchor="start" font-size="12" font-weight="600">Al Rawdah</text>
+<text x="805.5" y="735.6" text-anchor="start" font-size="12" font-weight="600">Al Sulimaniyah</text>
+<text x="876.5" y="845.8" text-anchor="start" font-size="12" font-weight="600">Al Malaz</text>
+</g>
+<g id="lt-legend" transform="translate(52.0,806.0)" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif">
+<rect x="0" y="0" width="330" height="342" rx="6" fill="#FFFFFF" fill-opacity="0.92" stroke="#C8C0B2" stroke-width="0.8"/>
+<text x="14" y="24" font-size="10.5" font-weight="700" letter-spacing="1.4" fill="#5E6570">LEGEND</text>
+<g transform="translate(14,44.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#0072CE" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="48.5" font-size="11.5" fill="#1D2127">Line 1 · Blue Line</text>
+<g transform="translate(14,65.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#E4002B" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="69.5" font-size="11.5" fill="#1D2127">Line 2 · Red Line</text>
+<g transform="translate(14,86.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#FF8200" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="90.5" font-size="11.5" fill="#1D2127">Line 3 · Orange Line</text>
+<g transform="translate(14,107.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#FFC72C" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="111.5" font-size="11.5" fill="#1D2127">Line 4 · Yellow Line</text>
+<g transform="translate(14,128.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#009A44" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="132.5" font-size="11.5" fill="#1D2127">Line 5 · Green Line</text>
+<g transform="translate(14,149.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#8A3FA0" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="153.5" font-size="11.5" fill="#1D2127">Line 6 · Purple Line</text>
+<g transform="translate(14,170.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#98A4AE" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="6 3"/></g>
+<text x="52" y="174.5" font-size="11.5" fill="#1D2127">Bus 150</text>
+<g transform="translate(14,191.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#5E6A71" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="6 3"/></g>
+<text x="52" y="195.5" font-size="11.5" fill="#1D2127">Bus 7</text>
+<g transform="translate(14,212.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#7A8B94" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="6 3"/></g>
+<text x="52" y="216.5" font-size="11.5" fill="#1D2127">Bus 9</text>
+<g transform="translate(14,233.5)"><circle cx="14" cy="0" r="4.2" fill="#FFFFFF" stroke="#1D2127" stroke-width="2.2"/></g>
+<text x="52" y="237.5" font-size="11.5" fill="#1D2127">Station</text>
+<g transform="translate(14,254.5)"><circle cx="14" cy="0" r="6.5" fill="#FFFFFF" stroke="#1D2127" stroke-width="2.6"/></g>
+<text x="52" y="258.5" font-size="11.5" fill="#1D2127">Interchange</text>
+<g transform="translate(14,275.5)"><circle cx="14" cy="0" r="7" fill="#0072CE" fill-opacity="0.25" stroke="#0072CE" stroke-opacity="0.6"/></g>
+<text x="52" y="279.5" font-size="11.5" fill="#1D2127">500 m walk catchment</text>
+<g transform="translate(14,296.5)"><circle cx="14" cy="0" r="7" fill="#0072CE" fill-opacity="0.25" stroke="#0072CE" stroke-opacity="0.6"/></g>
+<text x="52" y="300.5" font-size="11.5" fill="#1D2127">1,000 m walk catchment</text>
+<g transform="translate(14,317.5)"><rect x="2" y="-6" width="24" height="12" fill="#EFEBE3" stroke="#C8C0B2"/></g>
+<text x="52" y="321.5" font-size="11.5" fill="#1D2127">District boundary</text>
+</g>
+<g id="lt-scale-bar" transform="translate(1343.2,1134.0)" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif">
+<rect x="0" y="0" width="48.21" height="6" fill="#1D2127" stroke="#1D2127" stroke-width="0.8"/>
+<rect x="48.21" y="0" width="48.21" height="6" fill="#FBFAF7" stroke="#1D2127" stroke-width="0.8"/>
+<rect x="96.42" y="0" width="48.21" height="6" fill="#1D2127" stroke="#1D2127" stroke-width="0.8"/>
+<rect x="144.63" y="0" width="48.21" height="6" fill="#FBFAF7" stroke="#1D2127" stroke-width="0.8"/>
+<text x="0" y="-5" text-anchor="middle" font-size="10.5" fill="#1D2127">0</text>
+<text x="96.42" y="-5" text-anchor="middle" font-size="10.5" fill="#1D2127">5</text>
+<text x="192.83" y="-5" text-anchor="middle" font-size="10.5" fill="#1D2127">10 km</text>
+</g>
+<g id="lt-north-arrow" transform="translate(1530.0,152.0)" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif">
+<path d="M0,-16 L8,8 L0,3 L-8,8 Z" fill="#1D2127"/>
+<text x="0" y="24" text-anchor="middle" font-size="11" font-weight="700" fill="#1D2127">N</text>
+</g>
+<g id="lt-title-block" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif">
+<rect x="36" y="30" width="4" height="58" fill="#0072CE" rx="2"/>
+<text x="54" y="58" font-size="30" font-weight="700" fill="#1D2127" letter-spacing="-0.3">Riyadh Transit Network</text>
+<text x="54" y="84" font-size="14" fill="#5E6570">9 routes · 44 stations · 500 m, 1,000 m catchments · EPSG:32638</text>
+<text x="1564" y="84" font-size="11" fill="#5E6570" text-anchor="end">GTFS: riyadh_sample_gtfs.zip · riyadh-transit-scope 0.1.0 · 2026-09-29</text>
+</g>
+</svg></div>
+    <div class="map-dark"><svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+<title>Riyadh Transit Network</title>
+<desc>Transit map rendered by riyadh-transit-scope in EPSG:32638</desc>
+<defs><clipPath id="dk-map-frame"><rect x="36" y="126" width="1528" height="1038" rx="6"/></clipPath></defs>
+<g id="dk-background">
+<rect x="0" y="0" width="1600" height="1200" fill="#0B0F14"/>
+<rect x="36" y="126" width="1528" height="1038" fill="#111720" rx="6"/>
+</g>
+<g id="dk-map" clip-path="url(#dk-map-frame)">
+<g id="dk-districts">
+<path d="M714.17,838.70 L679.45,831.68 L712.03,717.56 L717.67,714.61 L777.14,722.92 L800.37,795.48 L714.17,838.70Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M777.14,722.92 L813.14,693.60 L886.92,719.16 L879.96,762.13 L829.93,795.11 L800.37,795.48 L777.14,722.92Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M879.96,762.13 L914.82,799.38 L915.37,842.06 L851.74,878.01 L850.11,877.37 L829.93,795.11 L879.96,762.13Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M800.37,795.48 L829.93,795.11 L850.11,877.37 L779.52,907.73 L714.17,838.70 L800.37,795.48Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M779.52,907.73 L850.11,877.37 L851.74,878.01 L906.59,951.26 L905.02,956.51 L828.65,999.66 L786.20,972.19 L779.52,907.73Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M828.65,999.66 L905.02,956.51 L1001.67,1071.30 L881.86,1125.56 L839.81,1122.78 L828.65,999.66Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M679.45,831.68 L714.17,838.70 L779.52,907.73 L786.20,972.19 L665.44,1018.02 L626.45,849.33 L679.45,831.68Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M626.45,849.33 L665.44,1018.02 L630.05,1108.96 L608.09,1107.51 L574.83,1093.41 L458.99,836.57 L550.63,826.20 L626.45,849.33Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M458.99,836.57 L574.83,1093.41 L411.80,1024.28 L390.42,853.65 L398.01,824.71 L458.99,836.57Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M616.18,655.80 L550.63,826.20 L458.99,836.57 L398.01,824.71 L446.61,639.44 L512.06,516.63 L616.18,655.80Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M550.63,826.20 L616.18,655.80 L644.81,657.64 L712.03,717.56 L679.45,831.68 L626.45,849.33 L550.63,826.20Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M697.50,616.54 L753.87,646.53 L717.67,714.61 L712.03,717.56 L644.81,657.64 L697.50,616.54Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M512.06,516.63 L512.30,516.18 L703.09,571.75 L697.50,616.54 L644.81,657.64 L616.18,655.80 L512.06,516.63Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M746.23,488.25 L751.09,504.14 L734.92,546.21 L703.09,571.75 L512.30,516.18 L561.14,424.54 L565.37,415.78 L746.23,488.25Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M734.92,546.21 L789.46,627.00 L784.96,635.46 L753.87,646.53 L697.50,616.54 L703.09,571.75 L734.92,546.21Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M751.09,504.14 L815.55,532.59 L827.74,604.53 L789.46,627.00 L734.92,546.21 L751.09,504.14Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M784.96,635.46 L813.14,693.60 L777.14,722.92 L717.67,714.61 L753.87,646.53 L784.96,635.46Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M789.46,627.00 L827.74,604.53 L856.40,609.97 L900.35,700.59 L899.76,704.73 L886.92,719.16 L813.14,693.60 L784.96,635.46 L789.46,627.00Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M856.40,609.97 L912.85,565.87 L924.99,570.13 L947.45,638.75 L900.35,700.59 L856.40,609.97Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M912.85,565.87 L856.40,609.97 L827.74,604.53 L815.55,532.59 L882.46,505.44 L912.85,565.87Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1008.81,540.21 L924.99,570.13 L912.85,565.87 L882.46,505.44 L920.87,357.85 L1007.79,312.04 L1027.67,333.27 L1048.94,358.46 L1008.81,540.21Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1048.90,618.12 L1025.39,637.73 L947.45,638.75 L924.99,570.13 L1008.81,540.21 L1048.90,618.12Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M900.35,700.59 L947.45,638.75 L1025.39,637.73 L1002.28,726.74 L899.76,704.73 L900.35,700.59Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M899.76,704.73 L1002.28,726.74 L1050.19,797.63 L914.82,799.38 L879.96,762.13 L886.92,719.16 L899.76,704.73Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M914.82,799.38 L1050.19,797.63 L1154.73,869.05 L959.80,901.35 L915.37,842.06 L914.82,799.38Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1050.19,797.63 L1002.28,726.74 L1025.39,637.73 L1048.90,618.12 L1074.09,622.69 L1169.13,872.54 L1168.88,872.99 L1154.73,869.05 L1050.19,797.63Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1074.09,622.69 L1206.14,554.67 L1209.58,800.78 L1169.13,872.54 L1074.09,622.69Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M1074.09,622.69 L1048.90,618.12 L1008.81,540.21 L1048.94,358.46 L1206.00,544.47 L1206.14,554.67 L1074.09,622.69Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M751.09,504.14 L746.23,488.25 L837.78,365.80 L920.87,357.85 L882.46,505.44 L815.55,532.59 L751.09,504.14Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M837.78,365.80 L746.23,488.25 L565.37,415.78 L635.51,270.49 L837.78,365.80Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M920.87,357.85 L837.78,365.80 L635.51,270.49 L675.22,188.23 L869.64,164.44 L1007.79,312.04 L920.87,357.85Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M915.37,842.06 L959.80,901.35 L906.59,951.26 L851.74,878.01 L915.37,842.06Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M905.02,956.51 L906.59,951.26 L959.80,901.35 L1154.73,869.05 L1168.88,872.99 L1076.11,1037.59 L1001.67,1071.30 L905.02,956.51Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+<path d="M665.44,1018.02 L786.20,972.19 L828.65,999.66 L839.81,1122.78 L630.05,1108.96 L665.44,1018.02Z" fill="#151C26" stroke="#2A3544" stroke-width="0.9" fill-rule="evenodd" stroke-linejoin="round"/>
+</g>
+<g id="dk-district-labels" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif" font-weight="500" font-size="9.5" letter-spacing="0.8" fill="#56657A">
+<text x="744.4" y="762.5" text-anchor="middle">AL OLAYA</text>
+<text x="875.7" y="824" text-anchor="middle">AL MALAZ</text>
+<text x="788.9" y="861.4" text-anchor="middle">AL MURABBA</text>
+<text x="836" y="932.8" text-anchor="middle">AL BATHA</text>
+<text x="901.7" y="1038.8" text-anchor="middle">AL AZIZIYAH</text>
+<text x="715.1" y="943.3" text-anchor="middle">AL SHUMAISI</text>
+<text x="574.4" y="937" text-anchor="middle">AL SUWAIDI</text>
+<text x="453.1" y="942.3" text-anchor="middle">TUWAIQ</text>
+<text x="501.9" y="743.6" text-anchor="middle">DIRIYAH</text>
+<text x="634" y="775.2" text-anchor="middle">KING SAUD UNIVERSITY</text>
+<text x="635.2" y="597.5" text-anchor="middle">AL AQIQ</text>
+<text x="635.8" y="499.5" text-anchor="middle">AL SAHAFAH</text>
+<text x="733.8" y="597.5" text-anchor="middle">AL GHADIR</text>
+<text x="861.4" y="552.6" text-anchor="middle">AL NADA</text>
+<text x="967.1" y="435.3" text-anchor="middle">AL YARMUK</text>
+<text x="984.7" y="597.4" text-anchor="middle">AL KHALEEJ</text>
+<text x="948.5" y="747.8" text-anchor="middle">AL RAWDAH</text>
+<text x="1030.2" y="858.9" text-anchor="middle">AL JAZIRAH</text>
+<text x="1158.1" y="715.1" text-anchor="middle">KHASHM AL AN</text>
+<text x="1077.3" y="452.7" text-anchor="middle">AL QADISIYAH</text>
+<text x="847.4" y="430.3" text-anchor="middle">IMAM UNIVERSITY</text>
+<text x="698.3" y="394.1" text-anchor="middle">AL QIRAWAN</text>
+<text x="792.9" y="232.7" text-anchor="middle">AIRPORT</text>
+<text x="1019.1" y="1000.4" text-anchor="middle">AL FAISALIYAH</text>
+<text x="741.1" y="1066.8" text-anchor="middle">NAMAR</text>
+</g>
+<g id="dk-catchments">
+<g id="dk-catchment-1000m" fill="#4FC3F7" fill-opacity="0.08" stroke="#4FC3F7" stroke-opacity="0.35" stroke-width="0.8" stroke-dasharray="4 3">
+<circle cx="676.11" cy="585.53" r="19.28"/>
+<circle cx="790.44" cy="214.58" r="19.28"/>
+<circle cx="810.53" cy="263.46" r="19.28"/>
+<circle cx="896.14" cy="1018.57" r="19.28"/>
+<circle cx="848.96" cy="948.67" r="19.28"/>
+<circle cx="926.04" cy="1065.18" r="19.28"/>
+<circle cx="740.76" cy="610.38" r="19.28"/>
+<circle cx="895.61" cy="625.53" r="19.28"/>
+<circle cx="817.61" cy="517.57" r="19.28"/>
+<circle cx="952.82" cy="825.59" r="19.28"/>
+<circle cx="686.34" cy="625.99" r="19.28"/>
+<circle cx="790.31" cy="673.85" r="19.28"/>
+<circle cx="776.34" cy="806.46" r="19.28"/>
+<circle cx="1065.96" cy="572.02" r="19.28"/>
+<circle cx="1129.76" cy="673.7" r="19.28"/>
+<circle cx="963.04" cy="605.43" r="19.28"/>
+<circle cx="685.95" cy="707.16" r="19.28"/>
+<circle cx="649.06" cy="722.55" r="19.28"/>
+<circle cx="814.42" cy="840.17" r="19.28"/>
+<circle cx="881.32" cy="882.05" r="19.28"/>
+<circle cx="710.18" cy="662.01" r="19.28"/>
+<circle cx="846.21" cy="574.89" r="19.28"/>
+<circle cx="777.39" cy="575.75" r="19.28"/>
+<circle cx="822.68" cy="876.38" r="19.28"/>
+<circle cx="1042.9" cy="700.51" r="19.28"/>
+<circle cx="832.95" cy="651.96" r="19.28"/>
+<circle cx="726.18" cy="693.86" r="19.28"/>
+<circle cx="748.79" cy="740.58" r="19.28"/>
+<circle cx="840.14" cy="448.93" r="19.28"/>
+<circle cx="827.01" cy="910.5" r="19.28"/>
+<circle cx="963.82" cy="665.23" r="19.28"/>
+<circle cx="1000.83" cy="765.15" r="19.28"/>
+<circle cx="663.87" cy="540.82" r="19.28"/>
+<circle cx="742.66" cy="926.49" r="19.28"/>
+<circle cx="797.45" cy="731.44" r="19.28"/>
+<circle cx="586.9" cy="964.65" r="19.28"/>
+<circle cx="489.51" cy="987.11" r="19.28"/>
+<circle cx="759.21" cy="682.78" r="19.28"/>
+<circle cx="803.52" cy="795.44" r="19.28"/>
+</g>
+<g id="dk-catchment-500m" fill="#4FC3F7" fill-opacity="0.13" stroke="#4FC3F7" stroke-opacity="0.35" stroke-width="0.8">
+<circle cx="676.11" cy="585.53" r="9.64"/>
+<circle cx="790.44" cy="214.58" r="9.64"/>
+<circle cx="810.53" cy="263.46" r="9.64"/>
+<circle cx="896.14" cy="1018.57" r="9.64"/>
+<circle cx="848.96" cy="948.67" r="9.64"/>
+<circle cx="926.04" cy="1065.18" r="9.64"/>
+<circle cx="740.76" cy="610.38" r="9.64"/>
+<circle cx="895.61" cy="625.53" r="9.64"/>
+<circle cx="817.61" cy="517.57" r="9.64"/>
+<circle cx="952.82" cy="825.59" r="9.64"/>
+<circle cx="686.34" cy="625.99" r="9.64"/>
+<circle cx="790.31" cy="673.85" r="9.64"/>
+<circle cx="776.34" cy="806.46" r="9.64"/>
+<circle cx="1065.96" cy="572.02" r="9.64"/>
+<circle cx="1129.76" cy="673.7" r="9.64"/>
+<circle cx="963.04" cy="605.43" r="9.64"/>
+<circle cx="685.95" cy="707.16" r="9.64"/>
+<circle cx="649.06" cy="722.55" r="9.64"/>
+<circle cx="814.42" cy="840.17" r="9.64"/>
+<circle cx="881.32" cy="882.05" r="9.64"/>
+<circle cx="710.18" cy="662.01" r="9.64"/>
+<circle cx="846.21" cy="574.89" r="9.64"/>
+<circle cx="777.39" cy="575.75" r="9.64"/>
+<circle cx="822.68" cy="876.38" r="9.64"/>
+<circle cx="1042.9" cy="700.51" r="9.64"/>
+<circle cx="832.95" cy="651.96" r="9.64"/>
+<circle cx="726.18" cy="693.86" r="9.64"/>
+<circle cx="748.79" cy="740.58" r="9.64"/>
+<circle cx="840.14" cy="448.93" r="9.64"/>
+<circle cx="827.01" cy="910.5" r="9.64"/>
+<circle cx="963.82" cy="665.23" r="9.64"/>
+<circle cx="1000.83" cy="765.15" r="9.64"/>
+<circle cx="663.87" cy="540.82" r="9.64"/>
+<circle cx="742.66" cy="926.49" r="9.64"/>
+<circle cx="797.45" cy="731.44" r="9.64"/>
+<circle cx="586.9" cy="964.65" r="9.64"/>
+<circle cx="489.51" cy="987.11" r="9.64"/>
+<circle cx="759.21" cy="682.78" r="9.64"/>
+<circle cx="803.52" cy="795.44" r="9.64"/>
+</g>
+</g>
+<g id="dk-routes">
+<g id="dk-routes-surface" fill="none" stroke-width="1.8" stroke-opacity="0.85" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 3">
+<path d="M942.46,522.39 L846.79,574.88 L896.19,625.52 L925.22,697.78 L1043.48,700.50 L1001.41,765.14 L953.40,825.58 L868.51,841.62" stroke="#98A4AE"/>
+<path d="M556.45,693.73 L649.64,722.55 L686.52,707.16 L711.29,753.85 L749.36,740.57 L798.03,731.43" stroke="#5E6A71"/>
+<path d="M849.54,948.67 L827.59,910.49 L823.26,876.37 L815.00,840.16 L868.51,841.62 L881.90,882.04 L849.54,948.67" stroke="#7A8B94"/>
+</g>
+<g id="dk-routes-rapid-casing" fill="none" stroke="#0B0F14" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M663.87,540.82 L676.11,585.53 L686.34,625.99 L710.18,662.01 L726.18,693.86 L748.21,740.59 L776.34,806.46 L822.10,876.38 L826.43,910.51 L848.38,948.68 L896.14,1018.57 L926.04,1065.18"/>
+<path d="M648.48,722.56 L685.37,707.17 L726.18,693.86 L759.21,682.78 L790.31,673.85 L832.95,651.96 L895.03,625.54 L963.04,605.43 L1065.96,572.02"/>
+<path d="M489.51,987.11 L586.90,964.65 L742.66,926.49 L826.43,910.51 L880.74,882.05 L952.25,825.60 L1000.25,765.16 L1042.33,700.51 L1129.76,673.70"/>
+<path d="M686.34,625.99 L740.76,610.38 L777.39,575.75 L817.61,517.57 L840.14,448.93 L810.53,263.46 L790.44,214.58"/>
+<path d="M822.10,876.38 L813.84,840.17 L803.52,795.44 L796.88,731.44 L790.31,673.85 L740.76,610.38"/>
+<path d="M686.34,625.99 L777.39,575.75 L845.63,574.90 L895.03,625.54 L963.82,665.23 L1042.33,700.51"/>
+</g>
+<g id="dk-routes-rapid" fill="none" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M663.87,540.82 L676.11,585.53 L686.34,625.99 L710.18,662.01 L726.18,693.86 L748.21,740.59 L776.34,806.46 L822.10,876.38 L826.43,910.51 L848.38,948.68 L896.14,1018.57 L926.04,1065.18" stroke="#0072CE" data-route="1"/>
+<path d="M648.48,722.56 L685.37,707.17 L726.18,693.86 L759.21,682.78 L790.31,673.85 L832.95,651.96 L895.03,625.54 L963.04,605.43 L1065.96,572.02" stroke="#E4002B" data-route="2"/>
+<path d="M489.51,987.11 L586.90,964.65 L742.66,926.49 L826.43,910.51 L880.74,882.05 L952.25,825.60 L1000.25,765.16 L1042.33,700.51 L1129.76,673.70" stroke="#FF8200" data-route="3"/>
+<path d="M686.34,625.99 L740.76,610.38 L777.39,575.75 L817.61,517.57 L840.14,448.93 L810.53,263.46 L790.44,214.58" stroke="#FFC72C" data-route="4"/>
+<path d="M822.10,876.38 L813.84,840.17 L803.52,795.44 L796.88,731.44 L790.31,673.85 L740.76,610.38" stroke="#009A44" data-route="5"/>
+<path d="M686.34,625.99 L777.39,575.75 L845.63,574.90 L895.03,625.54 L963.82,665.23 L1042.33,700.51" stroke="#8A3FA0" data-route="6"/>
+</g>
+</g>
+<g id="dk-stations">
+<g id="dk-stations-regular" fill="#0B0F14" stroke-width="2.2">
+<circle cx="676.11" cy="585.53" r="4.2" stroke="#0072CE"/>
+<circle cx="790.44" cy="214.58" r="4.2" stroke="#FFC72C"/>
+<circle cx="810.53" cy="263.46" r="4.2" stroke="#FFC72C"/>
+<circle cx="896.14" cy="1018.57" r="4.2" stroke="#0072CE"/>
+<circle cx="926.04" cy="1065.18" r="4.2" stroke="#0072CE"/>
+<circle cx="817.61" cy="517.57" r="4.2" stroke="#FFC72C"/>
+<circle cx="776.34" cy="806.46" r="4.2" stroke="#0072CE"/>
+<circle cx="1065.96" cy="572.02" r="4.2" stroke="#E4002B"/>
+<circle cx="1129.76" cy="673.7" r="4.2" stroke="#FF8200"/>
+<circle cx="963.04" cy="605.43" r="4.2" stroke="#E4002B"/>
+<circle cx="710.18" cy="662.01" r="4.2" stroke="#0072CE"/>
+<circle cx="832.95" cy="651.96" r="4.2" stroke="#E4002B"/>
+<circle cx="840.14" cy="448.93" r="4.2" stroke="#FFC72C"/>
+<circle cx="963.82" cy="665.23" r="4.2" stroke="#8A3FA0"/>
+<circle cx="663.87" cy="540.82" r="4.2" stroke="#0072CE"/>
+<circle cx="742.66" cy="926.49" r="4.2" stroke="#FF8200"/>
+<circle cx="586.9" cy="964.65" r="4.2" stroke="#FF8200"/>
+<circle cx="489.51" cy="987.11" r="4.2" stroke="#FF8200"/>
+<circle cx="759.21" cy="682.78" r="4.2" stroke="#E4002B"/>
+<circle cx="803.52" cy="795.44" r="4.2" stroke="#009A44"/>
+</g>
+<g id="dk-stations-interchange" fill="#FFFFFF" stroke="#0B0F14" stroke-width="2.6">
+<circle cx="848.96" cy="948.67" r="6.5"/>
+<circle cx="740.76" cy="610.38" r="6.5"/>
+<circle cx="895.61" cy="625.53" r="6.5"/>
+<circle cx="952.82" cy="825.59" r="6.5"/>
+<circle cx="686.34" cy="625.99" r="6.5"/>
+<circle cx="790.31" cy="673.85" r="6.5"/>
+<circle cx="685.95" cy="707.16" r="6.5"/>
+<circle cx="649.06" cy="722.55" r="6.5"/>
+<circle cx="814.42" cy="840.17" r="6.5"/>
+<circle cx="881.32" cy="882.05" r="6.5"/>
+<circle cx="846.21" cy="574.89" r="6.5"/>
+<circle cx="777.39" cy="575.75" r="6.5"/>
+<circle cx="822.68" cy="876.38" r="6.5"/>
+<circle cx="1042.9" cy="700.51" r="6.5"/>
+<circle cx="726.18" cy="693.86" r="6.5"/>
+<circle cx="748.79" cy="740.58" r="6.5"/>
+<circle cx="827.01" cy="910.5" r="6.5"/>
+<circle cx="1000.83" cy="765.15" r="6.5"/>
+<circle cx="797.45" cy="731.44" r="6.5"/>
+<circle cx="868.51" cy="841.62" r="6.5"/>
+</g>
+</g>
+</g>
+<g id="dk-station-labels" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif" fill="#E8EDF3" stroke="#0B0F14" stroke-width="3.2" stroke-linejoin="round" paint-order="stroke">
+<text x="857" y="952.9" text-anchor="start" font-size="12" font-weight="600">Al Batha</text>
+<text x="748.8" y="614.6" text-anchor="start" font-size="12" font-weight="600">Al Ghadir</text>
+<text x="903.6" y="629.7" text-anchor="start" font-size="12" font-weight="600">Al Hamra</text>
+<text x="960.8" y="829.8" text-anchor="start" font-size="12" font-weight="600">Al Jazirah</text>
+<text x="694.3" y="630.2" text-anchor="start" font-size="12" font-weight="600">KAFD</text>
+<text x="798.3" y="678" text-anchor="start" font-size="12" font-weight="600">King Abdulaziz Rd</text>
+<text x="677.9" y="711.4" text-anchor="end" font-size="12" font-weight="600">King Salman Oasis</text>
+<text x="641.1" y="726.8" text-anchor="end" font-size="12" font-weight="600">King Saud University</text>
+<text x="806.4" y="844.4" text-anchor="end" font-size="12" font-weight="600">Al Murabba</text>
+<text x="889.3" y="886.2" text-anchor="start" font-size="12" font-weight="600">Al Marqab</text>
+<text x="854.2" y="579.1" text-anchor="start" font-size="12" font-weight="600">Al Nada</text>
+<text x="785.4" y="579.9" text-anchor="start" font-size="12" font-weight="600">Al Nafl</text>
+<text x="814.7" y="880.6" text-anchor="end" font-size="12" font-weight="600">National Museum</text>
+<text x="1050.9" y="704.7" text-anchor="start" font-size="12" font-weight="600">Al Naseem</text>
+<text x="740.8" y="744.8" text-anchor="end" font-size="12" font-weight="600">Al Olaya</text>
+<text x="835" y="914.7" text-anchor="start" font-size="12" font-weight="600">Qasr Al Hokm</text>
+<text x="1008.8" y="769.4" text-anchor="start" font-size="12" font-weight="600">Al Rawdah</text>
+<text x="805.5" y="735.6" text-anchor="start" font-size="12" font-weight="600">Al Sulimaniyah</text>
+<text x="876.5" y="845.8" text-anchor="start" font-size="12" font-weight="600">Al Malaz</text>
+</g>
+<g id="dk-legend" transform="translate(52.0,806.0)" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif">
+<rect x="0" y="0" width="330" height="342" rx="6" fill="#0B0F14" fill-opacity="0.88" stroke="#2A3544" stroke-width="0.8"/>
+<text x="14" y="24" font-size="10.5" font-weight="700" letter-spacing="1.4" fill="#8B98A9">LEGEND</text>
+<g transform="translate(14,44.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#0072CE" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="48.5" font-size="11.5" fill="#E8EDF3">Line 1 · Blue Line</text>
+<g transform="translate(14,65.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#E4002B" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="69.5" font-size="11.5" fill="#E8EDF3">Line 2 · Red Line</text>
+<g transform="translate(14,86.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#FF8200" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="90.5" font-size="11.5" fill="#E8EDF3">Line 3 · Orange Line</text>
+<g transform="translate(14,107.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#FFC72C" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="111.5" font-size="11.5" fill="#E8EDF3">Line 4 · Yellow Line</text>
+<g transform="translate(14,128.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#009A44" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="132.5" font-size="11.5" fill="#E8EDF3">Line 5 · Green Line</text>
+<g transform="translate(14,149.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#8A3FA0" stroke-width="4.5" stroke-linecap="round"/></g>
+<text x="52" y="153.5" font-size="11.5" fill="#E8EDF3">Line 6 · Purple Line</text>
+<g transform="translate(14,170.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#98A4AE" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="6 3"/></g>
+<text x="52" y="174.5" font-size="11.5" fill="#E8EDF3">Bus 150</text>
+<g transform="translate(14,191.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#5E6A71" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="6 3"/></g>
+<text x="52" y="195.5" font-size="11.5" fill="#E8EDF3">Bus 7</text>
+<g transform="translate(14,212.5)"><line x1="0" y1="0" x2="28" y2="0" stroke="#7A8B94" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="6 3"/></g>
+<text x="52" y="216.5" font-size="11.5" fill="#E8EDF3">Bus 9</text>
+<g transform="translate(14,233.5)"><circle cx="14" cy="0" r="4.2" fill="#0B0F14" stroke="#E8EDF3" stroke-width="2.2"/></g>
+<text x="52" y="237.5" font-size="11.5" fill="#E8EDF3">Station</text>
+<g transform="translate(14,254.5)"><circle cx="14" cy="0" r="6.5" fill="#FFFFFF" stroke="#0B0F14" stroke-width="2.6"/></g>
+<text x="52" y="258.5" font-size="11.5" fill="#E8EDF3">Interchange</text>
+<g transform="translate(14,275.5)"><circle cx="14" cy="0" r="7" fill="#4FC3F7" fill-opacity="0.25" stroke="#4FC3F7" stroke-opacity="0.6"/></g>
+<text x="52" y="279.5" font-size="11.5" fill="#E8EDF3">500 m walk catchment</text>
+<g transform="translate(14,296.5)"><circle cx="14" cy="0" r="7" fill="#4FC3F7" fill-opacity="0.25" stroke="#4FC3F7" stroke-opacity="0.6"/></g>
+<text x="52" y="300.5" font-size="11.5" fill="#E8EDF3">1,000 m walk catchment</text>
+<g transform="translate(14,317.5)"><rect x="2" y="-6" width="24" height="12" fill="#151C26" stroke="#2A3544"/></g>
+<text x="52" y="321.5" font-size="11.5" fill="#E8EDF3">District boundary</text>
+</g>
+<g id="dk-scale-bar" transform="translate(1343.2,1134.0)" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif">
+<rect x="0" y="0" width="48.21" height="6" fill="#E8EDF3" stroke="#E8EDF3" stroke-width="0.8"/>
+<rect x="48.21" y="0" width="48.21" height="6" fill="#111720" stroke="#E8EDF3" stroke-width="0.8"/>
+<rect x="96.42" y="0" width="48.21" height="6" fill="#E8EDF3" stroke="#E8EDF3" stroke-width="0.8"/>
+<rect x="144.63" y="0" width="48.21" height="6" fill="#111720" stroke="#E8EDF3" stroke-width="0.8"/>
+<text x="0" y="-5" text-anchor="middle" font-size="10.5" fill="#E8EDF3">0</text>
+<text x="96.42" y="-5" text-anchor="middle" font-size="10.5" fill="#E8EDF3">5</text>
+<text x="192.83" y="-5" text-anchor="middle" font-size="10.5" fill="#E8EDF3">10 km</text>
+</g>
+<g id="dk-north-arrow" transform="translate(1530.0,152.0)" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif">
+<path d="M0,-16 L8,8 L0,3 L-8,8 Z" fill="#E8EDF3"/>
+<text x="0" y="24" text-anchor="middle" font-size="11" font-weight="700" fill="#E8EDF3">N</text>
+</g>
+<g id="dk-title-block" font-family="'Inter', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif">
+<rect x="36" y="30" width="4" height="58" fill="#4FC3F7" rx="2"/>
+<text x="54" y="58" font-size="30" font-weight="700" fill="#E8EDF3" letter-spacing="-0.3">Riyadh Transit Network</text>
+<text x="54" y="84" font-size="14" fill="#8B98A9">9 routes · 44 stations · 500 m, 1,000 m catchments · EPSG:32638</text>
+<text x="1564" y="84" font-size="11" fill="#8B98A9" text-anchor="end">GTFS: riyadh_sample_gtfs.zip · riyadh-transit-scope 0.1.0 · 2026-09-29</text>
+</g>
+</svg></div>
+  </figure>
+</section>
+  
+<section id="benchmark" class="section">
+  <header class="section-head">
+    <p class="eyebrow">Multi-city benchmark</p>
+    <h2>Riyadh · Melbourne · Los Angeles</h2>
+    <p class="lede">Bars are scaled to the largest value in each row; ★ marks the best city
+      for that metric.</p>
+  </header>
+  <p class="notice">Indicative, rounded figures compiled for comparative research demonstration. Values mix published agency statistics and analyst estimates of differing years and definitions; verify against primary sources before citing. Override with `transit benchmark --data your_profiles.json`.</p>
+  <div class="table-wrap"><table class="bench"><thead><tr><th>Metric</th><th class="n">Riyadh<span class="yr">2025</span></th><th class="n">Melbourne<span class="yr">2024</span></th><th class="n">Los Angeles<span class="yr">2024</span></th></tr></thead>
+    <tbody><tr><th scope="row">Urban extent<span class="dir">km² · context</span></th><td class="n" title="Riyadh: 1,800 km²"><span class="val">1,800</span><span class="bar" style="--w:48.6%"></span></td><td class="n" title="Melbourne: 2,540 km²"><span class="val">2,540</span><span class="bar" style="--w:68.6%"></span></td><td class="n" title="Los Angeles: 3,700 km²"><span class="val">3,700</span><span class="bar" style="--w:100.0%"></span></td></tr><tr><th scope="row">Network coverage area<span class="dir">km² · higher is better</span></th><td class="n" title="Riyadh: 720 km²"><span class="val">720</span><span class="bar" style="--w:31.3%"></span></td><td class="n" title="Melbourne: 1,900 km²"><span class="val">1,900</span><span class="bar" style="--w:82.6%"></span></td><td class="n best" title="Los Angeles: 2,300 km²"><span class="val">2,300 ★</span><span class="bar" style="--w:100.0%"></span></td></tr><tr><th scope="row">Coverage vs. urban extent<span class="dir">% · higher is better</span></th><td class="n" title="Riyadh: 40.0 %"><span class="val">40.0</span><span class="bar" style="--w:53.5%"></span></td><td class="n best" title="Melbourne: 74.8 %"><span class="val">74.8 ★</span><span class="bar" style="--w:100.0%"></span></td><td class="n" title="Los Angeles: 62.2 %"><span class="val">62.2</span><span class="bar" style="--w:83.2%"></span></td></tr><tr><th scope="row">Total route length<span class="dir">km · higher is better</span></th><td class="n" title="Riyadh: 2,076 km"><span class="val">2,076</span><span class="bar" style="--w:29.0%"></span></td><td class="n best" title="Melbourne: 7,155 km"><span class="val">7,155 ★</span><span class="bar" style="--w:100.0%"></span></td><td class="n" title="Los Angeles: 3,975 km"><span class="val">3,975</span><span class="bar" style="--w:55.6%"></span></td></tr><tr><th scope="row">Route density<span class="dir">km/km² · higher is better</span></th><td class="n" title="Riyadh: 1.15 km/km²"><span class="val">1.15</span><span class="bar" style="--w:40.9%"></span></td><td class="n best" title="Melbourne: 2.82 km/km²"><span class="val">2.82 ★</span><span class="bar" style="--w:100.0%"></span></td><td class="n" title="Los Angeles: 1.07 km/km²"><span class="val">1.07</span><span class="bar" style="--w:38.1%"></span></td></tr><tr><th scope="row">Rapid transit route length<span class="dir">km · higher is better</span></th><td class="n" title="Riyadh: 176 km"><span class="val">176</span><span class="bar" style="--w:43.5%"></span></td><td class="n best" title="Melbourne: 405 km"><span class="val">405 ★</span><span class="bar" style="--w:100.0%"></span></td><td class="n" title="Los Angeles: 175 km"><span class="val">175</span><span class="bar" style="--w:43.2%"></span></td></tr><tr><th scope="row">Rapid transit share of route-km<span class="dir">% · higher is better</span></th><td class="n best" title="Riyadh: 8.5 %"><span class="val">8.5 ★</span><span class="bar" style="--w:100.0%"></span></td><td class="n" title="Melbourne: 5.7 %"><span class="val">5.7</span><span class="bar" style="--w:67.1%"></span></td><td class="n" title="Los Angeles: 4.4 %"><span class="val">4.4</span><span class="bar" style="--w:51.8%"></span></td></tr><tr><th scope="row">Mean peak headway<span class="dir">min · lower is better</span></th><td class="n best" title="Riyadh: 14.2 min"><span class="val">14.2 ★</span><span class="bar" style="--w:74.7%"></span></td><td class="n" title="Melbourne: 19.0 min"><span class="val">19.0</span><span class="bar" style="--w:100.0%"></span></td><td class="n" title="Los Angeles: 14.7 min"><span class="val">14.7</span><span class="bar" style="--w:77.4%"></span></td></tr><tr><th scope="row">Rapid transit : bus fleet ratio<span class="dir">× · higher is better</span></th><td class="n" title="Riyadh: 0.54 ×"><span class="val">0.54</span><span class="bar" style="--w:77.3%"></span></td><td class="n best" title="Melbourne: 0.69 ×"><span class="val">0.69 ★</span><span class="bar" style="--w:100.0%"></span></td><td class="n" title="Los Angeles: 0.20 ×"><span class="val">0.20</span><span class="bar" style="--w:28.2%"></span></td></tr><tr><th scope="row">Public transit modal split<span class="dir">% · higher is better</span></th><td class="n" title="Riyadh: 2.0 %"><span class="val">2.0</span><span class="bar" style="--w:16.7%"></span></td><td class="n best" title="Melbourne: 12.0 %"><span class="val">12.0 ★</span><span class="bar" style="--w:100.0%"></span></td><td class="n" title="Los Angeles: 5.0 %"><span class="val">5.0</span><span class="bar" style="--w:41.7%"></span></td></tr><tr><th scope="row">Monthly pass / household income<span class="dir">% · lower is better</span></th><td class="n best" title="Riyadh: 0.87 %"><span class="val">0.87 ★</span><span class="bar" style="--w:37.7%"></span></td><td class="n" title="Melbourne: 2.31 %"><span class="val">2.31</span><span class="bar" style="--w:100.0%"></span></td><td class="n" title="Los Angeles: 1.04 %"><span class="val">1.04</span><span class="bar" style="--w:45.0%"></span></td></tr><tr><th scope="row">Fare accessibility index<span class="dir">/100 · higher is better</span></th><td class="n best" title="Riyadh: 91.3 /100"><span class="val">91.3 ★</span><span class="bar" style="--w:100.0%"></span></td><td class="n" title="Melbourne: 76.9 /100"><span class="val">76.9</span><span class="bar" style="--w:84.2%"></span></td><td class="n" title="Los Angeles: 89.6 /100"><span class="val">89.6</span><span class="bar" style="--w:98.1%"></span></td></tr><tr><th scope="row">Route-km per 100k residents<span class="dir">km · higher is better</span></th><td class="n" title="Riyadh: 29.7 km"><span class="val">29.7</span><span class="bar" style="--w:21.6%"></span></td><td class="n best" title="Melbourne: 137.6 km"><span class="val">137.6 ★</span><span class="bar" style="--w:100.0%"></span></td><td class="n" title="Los Angeles: 39.8 km"><span class="val">39.8</span><span class="bar" style="--w:28.9%"></span></td></tr></tbody></table></div>
+  <div class="two-col">
+    <div><h3>Key findings</h3><ul class="findings"><li><strong>Network coverage area:</strong> Los Angeles leads at 2,300 km²; Riyadh trails at 720 km² (3.2× difference).</li><li><strong>Coverage vs. urban extent:</strong> Melbourne leads at 74.8 %; Riyadh trails at 40.0 % (1.9× difference).</li><li><strong>Total route length:</strong> Melbourne leads at 7,155 km; Riyadh trails at 2,076 km (3.4× difference).</li><li><strong>Route density:</strong> Melbourne leads at 2.82 km/km²; Los Angeles trails at 1.07 km/km² (2.6× difference).</li><li><strong>Rapid transit route length:</strong> Melbourne leads at 405 km; Los Angeles trails at 175 km (2.3× difference).</li><li><strong>Rapid transit share of route-km:</strong> Riyadh leads at 8.5 %; Los Angeles trails at 4.4 % (1.9× difference).</li><li><strong>Mean peak headway:</strong> Riyadh leads at 14.2 min; Melbourne trails at 19.0 min (1.3× difference).</li><li><strong>Rapid transit : bus fleet ratio:</strong> Melbourne leads at 0.69 ×; Los Angeles trails at 0.20 × (3.5× difference).</li><li><strong>Public transit modal split:</strong> Melbourne leads at 12.0 %; Riyadh trails at 2.0 % (6.0× difference).</li><li><strong>Monthly pass / household income:</strong> Riyadh leads at 0.87 %; Melbourne trails at 2.31 % (2.7× difference).</li><li><strong>Fare accessibility index:</strong> Riyadh leads at 91.3 /100; Melbourne trails at 76.9 /100 (1.2× difference).</li><li><strong>Route-km per 100k residents:</strong> Melbourne leads at 137.6 km; Riyadh trails at 29.7 km (4.6× difference).</li></ul></div>
+    <div><h3>Sources</h3><ul class="sources"><li><strong>Riyadh (2025)</strong> — Royal Commission for Riyadh City — Riyadh Metro &amp; bus programme fact sheets; GASTAT household income &amp; expenditure survey (national, scaled); Modal split: pre-metro household travel surveys (≈1–2%). Metro opened in phases from Dec 2024; modal split reflects pre-opening baseline.</li><li><strong>Melbourne (2024)</strong> — Department of Transport and Planning Victoria — network statistics; ABS Census — method of travel to work; Public Transport Victoria — myki Pass fares (28+ day rate). Tram network (world&#x27;s largest) is street-running and reported as light rail.</li><li><strong>Los Angeles (2024)</strong> — LA Metro — facts at a glance; US Census ACS — means of transportation to work (LA County); LA Metro fare capping (monthly equivalent). Rapid transit includes heavy rail (B/D) and grade-separated light rail lines (A/C/E/K).</li></ul></div>
+  </div>
+</section>
+  
+<section id="heat" class="section">
+  <header class="section-head">
+    <p class="eyebrow">Heat walk</p>
+    <h2>Effective Walkable Catchment Score</h2>
+    <p class="lede">How far people will walk to a station in summer heat. Above 40 °C each
+      unshaded metre counts for more. Adjust the corridor and the score updates.</p>
+  </header>
+  <div class="sim">
+    <form id="sim-form" class="controls" autocomplete="off">
+      <label for="in-temp">Air temperature <output id="o-temp"></output></label>
+      <input id="in-temp" name="temp" type="range" min="30" max="52" step="0.5"
+        value="44.0">
+      <label for="in-shade">Shaded share <output id="o-shade"></output></label>
+      <input id="in-shade" name="shade" type="range" min="0" max="100" step="1"
+        value="35.0">
+      <label for="in-dist">Corridor length <output id="o-dist"></output></label>
+      <input id="in-dist" name="dist" type="range" min="100" max="2000" step="50"
+        value="800.0">
+      <label for="in-solar">Solar irradiance <output id="o-solar"></output></label>
+      <input id="in-solar" name="solar" type="range" min="0" max="1100" step="25" value="950">
+      <div class="row">
+        <div><label for="in-type">Shade type</label>
+          <select id="in-type" name="type">
+            <option value="mixed">Mixed</option><option value="trees">Trees</option>
+            <option value="arcade">Arcade</option><option value="sail">Shade sail</option>
+          </select></div>
+        <div><label for="in-rh">Humidity %</label>
+          <input id="in-rh" name="rh" type="number" min="0" max="100" step="1" value="15"></div>
+        <div><label for="in-wind">Wind m/s</label>
+          <input id="in-wind" name="wind" type="number" min="0" max="15" step="0.5"
+            value="1.5"></div>
+      </div>
+      <button type="button" id="reset">Reset to report scenario</button>
+    </form>
+    <div class="result" aria-live="polite">
+      <div class="score">
+        <span class="score-num" id="r-ewcs">–</span>
+        <span class="score-meta"><span class="pill" id="r-pill"><span class="dot"></span>
+          <span id="r-grade">–</span></span><span id="r-penalty" class="muted"></span></span>
+      </div>
+      <dl class="stats" id="r-stats"></dl>
+      <div class="table-wrap"><table id="r-segs"><thead><tr><th>Segment</th>
+        <th class="n">Length m</th><th class="n">Tmrt °C</th><th class="n">Feels °C</th>
+        <th>Heat stress</th><th class="n">Pace ×</th><th class="n">Penalty ×</th>
+        <th class="n">Perceived min</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+  <h3>Sensitivity: EWCS by temperature and shade</h3>
+  <p class="note">Deeper cells lose more of the walkable catchment. The outlined cell is
+    nearest the scenario above. Length, sun and shade type as set above.</p>
+  <div class="table-wrap"><table class="heat" id="heat-grid"></table></div>
+</section>
+  
+<section id="method" class="section">
+  <header class="section-head">
+    <p class="eyebrow">Method</p>
+    <h2>How the numbers are made</h2>
+  </header>
+  <div class="method">
+    <div>
+      <h3>Network</h3>
+      <p>Headway is the mean gap between consecutive departures per route and direction, split
+        into peak (07:00–09:00, 16:00–19:00) and off-peak by the earlier departure. Stops within
+        150 m, or sharing a parent station, form one interchange node. Catchments are dissolved
+        buffers in UTM 38N.</p>
+    </div>
+    <div>
+      <h3>Heat walk</h3>
+      <p>Feels-like temperature = air + 0.30 × radiant gain (26 °C per kW/m² in sun, cut by
+        shade) + humidity − wind. Walking pace drops 0.8% per °C above 32. Above 40 °C each
+        unshaded metre is weighted by 1 + (T − 40)(0.12·G/1000 + 0.04·km unshaded).
+        EWCS = 100 × nominal ÷ perceived walk time. This is a screening model for comparing
+        designs, not a substitute for UTCI or PET simulation.</p>
+    </div>
+    <div>
+      <h3>Rebuild this page</h3>
+      <p>Source feed: <code>riyadh_sample_gtfs.zip</code>. Regenerate with:</p>
+      <pre><code>transit report-html --temp 44 --shade 35 --distance 800</code></pre>
+    </div>
+  </div>
+</section>
+  <footer class="colophon">riyadh-transit-scope 0.1.0 · generated 2026-09-29</footer>
+</div>
+<script>
+(() => {
+  const P = {"radiant_gain_c_per_kw":26.0,"radiant_weight":0.3,"comfort_threshold_c":32.0,"speed_decay_per_c":0.008,"min_speed_factor":0.6,"penalty_threshold_c":40.0,"unshaded_penalty_per_c":0.12,"shaded_penalty_per_c":0.03,"exposure_amplification_per_c_km":0.04};
+  const SHADE = {"trees": [1.0, 1.0], "arcade": [0.95, 0.3], "mixed": [0.9, 0.5], "sail": [0.8, 0.0]};
+  const DEFAULTS = {"in-temp": 44.0, "in-shade": 35.0, "in-dist": 800.0, "in-solar": 950, "in-type": "mixed", "in-rh": 15, "in-wind": 1.5};
+  const $ = (id) => document.getElementById(id);
+
+  function band(c) {
+    if (c > 46) return "extreme heat stress";
+    if (c > 38) return "very strong heat stress";
+    if (c > 32) return "strong heat stress";
+    if (c > 26) return "moderate heat stress";
+    if (c > 9) return "no thermal stress";
+    return "cold stress";
+  }
+  function grade(e) {
+    for (const [t, g] of [[90, "A"], [80, "B"], [70, "C"], [60, "D"], [50, "E"]]) if (e >= t) return g;
+    return "F";
+  }
+  function segment(kind, dist, s, unshadedM) {
+    const [q, evap] = SHADE[s.type];
+    const solarIdx = s.solar / 1000;
+    const dSun = P.radiant_gain_c_per_kw * solarIdx;
+    const ta = kind === "unshaded" ? s.temp : s.temp - evap;
+    const dMrt = kind === "unshaded" ? dSun : dSun * (1 - 0.85 * q);
+    const w = Math.max(0, Math.min(s.wind, 6) - 0.5);
+    const relief = s.temp < 35 ? 0.6 * w : 0.2 * w;
+    const hum = 0.04 * Math.max(0, s.rh - 40);
+    const cti = ta + P.radiant_weight * dMrt + hum - relief;
+    let pace = 1 - P.speed_decay_per_c * Math.max(0, cti - P.comfort_threshold_c);
+    pace = Math.min(1, Math.max(P.min_speed_factor, pace));
+    const excess = Math.max(0, s.temp - P.penalty_threshold_c);
+    const pen = kind === "unshaded"
+      ? 1 + excess * (P.unshaded_penalty_per_c * solarIdx + P.exposure_amplification_per_c_km * unshadedM / 1000)
+      : 1 + P.shaded_penalty_per_c * excess;
+    const walk = dist / (s.walk * pace) / 60;
+    return { kind, dist, mrt: ta + dMrt, cti, stress: band(cti), pace, pen, walk, perceived: walk * pen };
+  }
+  function simulate(s) {
+    const shaded = s.dist * s.shade / 100, unshaded = s.dist - shaded;
+    const segs = [["shaded", shaded], ["unshaded", unshaded]].filter(([, d]) => d > 0)
+      .map(([k, d]) => segment(k, d, s, unshaded));
+    const t0 = s.dist / s.walk / 60;
+    const perceived = segs.reduce((a, g) => a + g.perceived, 0);
+    const heat = segs.reduce((a, g) => a + g.walk, 0);
+    const ewcs = Math.min(100, perceived ? 100 * t0 / perceived : 100);
+    const dose = segs.reduce((a, g) => a + Math.max(0, g.cti - P.comfort_threshold_c) * g.walk, 0);
+    return { segs, t0, heat, perceived, ewcs, dose, rEff: s.dist * ewcs / 100,
+             areaLoss: 100 * (1 - (ewcs / 100) ** 2), penalty: s.temp > P.penalty_threshold_c };
+  }
+  function shadeNeeded(s, target) {
+    const at = (x) => simulate({ ...s, shade: x }).ewcs;
+    if (at(100) < target) return null;
+    if (at(0) >= target) return 0;
+    let lo = 0, hi = 100;
+    for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (at(m) >= target) hi = m; else lo = m; }
+    return hi;
+  }
+  const f1 = (v) => v.toLocaleString(undefined, { maximumFractionDigits: 1, minimumFractionDigits: 1 });
+  const f0 = (v) => Math.round(v).toLocaleString();
+
+  function read() {
+    const num = (id, fb) => { const v = parseFloat($(id).value); return Number.isFinite(v) ? v : fb; };
+    return { temp: num("in-temp", 44), shade: num("in-shade", 35), dist: num("in-dist", 800),
+             solar: num("in-solar", 950), type: $("in-type").value,
+             rh: Math.min(100, Math.max(0, num("in-rh", 15))),
+             wind: Math.min(15, Math.max(0, num("in-wind", 1.5))), walk: 1.34 };
+  }
+  const TEMPS = [36, 40, 42, 44, 46, 48], SHADES = [0, 20, 40, 60, 80, 100];
+
+  function render() {
+    const s = read();
+    $("o-temp").textContent = s.temp.toFixed(1) + " °C";
+    $("o-shade").textContent = Math.round(s.shade) + "%";
+    $("o-dist").textContent = f0(s.dist) + " m";
+    $("o-solar").textContent = f0(s.solar) + " W/m²";
+    const r = simulate(s);
+    const g = grade(r.ewcs), cls = r.ewcs >= 80 ? "good" : r.ewcs >= 60 ? "warn" : "crit";
+    const label = cls === "good" ? "Comfortable" : cls === "warn" ? "Degraded" : "Severe loss";
+    $("r-ewcs").textContent = f1(r.ewcs);
+    $("r-pill").className = "pill " + cls;
+    $("r-grade").textContent = "Grade " + g + " · " + label;
+    $("r-penalty").textContent = r.penalty ? "Heat penalty active (air above 40 °C)" : "Below 40 °C: no distance penalty";
+    const need = shadeNeeded(s, 70);
+    const stats = [
+      ["Nominal walk", f1(r.t0) + " min"], ["Heat-adjusted walk", f1(r.heat) + " min"],
+      ["Perceived walk", f1(r.perceived) + " min"], ["Extra perceived time", "+" + f1(r.perceived - r.t0) + " min"],
+      ["Effective catchment radius", f0(r.rEff) + " m"], ["Catchment area lost", f1(r.areaLoss) + "%"],
+      ["Heat exposure dose", f0(r.dose) + " °C·min"],
+      ["Shade needed for EWCS 70", need === null ? "Not reachable" : Math.ceil(need) + "%"],
+    ];
+    $("r-stats").innerHTML = stats.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
+    $("r-segs").tBodies[0].innerHTML = r.segs.map((x) => `<tr><td>${x.kind}</td><td class="n">${f0(x.dist)}</td>
+      <td class="n">${f1(x.mrt)}</td><td class="n">${f1(x.cti)}</td><td>${x.stress}</td>
+      <td class="n">${x.pace.toFixed(2)}</td><td class="n">${x.pen.toFixed(2)}</td><td class="n">${f1(x.perceived)}</td></tr>`).join("");
+
+    const nearT = TEMPS.reduce((a, b) => Math.abs(b - s.temp) < Math.abs(a - s.temp) ? b : a);
+    const nearS = SHADES.reduce((a, b) => Math.abs(b - s.shade) < Math.abs(a - s.shade) ? b : a);
+    let html = "<thead><tr><th>Air °C \\ shade</th>" + SHADES.map((x) => `<th class="n">${x}%</th>`).join("") + "</tr></thead><tbody>";
+    for (const t of TEMPS) {
+      html += `<tr><th scope="row">${t} °C</th>`;
+      for (const sh of SHADES) {
+        const e = simulate({ ...s, temp: t, shade: sh }).ewcs;
+        const p = Math.max(0, Math.min(100, (100 - e) / 65 * 100));
+        const here = t === nearT && sh === nearS ? " here" : "";
+        html += `<td class="${p > 55 ? "deep" : ""}${here}" style="--p:${p.toFixed(0)}%" title="${t} °C, ${sh}% shade: EWCS ${f1(e)}">${Math.round(e)}</td>`;
+      }
+      html += "</tr>";
+    }
+    $("heat-grid").innerHTML = html + "</tbody>";
+  }
+  $("sim-form").addEventListener("input", render);
+  $("sim-form").addEventListener("submit", (ev) => ev.preventDefault());
+  $("reset").addEventListener("click", () => {
+    for (const [id, v] of Object.entries(DEFAULTS)) $(id).value = v;
+    render();
+  });
+  render();
+})();
+</script>
+</body>
+</html>

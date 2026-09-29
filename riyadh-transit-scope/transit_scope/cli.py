@@ -6,6 +6,7 @@ analyze            Parse a GTFS feed, print network KPIs, export a JSON report.
 benchmark          Compare Riyadh / Melbourne / Los Angeles (or custom) networks.
 simulate-corridor  Heat-penalised walkability (EWCS) for a station access corridor.
 export-svg         Render a styled standalone SVG map from GeoJSON + GTFS.
+report-html        Compile everything into one self-contained HTML report.
 sample-data        Copy the bundled mock data into a working directory.
 
 Every command runs out-of-the-box against bundled Riyadh sample data.
@@ -498,6 +499,48 @@ def export_svg(
         network = f"{len(result.route_lines)} routes · {len(result.nodes)} stations"
         summary.add_row("Network", network)
     console.print(Panel(summary, title="[bold green]✓ SVG map exported", border_style="green"))
+
+
+# --------------------------------------------------------------------------- #
+# report-html
+# --------------------------------------------------------------------------- #
+
+
+@app.command("report-html")
+@_handle_errors
+def report_html(
+    out: Annotated[Path, typer.Option("--out", "-o", help="Output HTML path.")] = Path(
+        "riyadh_transit_scope.html"
+    ),
+    gtfs: Annotated[
+        Path | None, typer.Option(help="GTFS feed. Defaults to the bundled sample.")
+    ] = None,
+    geojson: Annotated[
+        Path | None, typer.Option(help="District GeoJSON. Defaults to the bundled sample.")
+    ] = None,
+    cities: Annotated[str, typer.Option(help="Benchmark cities.")] = "riyadh,melbourne,la",
+    data: Annotated[Path | None, typer.Option(help="Extra benchmark profiles JSON.")] = None,
+    temp: Annotated[float, typer.Option(help="Heat-walk scenario air temperature (°C).")] = 44.0,
+    shade: Annotated[float, typer.Option(help="Heat-walk scenario shade (%).")] = 35.0,
+    distance: Annotated[float, typer.Option(help="Heat-walk scenario length (m).")] = 800.0,
+    title: Annotated[str, typer.Option(help="Report title.")] = "Riyadh Transit Scope",
+    fragment: Annotated[
+        bool, typer.Option(help="Omit the <html>/<head>/<body> wrapper (for embedding).")
+    ] = False,
+) -> None:
+    """Compile network KPIs, map, benchmark and heat-walk simulator into one HTML file."""
+    from transit_scope.html_report import ReportInputs, build_html_report
+
+    inputs = ReportInputs(
+        gtfs=gtfs, geojson=geojson, cities=tuple(c for c in cities.split(",") if c.strip()),
+        benchmark_data=data, temp_c=temp, shade_pct=shade, distance_m=distance, title=title,
+    )
+    with console.status("[cyan]Running every module and compiling the report…"):
+        html = build_html_report(inputs, fragment=fragment)
+    path = _write(out, html)
+    size_kb = len(html.encode()) / 1024
+    console.print(f"[green]✓[/green] Single-file HTML report written to [bold]{path}[/bold] "
+                  f"({size_kb:,.0f} KB)")
 
 
 # --------------------------------------------------------------------------- #
