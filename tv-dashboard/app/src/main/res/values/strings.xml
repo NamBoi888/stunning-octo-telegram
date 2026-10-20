@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Dashboard</string>
+    <string name="screensaver_name">Riyadh Metro</string>
+    <string name="metro_title">Riyadh Metro</string>
+    <string name="metro_title_ar">مترو الرياض</string>
+    <string name="metro_line">Line %1$d  ·  %2$s</string>
+    <string name="all_apps">All apps</string>
+    <string name="settings">Settings</string>
+    <string name="get_app">Get app</string>
+    <string name="weather_city">Riyadh</string>
+    <string name="weather_loading">Loading weather…</string>
+    <string name="weather_offline">Weather unavailable</string>
+    <string name="weather_high_low">H %1$d°  ·  L %2$d°</string>
+    <string name="weather_updated">Updated %1$s</string>
+    <string name="cant_open">Couldn\'t open %1$s</string>
+</resources>

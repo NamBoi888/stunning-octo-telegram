@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- TV overscan-safe margins: 5% of the 960x540dp screen. -->
+    <dimen name="safe_h">48dp</dimen>
+    <dimen name="safe_v">27dp</dimen>
+    <dimen name="tile_w">188dp</dimen>
+    <dimen name="tile_h">106dp</dimen>
+    <dimen name="tile_gap">10dp</dimen>
+    <dimen name="tile_radius">12dp</dimen>
+</resources>

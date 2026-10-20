@@ -1,0 +1,44 @@
+plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "com.namboi.tvdashboard"
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.namboi.tvdashboard"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    // A fixed key checked into the repo so an APK built on any machine can
+    // update the one already installed on the TV. Fine for a personal sideload.
+    signingConfigs {
+        shared {
+            storeFile file("dashboard.keystore")
+            storePassword "android"
+            keyAlias "dashboard"
+            keyPassword "android"
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.shared
+        }
+        release {
+            signingConfig signingConfigs.shared
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt")
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
