@@ -7,6 +7,9 @@ import { prefersReducedMotion } from "./dom.js";
 const RADIANS = Math.PI / 180;
 const SPIN_DEGREES_PER_SECOND = 5;
 const DEFAULT_TILT = 16;
+// Only the upper part of the globe shows above the panel's edge, so the view
+// is centred this many degrees south of a region to lift it into sight.
+const LOOK_SOUTH_OF_REGION = 28;
 
 const COLOURS = {
   ocean: ["#17475a", "#0b2531"],
@@ -213,7 +216,7 @@ export function createGlobe(canvas, atlas) {
   return {
     // Face a region ([lng, lat] centre and its id), or pass null to spin freely.
     face(regionCentre, regionId) {
-      target = regionCentre ? { lng: regionCentre[0], lat: regionCentre[1] } : null;
+      target = regionCentre ? { lng: regionCentre[0], lat: regionCentre[1] - LOOK_SOUTH_OF_REGION } : null;
       region = regionCentre ? regionId : null;
       wake();
       if (!frame) draw();

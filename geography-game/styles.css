@@ -181,6 +181,7 @@ img {
 .screen {
   flex: 1;
   min-height: 0;
+  animation: screen-in 0.25s ease-out both;
 }
 
 .screen--loading {
@@ -1391,6 +1392,11 @@ img {
 
 /* ---------- 11. Motion and small screens ---------- */
 
+@keyframes screen-in {
+  from {
+    opacity: 0;
+  }
+}
 @keyframes rise {
   from {
     opacity: 0;

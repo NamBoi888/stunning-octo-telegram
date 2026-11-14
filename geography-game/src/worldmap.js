@@ -135,7 +135,8 @@ export class WorldMap {
         tiles.addTo(this.map);
       }
     });
-    tiles.addTo(this.map);
+    // Known to be offline: do not even ask until the connection is back.
+    if (navigator.onLine !== false) tiles.addTo(this.map);
   }
 
   listen(layer, place) {

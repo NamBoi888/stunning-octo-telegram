@@ -100,3 +100,12 @@ Everything about the characters lives in **`src/characters.js`**:
   pairs of friends chat.
 
 Edit that one file to replace the default cast with your own friend group.
+
+---
+
+## Also in this repo: Meridian 🌍
+
+[`geography-game/`](geography-game/) holds a separate project: **Meridian**, a
+geography game where you find countries on an unlabelled map or name them from
+their flags. Open [`geography-game/meridian.html`](geography-game/meridian.html)
+to play, or see its [README](geography-game/README.md).
