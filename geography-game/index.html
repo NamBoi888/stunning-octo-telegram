@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#08171f">
+  <title>Meridian: a geography game</title>
+  <meta name="description" content="Find countries on an unlabelled map or name them from their flags. Ten rounds a game, with a true story about each country's borders or flag.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%2308171f' stroke='%23efe6d0' stroke-width='2'/%3E%3Cellipse cx='16' cy='16' rx='5.5' ry='13' fill='none' stroke='%23e2ad4c' stroke-width='2'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-screen="loading">
+  <a class="skip-link" href="#main">Skip to the game</a>
+
+  <header class="topbar">
+    <button class="brand" id="brand" type="button" aria-label="Meridian, back to the start screen">
+      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="13"/>
+        <path d="M3 16h26"/>
+        <ellipse class="brand__meridian" cx="16" cy="16" rx="5.5" ry="13"/>
+      </svg>
+      <span class="brand__name">Meridian</span>
+    </button>
+
+    <nav class="mode-tabs" id="mode-tabs" aria-label="Game mode" hidden>
+      <button type="button" data-mode="map" aria-pressed="false">Map</button>
+      <button type="button" data-mode="flag" aria-pressed="false">Flags</button>
+    </nav>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud__rounds">
+        <ol class="scalebar" id="hud-scale" aria-hidden="true"></ol>
+        <span class="hud__label" id="hud-round">Round 1 of 10</span>
+      </div>
+      <div class="hud__stat">
+        <span class="hud__value" id="hud-score">0</span>
+        <span class="hud__label">points</span>
+      </div>
+      <div class="hud__stat hud__stat--streak" id="hud-streak-box">
+        <span class="hud__value" id="hud-streak">0</span>
+        <span class="hud__label" id="hud-streak-label">in a row</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Loading -->
+    <section class="screen screen--loading" data-screen="loading" aria-live="polite">
+      <p id="loading-text">Unrolling the map…</p>
+    </section>
+
+    <!-- Start screen: mode selector and settings -->
+    <section class="screen screen--home" data-screen="home" hidden>
+      <div class="home">
+        <div class="home__intro">
+          <h1 class="home__title">Ten countries, one guess each.</h1>
+          <p class="home__lede">Find them on an unlabelled map, or name them from their flags. Each round ends with a true story about the country’s borders or its flag.</p>
+        </div>
+
+        <div class="home__settings">
+          <fieldset class="field">
+            <legend>Countries from</legend>
+            <div class="chips" id="region-chips"></div>
+          </fieldset>
+          <label class="switch">
+            <input type="checkbox" id="speed-toggle">
+            <span class="switch__track" aria-hidden="true"></span>
+            <span class="switch__text">Speed bonus <small>up to 50 extra points for a fast answer</small></span>
+          </label>
+        </div>
+
+        <article class="mode mode--map">
+          <div class="mode__visual">
+            <canvas class="globe" id="globe" aria-hidden="true"></canvas>
+          </div>
+          <div class="mode__body">
+            <h2 class="mode__title">Find it on the map</h2>
+            <p class="mode__text">We name a country and you click where it is. The map has no labels to help.</p>
+            <div class="mode__foot">
+              <button class="button button--primary" id="start-map" type="button">Start map game</button>
+              <span class="best" id="best-map"></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="mode mode--flag">
+          <div class="mode__visual">
+            <div class="flag-wall" id="flag-wall" aria-hidden="true"></div>
+          </div>
+          <div class="mode__body">
+            <h2 class="mode__title">Name the flag</h2>
+            <p class="mode__text">We show a flag and you say whose it is. Afterwards the map shows you where it flies.</p>
+            <fieldset class="field field--compact">
+              <legend>Answer by</legend>
+              <div class="segmented" id="answer-style">
+                <label><input type="radio" name="answer-style" value="choices"><span><b>Casual</b> pick from four</span></label>
+                <label><input type="radio" name="answer-style" value="typed"><span><b>Hardcore</b> type the name</span></label>
+              </div>
+            </fieldset>
+            <div class="mode__foot">
+              <button class="button button--primary" id="start-flag" type="button">Start flag game</button>
+              <span class="best" id="best-flag"></span>
+            </div>
+          </div>
+        </article>
+
+        <footer class="home__foot">
+          <p class="datasource">
+            <span id="data-source">Country data: bundled copy.</span>
+            <button class="linklike" id="data-refresh" type="button">Check REST Countries for updates</button>
+          </p>
+          <p>Borders from Natural Earth. Flags from Flagpedia.</p>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Mode A: find the country on the map -->
+    <section class="screen screen--map" data-screen="map" hidden>
+      <div class="map" id="map" role="application" aria-label="World map. Click the country named above."></div>
+
+      <div class="prompt prompt--map" id="map-prompt">
+        <p class="prompt__line" aria-live="polite">
+          <span class="prompt__verb">Find</span>
+          <strong class="prompt__name" id="map-target"></strong>
+        </p>
+        <div class="timer" id="map-timer" hidden>
+          <span class="timer__track"><span class="timer__bar"></span></span>
+          <span class="timer__value"></span>
+        </div>
+      </div>
+
+      <button class="button button--chip map-fit" id="map-fit" type="button">Show the whole area</button>
+
+      <aside class="result result--floating" id="map-result" aria-live="polite" hidden></aside>
+    </section>
+
+    <!-- Mode B: name the flag -->
+    <section class="screen screen--flag" data-screen="flag" hidden>
+      <div class="flagmode">
+        <div class="flagmode__stage">
+          <div class="prompt prompt--flag">
+            <p class="prompt__line"><span class="prompt__verb">Whose flag is this?</span></p>
+            <div class="timer" id="flag-timer" hidden>
+              <span class="timer__track"><span class="timer__bar"></span></span>
+              <span class="timer__value"></span>
+            </div>
+          </div>
+
+          <div class="flagframe">
+            <img class="flagframe__flag" id="flag-image" alt="The flag to identify" draggable="false">
+          </div>
+
+          <div class="choices" id="flag-choices" hidden></div>
+
+          <form class="typed" id="flag-typed" autocomplete="off" hidden>
+            <div class="typed__field">
+              <label class="visually-hidden" for="flag-input">Country name</label>
+              <input class="typed__input" id="flag-input" type="text" inputmode="text" autocapitalize="words"
+                     autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Type a country name"
+                     role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="flag-suggestions">
+              <ul class="typed__list" id="flag-suggestions" role="listbox" hidden></ul>
+            </div>
+            <div class="typed__actions">
+              <button class="button button--primary" type="submit">Check answer</button>
+              <button class="button button--quiet" id="flag-skip" type="button">I don’t know</button>
+            </div>
+            <p class="typed__hint" id="flag-hint" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <aside class="flagmode__aside">
+          <div class="locator" id="locator">
+            <div class="map map--mini" id="mini-map" aria-hidden="true"></div>
+            <p class="locator__hint" id="locator-hint">Answer, and the map shows where this flag flies.</p>
+          </div>
+          <div class="result" id="flag-result" aria-live="polite" hidden></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- End of game -->
+    <section class="screen screen--summary" data-screen="summary" hidden>
+      <div class="summary" id="summary"></div>
+    </section>
+  </main>
+
+  <dialog class="dialog" id="confirm-dialog" aria-labelledby="confirm-title">
+    <form method="dialog">
+      <h2 class="dialog__title" id="confirm-title"></h2>
+      <p class="dialog__text" id="confirm-text"></p>
+      <div class="dialog__actions">
+        <button class="button button--quiet" value="cancel">Keep playing</button>
+        <button class="button button--primary" id="confirm-ok" value="ok"></button>
+      </div>
+    </form>
+  </dialog>
+
+  <noscript><p class="noscript">Meridian needs JavaScript to run.</p></noscript>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="vendor/topojson-client/topojson-client.min.js"></script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "meridian-data-tools",
+  "private": true,
+  "description": "One-off tooling that regenerates the bundled country snapshot, boundaries and flags. Not needed to play or build the game.",
+  "type": "module",
+  "scripts": {
+    "prepare-data": "node prepare-data.mjs"
+  },
+  "devDependencies": {
+    "polygon-clipping": "^0.15.7",
+    "topojson-client": "^3.1.0",
+    "topojson-server": "^3.0.1",
+    "world-atlas": "^2.0.2",
+    "world-countries": "^5.1.0"
+  }
+}
