@@ -34,8 +34,8 @@ function seeded(seed = 1) {
 
 /* ---------------- country data ---------------- */
 
-test("the bundled snapshot covers 197 playable countries in five regions", () => {
-  assert.equal(playable.length, 197);
+test("the bundled snapshot covers 196 playable countries in five regions", () => {
+  assert.equal(playable.length, 196);
   const regions = new Set(playable.map(c => c.region));
   assert.deepEqual([...regions].sort(), ["Africa", "Americas", "Asia", "Europe", "Oceania"]);
   for (const region of regions) {
@@ -80,7 +80,7 @@ test("a valid live response refreshes metadata and keeps the bundled flag as fal
   }));
   assert.equal(isCountryList(live), true);
   const merged = fresh();
-  assert.equal(mergeLiveData(merged, live), 250);
+  assert.equal(mergeLiveData(merged, live), raw.length);
   const turkey = merged.get("TUR");
   assert.equal(turkey.name, "Turkey");
   assert.equal(turkey.flag.src, "https://flagcdn.com/tr.svg");
@@ -126,18 +126,14 @@ test("autocomplete ranks names that start with the text first", () => {
 
 /* ---------------- trivia ---------------- */
 
-test("curated trivia covers 50+ countries on every continent with 3+ facts each", () => {
+test("every country in the game has hand-written facts in both categories", () => {
   const codes = Object.keys(FACTS);
-  assert.ok(codes.length >= 50, `only ${codes.length} countries`);
-  const regions = new Set();
+  assert.deepEqual(codes.filter(code => !countries.get(code)?.playable), [], "facts for countries not in the game");
+  assert.deepEqual(playable.map(c => c.code).filter(code => !FACTS[code]), [], "countries without facts");
   for (const code of codes) {
-    const country = countries.get(code);
-    assert.ok(country?.playable, `${code} is not a playable country`);
-    regions.add(country.region);
     const { border, flag } = FACTS[code];
-    assert.ok(Array.isArray(border) && border.length >= 1, `${code} needs a border fact`);
-    assert.ok(Array.isArray(flag) && flag.length >= 1, `${code} needs a flag fact`);
-    assert.ok(border.length + flag.length >= 3, `${code} has fewer than 3 facts`);
+    assert.ok(Array.isArray(border) && border.length >= 2, `${code} needs two border facts`);
+    assert.ok(Array.isArray(flag) && flag.length >= 2, `${code} needs two flag facts`);
     for (const fact of [...border, ...flag]) {
       assert.equal(typeof fact, "string");
       assert.ok(fact.length >= 25 && fact.length <= 240, `${code}: odd length: ${fact}`);
@@ -145,7 +141,35 @@ test("curated trivia covers 50+ countries on every continent with 3+ facts each"
     }
     assert.equal(new Set([...border, ...flag]).size, border.length + flag.length, `${code} repeats a fact`);
   }
-  assert.equal(regions.size, 5);
+});
+
+test("the game only ever shows hand-written facts for the bundled countries", () => {
+  const trivia = createTrivia({ curated: FACTS, countries, store: memoryStore() });
+  for (const country of playable) {
+    const pool = trivia.factsFor(country.code);
+    for (const fact of [...pool.border, ...pool.flag]) assert.equal(fact.source, "curated", `${country.code}: ${fact.text}`);
+  }
+});
+
+test("an excluded country is absent from the data, the neighbour lists and the trivia", () => {
+  const excluded = "ISR";
+  assert.equal(countries.has(excluded), false);
+  assert.equal(raw.some(record => record.cca2 === "IL"), false);
+  for (const country of countries.values()) {
+    assert.ok(!country.borders.includes(excluded), `${country.code} still lists it as a neighbour`);
+    assert.ok(!country.nearest.includes(excluded), `${country.code} still lists it as nearby`);
+  }
+  assert.equal(FACTS[excluded], undefined);
+  const everyFact = Object.values(FACTS).flatMap(entry => [...entry.border, ...entry.flag]);
+  assert.deepEqual(everyFact.filter(fact => /Israel/i.test(fact)), []);
+  const topology = JSON.parse(readFileSync(new URL("../data/world.topo.json", import.meta.url), "utf8"));
+  assert.equal(topology.objects.countries.geometries.some(shape => shape.id === excluded), false);
+  // A live response that still lists it must not bring it back.
+  const merged = fresh();
+  mergeLiveData(merged, [{ name: { common: "Jordan", official: "Hashemite Kingdom of Jordan" }, cca3: "JOR", borders: ["IRQ", excluded, "SAU"] },
+    { name: { common: "Israel", official: "State of Israel" }, cca3: excluded, borders: [] }]);
+  assert.deepEqual(merged.get("JOR").borders, ["IRQ", "SAU"]);
+  assert.equal(merged.has(excluded), false);
 });
 
 test("the fallback generator gives every playable country usable facts", () => {
@@ -185,10 +209,6 @@ test("the first fact matches the game mode", () => {
   const trivia = createTrivia({ curated: FACTS, countries, store: memoryStore(), random: seeded(3) });
   assert.equal(trivia.open("FRA", "map").current.category, "border");
   assert.equal(trivia.open("FRA", "flag").current.category, "flag");
-  // A country with no hand-written trivia still gets facts in both modes.
-  assert.ok(!FACTS.SVK);
-  assert.equal(trivia.open("SVK", "map").current.category, "border");
-  assert.equal(trivia.open("SVK", "flag").current.category, "flag");
 });
 
 test("a country that comes up again leads with facts not shown before", () => {
@@ -209,30 +229,23 @@ test("a country that comes up again leads with facts not shown before", () => {
   assert.ok(store.get(STORAGE_KEYS.seenFacts, {}).FRA.length >= borderCount);
 });
 
-test("hand-written facts are shown before generated ones", () => {
-  const trivia = createTrivia({ curated: FACTS, countries, store: memoryStore(), random: seeded(11) });
-  // Monaco has two hand-written border facts, so one generated fact tops it up.
-  assert.equal(FACTS.MCO.border.length, 2);
-  assert.deepEqual(trivia.factsFor("MCO").border.map(f => f.source), ["curated", "curated", "generated"]);
-  assert.equal(trivia.open("MCO", "map").current.source, "curated");
-  assert.equal(trivia.open("MCO", "map").current.source, "curated");
-  assert.equal(trivia.open("MCO", "map").current.source, "generated");
-});
+test("generated facts appear only where a category has no hand-written facts", () => {
+  // A country with nothing written falls back to the generator in both modes.
+  const empty = createTrivia({ curated: {}, countries, store: memoryStore(), random: seeded(11) });
+  assert.equal(empty.open("SVK", "map").current.source, "generated");
+  assert.equal(empty.open("SVK", "map").current.category, "border");
+  assert.equal(empty.open("SVK", "flag").current.category, "flag");
+  assert.ok(empty.factsFor("SVK").border.length >= 3);
 
-test("generated facts top up thin categories but never crowd out hand-written ones", () => {
-  const trivia = createTrivia({ curated: FACTS, countries, store: memoryStore() });
-  for (const code of Object.keys(FACTS)) {
-    const pool = trivia.factsFor(code);
-    for (const category of ["border", "flag"]) {
-      const written = FACTS[code][category].length;
-      const generated = pool[category].filter(f => f.source === "generated").length;
-      assert.ok(generated <= Math.max(0, 3 - written), `${code} ${category}`);
-    }
-    assert.ok(pool.border.length >= 3, `${code} has ${pool.border.length} border facts`);
-    assert.ok(pool.border.length + pool.flag.length >= 5, code);
-  }
-  // Countries without hand-written trivia get the full generated set.
-  assert.ok(trivia.factsFor("SVK").border.length >= 4);
+  // A half-filled entry: the written category is left alone, the empty one is generated.
+  const partial = createTrivia({
+    curated: { SVK: { border: ["A hand-written border fact."], flag: [] } },
+    countries,
+    store: memoryStore()
+  });
+  assert.deepEqual(partial.factsFor("SVK").border.map(f => f.source), ["curated"]);
+  assert.ok(partial.factsFor("SVK").flag.length >= 1);
+  assert.ok(partial.factsFor("SVK").flag.every(f => f.source === "generated"));
 });
 
 test("rerolling cycles through the mode's facts without repeats, then wraps", () => {

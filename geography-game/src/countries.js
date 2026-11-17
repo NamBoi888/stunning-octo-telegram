@@ -98,7 +98,9 @@ export function mergeLiveData(countries, live) {
       country.capital = formatList(item.capital);
     }
     if (typeof item.region === "string" && item.region) country.region = item.region;
-    if (Array.isArray(item.borders)) country.borders = item.borders.filter(code => typeof code === "string");
+    // Only neighbours the game knows about: a live list may name countries
+    // that are not part of this game's data.
+    if (Array.isArray(item.borders)) country.borders = item.borders.filter(code => countries.has(code));
     if (Array.isArray(item.latlng) && item.latlng.length === 2 && item.latlng.every(Number.isFinite)) {
       country.latlng = item.latlng;
     }

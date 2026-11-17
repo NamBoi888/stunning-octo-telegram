@@ -110,5 +110,51 @@ export const OCEANIA = {
       "The emblem is a boar’s tusk, a symbol of prosperity, curled around two crossed fern leaves that stand for peace.",
       "The yellow Y echoes the shape of the island chain."
     ]
+  },
+  FSM: {
+    border: [
+      "Micronesia’s 607 islands are scattered across about 2,700 km of ocean, yet their combined land area is smaller than New York City.",
+      "On the island of Yap people traditionally used stone discs as money. The largest are more than three metres across and are never moved, even when they change owners.",
+      "Off the island of Pohnpei lie the ruins of Nan Madol, a city built on nearly a hundred artificial islets."
+    ],
+    flag: [
+      "The four stars stand for the four island states: Yap, Chuuk, Pohnpei and Kosrae.",
+      "The blue was borrowed from the flag of the United Nations, which oversaw the islands after the Second World War. An earlier version had six stars, before the other island groups went their own way."
+    ]
+  },
+  MHL: {
+    border: [
+      "Between 1946 and 1958 the United States tested 23 nuclear weapons at Bikini Atoll in the Marshall Islands. The bikini swimsuit was named after it.",
+      "Marshallese sailors navigated with charts made of sticks, which mapped the patterns of ocean swells around the islands.",
+      "The islands lie on average only about two metres above the sea."
+    ],
+    flag: [
+      "The star has 24 points, one for each electoral district. The four longer points form a cross.",
+      "The orange and white bands stand for the country’s two chains of islands, whose names mean “sunrise” and “sunset”.",
+      "The flag was designed by Emlain Kabua, the wife of the first president."
+    ]
+  },
+  PLW: {
+    border: [
+      "Visitors to Palau must sign a pledge, stamped into their passport on arrival, promising to protect the islands’ environment.",
+      "In 2009 Palau created the world’s first shark sanctuary, covering all of its waters.",
+      "One of Palau’s lakes holds millions of golden jellyfish that have almost lost their sting, and visitors swim among them."
+    ],
+    flag: [
+      "The yellow disc is the full moon, not the sun. Palauans consider the full moon the best time for fishing, planting and celebrating.",
+      "The moon sits slightly off-centre, towards the flagpole.",
+      "The blue does not stand for the ocean. It stands for the passage from foreign rule to self-government."
+    ]
+  },
+  SLB: {
+    border: [
+      "A Spanish explorer named the islands in 1568, believing he had found the source of King Solomon’s gold.",
+      "So many warships were sunk off Guadalcanal during the Second World War that the strait is still called Iron Bottom Sound.",
+      "Bougainville, the largest island of the Solomon archipelago, is not part of the country. It belongs to Papua New Guinea."
+    ],
+    flag: [
+      "The five stars stand for the five main groups of islands.",
+      "Blue stands for the ocean, green for the land and the yellow stripe for sunshine."
+    ]
   }
 };

@@ -85,7 +85,7 @@ export const EUROPE = {
     ],
     flag: [
       "Black, yellow and red come from the arms of the Duchy of Brabant: a gold lion with red claws and tongue on a black shield.",
-      "The official proportions are an unusual, nearly square 13:15, although most Belgian flags you will see are made in the ordinary 2:3.",
+      "Belgium’s constitution lists the national colours as red, yellow and black. The flag has always shown them in the opposite order.",
       "The vertical stripes were modelled on the French tricolour and flown in the 1830 revolution that won independence from the Netherlands."
     ]
   },
@@ -181,7 +181,7 @@ export const EUROPE = {
     flag: [
       "The Dannebrog is generally considered the oldest national flag in continuous use. Legend says it fell from the sky during a battle in Estonia in 1219.",
       "Its off-centre cross became the model for every other Nordic flag.",
-      "The official proportions are an unusual 28:37."
+      "Danes fly the flag for private celebrations as readily as national ones. It decorates birthday cakes and hangs on Christmas trees."
     ]
   },
   POL: {
@@ -333,7 +333,7 @@ export const EUROPE = {
     ],
     flag: [
       "The colours blend those of its two neighbours: blue and red from France, yellow and red from Spain.",
-      "The yellow stripe in the middle is slightly wider than the other two, in the ratio 8:9:8.",
+      "Until 1866 Andorra’s flag had only two colours, yellow and red. The blue stripe was added to give France its place alongside Spain.",
       "The shield carries the motto “Virtus Unita Fortior” (“strength united is stronger”), and one of its quarters shows two cows."
     ]
   },
@@ -347,6 +347,191 @@ export const EUROPE = {
       "The flag is nearly identical to the Dutch one. Luxembourg’s blue is a lighter sky blue, and its flag is usually longer.",
       "The colours come from the arms of the House of Luxembourg: a red lion on white and blue stripes.",
       "Many Luxembourgers prefer the “Roude Léiw”, a flag showing that red lion. It is flown on the country’s ships and at sports matches."
+    ]
+  },
+  ALB: {
+    border: [
+      "During the Cold War Albania sealed its borders almost completely and built more than 170,000 concrete bunkers to repel an invasion that never came.",
+      "When Albania’s borders were drawn in 1913, roughly half of all Albanians were left outside them, in what are now Kosovo, North Macedonia and Montenegro.",
+      "Lake Ohrid, shared with North Macedonia, is more than a million years old, which makes it one of the oldest lakes in Europe."
+    ],
+    flag: [
+      "The double-headed eagle comes from the banner of Skanderbeg, the nobleman who led Albania’s resistance to the Ottoman Empire in the 15th century.",
+      "Albanians call their country Shqipëria, a name popularly explained as “land of the eagles”.",
+      "Under communism a red star outlined in gold sat above the eagle. It was removed in 1992."
+    ]
+  },
+  BLR: {
+    border: [
+      "The agreement that dissolved the Soviet Union was signed in December 1991 at a hunting lodge in the Belarusian forest, a few kilometres from the Polish border.",
+      "The Białowieża Forest, which straddles the border with Poland, is the largest surviving piece of the primeval forest that once covered lowland Europe, and home to wild European bison.",
+      "About a fifth of Belarus was contaminated by fallout from Chernobyl, just across the border in Ukraine. A large area along that border is still closed off."
+    ],
+    flag: [
+      "The red and white band is a traditional weaving pattern. It is based on a design made in 1917 by a village woman, Matrona Markevich.",
+      "This is the flag of Soviet Belarus with the hammer and sickle removed. Voters chose it in 1995 over the white, red and white flag used since independence."
+    ]
+  },
+  BGR: {
+    border: [
+      "In 1925 Greece briefly invaded Bulgaria after a border shooting. According to the popular story it began when a Greek soldier chased his runaway dog across the line, and it is remembered as the War of the Stray Dog.",
+      "The Danube forms most of the border with Romania, about 470 km of it. For nearly sixty years a single bridge crossed that whole stretch, until a second opened in 2013.",
+      "During the Cold War the border with Greece and Türkiye was a stretch of the Iron Curtain, and many East Germans tried to escape across it, believing it to be less closely guarded than the Berlin Wall."
+    ],
+    flag: [
+      "Bulgaria’s flag is the Russian tricolour with green in place of the blue, in gratitude for Russia’s part in ending five centuries of Ottoman rule in 1878.",
+      "Under communism the state emblem, a lion framed by wheat under a red star, sat in the corner of the white stripe. It was removed in 1990."
+    ]
+  },
+  CZE: {
+    border: [
+      "Czechia is landlocked, yet it holds a lease on a dock in the port of Hamburg. The Treaty of Versailles gave Czechoslovakia the plot for 99 years, and the lease runs until 2028.",
+      "Czechia and Slovakia separated on 1 January 1993 in the “Velvet Divorce”, without a referendum and without a shot being fired.",
+      "Poland still owes Czechia about 368 hectares of land, left over from a straightening of their border in 1958."
+    ],
+    flag: [
+      "This was the flag of Czechoslovakia. When the country split in 1993 both halves agreed that neither would keep its symbols, and the Czechs kept the flag anyway.",
+      "The blue triangle was added in 1920 because the plain white and red flag was identical to Poland’s."
+    ]
+  },
+  EST: {
+    border: [
+      "For decades the road between two villages in south-east Estonia ran for about a kilometre through Russia, across a bulge of territory called the Saatse Boot. Drivers needed no visa as long as they did not stop.",
+      "At Narva two medieval fortresses glare at each other across a river: Estonia’s Hermann Castle on one bank and Russia’s Ivangorod Fortress on the other.",
+      "Estonia and Russia have signed a border treaty twice, in 2005 and in 2014, and it has still not come into force."
+    ],
+    flag: [
+      "The blue, black and white began as the flag of a university students’ society in 1881. The original flag still exists.",
+      "The flag was banned under Soviet rule. In February 1989 it was raised again on the Tall Hermann tower in Tallinn, more than two years before independence was restored.",
+      "Blue is usually read as the sky, black as the soil and the hardships of the past, and white as snow and hope."
+    ]
+  },
+  HUN: {
+    border: [
+      "In August 1989 Hungary opened a border gate to Austria for a few hours during a “Pan-European Picnic”. Hundreds of East Germans ran through, the first breach in the Iron Curtain, months before the Berlin Wall fell.",
+      "The Treaty of Trianon in 1920 took away about two-thirds of Hungary’s territory and left more than three million Hungarians living in neighbouring countries."
+    ],
+    flag: [
+      "During the uprising of 1956 Hungarians cut the communist emblem out of the middle of the flag. The flag with a hole in it became the symbol of the revolution.",
+      "Red, white and green were taken from Hungary’s historic coat of arms and made into a tricolour during the revolution of 1848."
+    ]
+  },
+  LVA: {
+    border: [
+      "On 23 August 1989 about two million people joined hands in a human chain some 675 km long, running through Estonia, Latvia and Lithuania to demand independence from the Soviet Union.",
+      "The town of Valka is one half of a town cut in two by the Estonian border in 1920. Since 2007 the border has been open again, and the town’s slogan is “One town, two countries”."
+    ],
+    flag: [
+      "According to legend a wounded Latvian chief was laid on a white sheet. His blood stained both edges and left a white stripe where he lay.",
+      "A red banner with a white stripe is mentioned in a chronicle from about 1280, which makes this one of the oldest flag designs in the world.",
+      "The dark red is so particular to this flag that it is known as “Latvian red”."
+    ]
+  },
+  LTU: {
+    border: [
+      "In the 15th century the Grand Duchy of Lithuania was the largest state in Europe, stretching from the Baltic to the Black Sea.",
+      "The Curonian Spit, a 98 km ribbon of sand dunes, is divided between Lithuania and the Russian territory of Kaliningrad.",
+      "In 1989 French geographers calculated that the geographical centre of Europe lies just north of Vilnius, the Lithuanian capital."
+    ],
+    flag: [
+      "The flag was banned for almost fifty years under Soviet rule and raised again in 1988, before independence had been declared.",
+      "Lithuania has a second, historical state flag: a white knight on horseback on a red field. It flies permanently at a handful of important sites."
+    ]
+  },
+  MLT: {
+    border: [
+      "Malta lies further south than Tunis, the capital of Tunisia, even though it is part of Europe.",
+      "In 1565 a few thousand knights and Maltese held the island against a far larger Ottoman army for nearly four months. The capital, Valletta, is named after the knights’ commander.",
+      "In 1942 Malta was bombed almost continuously for more than five months, making it one of the most heavily bombed places of the Second World War."
+    ],
+    flag: [
+      "The cross in the corner is the George Cross, a British medal for bravery. King George VI awarded it to the entire population of Malta in 1942.",
+      "By tradition the red and white were given to Malta in 1091 by Count Roger of Sicily, who tore off part of his own banner."
+    ]
+  },
+  MDA: {
+    border: [
+      "Transnistria, a strip of Moldova along the Dniester river, broke away in the early 1990s. It runs its own border posts, army and currency, though no United Nations member recognises it.",
+      "Moldova was landlocked until a land swap with Ukraine in 1999 gave it less than half a kilometre of riverbank on the Danube. Its only port was built there."
+    ],
+    flag: [
+      "The colours are almost the same as Romania’s on purpose: the two countries share a language and much of their history.",
+      "The ox’s head on the shield is an aurochs, a wild ox now extinct. It was the emblem of the medieval principality of Moldavia."
+    ]
+  },
+  MNE: {
+    border: [
+      "Montenegro became independent in 2006 after a referendum in which 55.5% voted yes. The threshold agreed with the European Union was 55%.",
+      "The Prevlaka peninsula, which guards the entrance to the Bay of Kotor, was disputed with Croatia after the break-up of Yugoslavia and watched over by United Nations monitors until 2002."
+    ],
+    flag: [
+      "The flag is based on the royal standard of Nikola I, Montenegro’s only king, who reigned until 1918.",
+      "The lion on the eagle’s chest goes back to the centuries when Montenegro was ruled by prince-bishops."
+    ]
+  },
+  MKD: {
+    border: [
+      "In 2019 the country added “North” to its name, ending a 27-year dispute with Greece, which has a region of its own called Macedonia.",
+      "Lake Prespa, in the south-west, is shared by three countries: North Macedonia, Albania and Greece."
+    ],
+    flag: [
+      "The first flag after independence showed an ancient star found in a royal tomb in northern Greece. Greece objected and imposed a trade embargo, and this design replaced it in 1995.",
+      "The eight-rayed sun echoes the “new sun of liberty” in the national anthem."
+    ]
+  },
+  ROU: {
+    border: [
+      "In the Danube gorge that forms the border with Serbia, the face of the ancient king Decebalus is carved into a cliff. At more than 40 metres it is the tallest rock sculpture in Europe.",
+      "The Danube Delta, shared with Ukraine, is the best-preserved river delta in Europe, and it is still growing out into the Black Sea.",
+      "In 2009 the International Court of Justice settled a dispute with Ukraine over the seabed around Snake Island, awarding Romania about four-fifths of the contested area."
+    ],
+    flag: [
+      "During the revolution of 1989 crowds cut the communist coat of arms out of the middle of the flag. The flag with a hole became the symbol of the uprising.",
+      "Chad’s flag is almost identical. Only the shade of blue differs slightly.",
+      "Blue, yellow and red were first flown together in the revolution of 1848, combining the colours of the two principalities that later united as Romania."
+    ]
+  },
+  SRB: {
+    border: [
+      "Serbia has been landlocked since 2006, when Montenegro voted to leave the union of the two countries.",
+      "Serbia and Croatia disagree about their border on the Danube. Serbia says it follows the middle of the river as it flows today; Croatia says it follows the river’s 19th-century course.",
+      "The Belgrade district of Zemun was a border town of the Habsburg Empire until 1918. The rest of Belgrade, across the river, had been Ottoman."
+    ],
+    flag: [
+      "The stripes are the Russian tricolour turned upside down.",
+      "The four curved shapes around the cross on the shield are firesteels. Tradition reads them as four letters standing for a motto: “Only unity saves the Serbs”."
+    ]
+  },
+  SVK: {
+    border: [
+      "Bratislava is the only national capital that borders two other countries. Its suburbs touch both Austria and Hungary.",
+      "In 1992 Slovakia diverted part of the Danube, its border river with Hungary, into a canal to feed a hydroelectric dam. Hungary took the dispute to the International Court of Justice."
+    ],
+    flag: [
+      "The coat of arms was added in 1992. Without it the flag would be identical to Russia’s.",
+      "The three hills under the cross stand for three mountain ranges: the Tatra, the Fatra and the Mátra. The Mátra is now in Hungary."
+    ]
+  },
+  SVN: {
+    border: [
+      "Slovenia’s coastline is only about 47 km long, squeezed between Italy and Croatia.",
+      "The town of Gorizia was cut in two in 1947 by the new border between Italy and Yugoslavia, so Yugoslavia built Nova Gorica on its side. The two shared the title of European Capital of Culture in 2025.",
+      "Slovenia and Croatia have argued over the Bay of Piran since both left Yugoslavia. An arbitration panel gave most of the bay to Slovenia in 2017, and Croatia rejected the ruling."
+    ],
+    flag: [
+      "The mountain on the shield is Triglav, Slovenia’s highest peak. The wavy lines beneath it stand for the Adriatic and the country’s rivers.",
+      "The three gold stars come from the arms of the Counts of Celje, a powerful Slovenian dynasty of the 14th and 15th centuries."
+    ]
+  },
+  UNK: {
+    border: [
+      "Kosovo declared independence from Serbia in 2008. About a hundred countries recognise it; Serbia does not.",
+      "A deal fixing Kosovo’s border with Montenegro took three years to pass parliament, where opposition members repeatedly set off tear gas in the chamber to block the vote."
+    ],
+    flag: [
+      "This is one of only two national flags that show a map of the country. The other is Cyprus’s.",
+      "The six stars stand for Kosovo’s six main ethnic groups.",
+      "The flag was chosen in a competition just before independence. The rules ruled out eagles and the colours of Albania and Serbia, to keep it neutral."
     ]
   }
 };

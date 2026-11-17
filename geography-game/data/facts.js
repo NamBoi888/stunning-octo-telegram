@@ -16,9 +16,13 @@
 // other fact having been read first, because the game shows them one at a
 // time in a random order.
 //
-// Countries that are missing here, or short of facts in one category, are
-// topped up with facts generated from the country data (see src/factgen.js),
-// so adding a country is optional and partial entries are fine.
+// Every country in the game has an entry with at least two facts in each
+// category. If one is ever missing, the game falls back to facts generated
+// from the country data (see src/factgen.js) for that category.
+//
+// Facts should be worth telling someone: a piece of history, an oddity, a
+// record. Plain statistics (how many neighbours, the flag's proportions) are
+// what the generator produces, and are best left out.
 //
 // To add or edit trivia, change the region files in data/facts/. Run
 // `node --test` afterwards: the tests check codes and minimum counts.

@@ -42,7 +42,7 @@ export const ASIA = {
   },
   NPL: {
     border: [
-      "Nepal is landlocked between just two neighbours, India and China.",
+      "Nepal was never colonised, so it has no independence day. Its border with India was fixed in 1816 by a treaty with the British East India Company.",
       "Eight of the world’s fourteen mountains over 8,000 metres are in Nepal or on its borders, and the summit of Everest sits on the line with China.",
       "Nepal’s clocks are 15 minutes ahead of India’s, so crossing the border means adjusting your watch by a quarter of an hour."
     ],
@@ -273,17 +273,6 @@ export const ASIA = {
       "Green stands for the Jebel Akhdar, the “Green Mountains”, and white for peace."
     ]
   },
-  ISR: {
-    border: [
-      "The shore of the Dead Sea, on the border with Jordan, is the lowest land on Earth at more than 430 metres below sea level.",
-      "Israel reaches the Red Sea along barely a dozen kilometres of coast at Eilat, squeezed between Egypt and Jordan.",
-      "The “Blue Line” with Lebanon is not a formal border. The United Nations drew it in 2000 to confirm that Israeli troops had withdrawn."
-    ],
-    flag: [
-      "The design is based on the tallit, the Jewish prayer shawl, which is white with blue stripes.",
-      "The flag was first used by the Zionist movement in 1897 and adopted by the state in October 1948, five months after independence."
-    ]
-  },
   IRN: {
     border: [
       "Iran has seven land neighbours. Its border with Armenia, along the Aras river, is only about 44 km long.",
@@ -326,6 +315,229 @@ export const ASIA = {
     flag: [
       "Yellow is the colour of the sultan. The black and white diagonal stripes stand for his two chief ministers.",
       "The red crest shows a parasol, a pair of wings, two upturned hands and a crescent. The scroll beneath reads “Brunei Darussalam”, meaning “Brunei, abode of peace”."
+    ]
+  },
+  AFG: {
+    border: [
+      "The Wakhan Corridor, a finger of land about 350 km long that reaches east to China, was created in the 1890s so that the Russian and British empires would not share a border.",
+      "The border with Pakistan follows the Durand Line, drawn by a British diplomat in 1893. It cuts through the homeland of the Pashtun people, and no Afghan government has formally accepted it."
+    ],
+    flag: [
+      "Afghanistan has changed its flag around twenty times since 1900, more often than any other country.",
+      "The tricolour shown in this game was the flag of the republic that fell in 2021. The Taliban government flies a white flag bearing the Islamic declaration of faith.",
+      "The emblem in the centre shows a mosque with its prayer niche, which faces Mecca."
+    ]
+  },
+  ARM: {
+    border: [
+      "Mount Ararat, Armenia’s national symbol, appears on its coat of arms and towers over the capital. It stands across the border in Türkiye, a border that has been closed since 1993.",
+      "Two of Armenia’s four land borders, with Türkiye and Azerbaijan, have been shut since the early 1990s.",
+      "Artsvashen is a piece of Armenia entirely surrounded by Azerbaijan, which has controlled it since 1992."
+    ],
+    flag: [
+      "The bottom stripe is often called apricot rather than orange. The apricot is Armenia’s national fruit, and its scientific name means “Armenian plum”.",
+      "The flag was first adopted by the short-lived republic of 1918 and brought back in 1990, a year before independence from the Soviet Union."
+    ]
+  },
+  AZE: {
+    border: [
+      "Nakhchivan, a region of Azerbaijan the size of a small country, is cut off from the rest by Armenia. It can be reached only by air or by road through Iran.",
+      "Baku lies 28 metres below sea level, on the shore of the Caspian. It is the lowest national capital in the world.",
+      "In 1949 Soviet engineers built a town on stilts in the Caspian Sea, far off the coast of Azerbaijan, to drill for oil. Parts of it are still lived in."
+    ],
+    flag: [
+      "The eight points of the star are usually explained by the eight letters of “Azerbaijan” when written in the old Arabic script.",
+      "Blue stands for the country’s Turkic heritage, red for progress and green for Islam.",
+      "The flag was first raised in 1918 by a republic that lasted less than two years, the first secular democracy in the Muslim world."
+    ]
+  },
+  BHR: {
+    border: [
+      "Bahrain is an island country. Its only road link is the King Fahd Causeway to Saudi Arabia, about 25 km long and opened in 1986.",
+      "Bahrain and Qatar both claimed the Hawar Islands, which lie within sight of Qatar’s coast. In 2001 the International Court of Justice awarded them to Bahrain.",
+      "Land reclaimed from the sea has made Bahrain more than a tenth bigger than it was in the 1960s."
+    ],
+    flag: [
+      "The five white points stand for the five pillars of Islam. Until 2002 the flag had eight.",
+      "The flag was once plain red. The white band was added under an 1820 treaty with Britain, so that friendly ships could be told apart from pirates."
+    ]
+  },
+  GEO: {
+    border: [
+      "Whether Georgia is in Europe or Asia depends on where you draw the line between the continents. The watershed of the Caucasus, the usual choice, puts most of it in Asia.",
+      "The David Gareja monasteries, founded in the 6th century, are carved into a ridge on the border with Azerbaijan. Part of the complex lies on the far side, and that stretch of border has never been agreed.",
+      "Two regions, Abkhazia and South Ossetia, broke away from Georgia in the 1990s. Russia recognised them as independent after a war in 2008; almost no other country has."
+    ],
+    flag: [
+      "This is a medieval banner brought back to life. It appears on a sea chart of 1367 as the flag of Tbilisi and was adopted as the national flag in 2004.",
+      "The large cross is the cross of St George, the country’s patron saint. Georgians, though, call their country Sakartvelo."
+    ]
+  },
+  IRQ: {
+    border: [
+      "Modern Iraq was put together by Britain after the First World War from three provinces of the Ottoman Empire: Mosul, Baghdad and Basra.",
+      "Iraq’s coastline on the Persian Gulf is only 58 km long."
+    ],
+    flag: [
+      "The words “God is great” were added in 1991, reportedly in Saddam Hussein’s own handwriting. They were rewritten in a traditional angular script after he fell.",
+      "Until 2008 three green stars sat between the words. They originally stood for a union with Egypt and Syria that was planned in 1963 and never happened."
+    ]
+  },
+  JOR: {
+    border: [
+      "In 1965 Jordan gave Saudi Arabia a large stretch of inland desert in exchange for about a dozen extra kilometres of coast near Aqaba, its only port.",
+      "The Dead Sea, on Jordan’s western edge, is the lowest place on the Earth’s land surface, more than 430 metres below sea level.",
+      "Jordan’s entire coastline, on the Red Sea, is about 26 km long."
+    ],
+    flag: [
+      "The flag comes from the banner of the Arab Revolt against the Ottoman Empire in 1916.",
+      "The seven points of the star stand for the seven verses that open the Quran.",
+      "The black, white and green bands recall three great Arab dynasties of the Middle Ages, and the red triangle the royal house that rules Jordan."
+    ]
+  },
+  KGZ: {
+    border: [
+      "Two pieces of other countries lie entirely inside Kyrgyzstan: Uzbekistan’s Sokh and Tajikistan’s Vorukh, both left over from Soviet-era boundaries.",
+      "More than nine-tenths of Kyrgyzstan is mountainous. Its border with China runs along the Tian Shan range and over a peak 7,439 metres high."
+    ],
+    flag: [
+      "The emblem in the middle of the sun is a tunduk: the wooden crown of a yurt, as you see it looking up from inside.",
+      "The sun has forty rays, for the forty tribes that the legendary hero Manas united.",
+      "At the end of 2023 parliament voted to straighten the sun’s wavy rays. The speaker said they made it look like a sunflower, a symbol of fickleness."
+    ]
+  },
+  KWT: {
+    border: [
+      "When Iraq invaded in 1990 it declared Kuwait its nineteenth province. After the Gulf War the United Nations marked out the border between them.",
+      "Kuwait and Saudi Arabia once shared a “neutral zone” of desert. They divided it in 1969 and still split the oil from it equally."
+    ],
+    flag: [
+      "The four colours are explained with a line of medieval Arabic poetry: white are our deeds, black our battles, green our meadows and red our swords.",
+      "Before independence in 1961 Kuwait’s flag was red, with the country’s name written on it in white."
+    ]
+  },
+  LAO: {
+    border: [
+      "Laos is the only landlocked country in Southeast Asia.",
+      "Relative to its population Laos is the most heavily bombed country in history. More than two million tonnes fell on it between 1964 and 1973, much of it along the border with Vietnam.",
+      "The Mekong forms most of the border with Thailand. The first bridge across that stretch of the river opened only in 1994."
+    ],
+    flag: [
+      "The white disc is the full moon over the Mekong river.",
+      "This is the only flag of a communist state with no star on it.",
+      "The design dates from 1945, when it was made for a nationalist movement. It replaced the royal flag, which showed a three-headed white elephant, in 1975."
+    ]
+  },
+  LBN: {
+    border: [
+      "Lebanon is so narrow, about 50 km from the coast to the eastern mountains, that in winter you can ski in the morning and swim in the Mediterranean in the afternoon.",
+      "The border with Syria has never been fully marked out since the two became independent in the 1940s."
+    ],
+    flag: [
+      "The tree is a cedar of Lebanon, mentioned dozens of times in the Bible. The Phoenicians built ships from its timber.",
+      "The flag was sketched in 1943 by members of parliament, who signed the drawing during the crisis that led to independence from France.",
+      "The constitution says the cedar is green. Flags that give it a brown trunk are, strictly speaking, wrong."
+    ]
+  },
+  MDV: {
+    border: [
+      "The Maldives is the lowest country on Earth. Its highest natural point is about 2.4 metres above the sea.",
+      "In 2009 the president and his ministers held a cabinet meeting underwater in scuba gear, to draw attention to rising seas.",
+      "The word “atoll” comes from Dhivehi, the language of the Maldives, where there are 26 of them."
+    ],
+    flag: [
+      "Until the early 20th century the flag of the Maldives was plain red. The green panel and the crescent were added later.",
+      "For some years a band of black and white diagonal stripes ran down the edge next to the flagpole. It was removed in 1965, the year of independence."
+    ]
+  },
+  MMR: {
+    border: [
+      "Myanmar borders the two most populous countries on Earth, India and China.",
+      "Hkakabo Razi, in the far north near the borders with China and India, is usually listed as the highest mountain in Southeast Asia."
+    ],
+    flag: [
+      "This flag replaced the previous one overnight in October 2010. Officials were reportedly told that the old flags had to be lowered by someone born on a Tuesday and the new ones raised by someone born on a Wednesday.",
+      "Yellow stands for solidarity, green for peace and the country’s lush landscape, and red for courage. The white star stands for the union of the country."
+    ]
+  },
+  PSE: {
+    border: [
+      "Jericho, in the West Bank, is among the oldest continuously inhabited cities on Earth. It is also the lowest, about 250 metres below sea level.",
+      "Palestine is made up of two separate territories, the West Bank and the Gaza Strip.",
+      "Palestine has been a non-member observer state at the United Nations since 2012, and more than 140 member states recognise it."
+    ],
+    flag: [
+      "The flag derives from the banner of the Arab Revolt of 1916. The Palestine Liberation Organization adopted it in 1964.",
+      "During the years when displaying the flag was banned, the watermelon, which is red, green, black and white, became a stand-in for it."
+    ]
+  },
+  SYR: {
+    border: [
+      "From 1958 to 1961 Syria and Egypt merged into a single state, the United Arab Republic, even though they share no border.",
+      "Syria’s borders go back to a secret agreement of 1916 in which Britain and France divided the region between themselves.",
+      "The province of Hatay, on the Mediterranean, passed from French-run Syria to Türkiye in 1939. Syrian maps went on showing it as Syrian for decades."
+    ],
+    flag: [
+      "This flag was adopted in 2025, after the fall of the Assad government. It is the flag Syria flew when it became independent in 1946.",
+      "The flag it replaced had two green stars, which stood for Syria and Egypt during their union.",
+      "The three red stars originally stood for three districts: Aleppo, Damascus and Deir ez-Zor."
+    ]
+  },
+  TJK: {
+    border: [
+      "More than half of Tajikistan lies above 3,000 metres.",
+      "In the south-east a strip of Afghanistan less than 20 km wide in places is all that separates Tajikistan from Pakistan.",
+      "In 2011 Tajikistan handed about 1,000 square kilometres of the Pamir mountains to China, settling a dispute more than a century old."
+    ],
+    flag: [
+      "The crown is a pun: “taj” means crown in Persian, the root of the name Tajik.",
+      "The colours match those of Iran’s flag, reflecting the Persian language and culture the two countries share.",
+      "In 2011 the capital, Dushanbe, raised this flag on a pole 165 metres tall, the tallest in the world at the time."
+    ]
+  },
+  TKM: {
+    border: [
+      "Turkmenistan is officially “permanently neutral”, a status the United Nations General Assembly recognised in 1995.",
+      "About four-fifths of the country is the Karakum Desert. Most of its long border with Uzbekistan follows the Amu Darya river along the desert’s edge."
+    ],
+    flag: [
+      "The red stripe carries five carpet patterns, one for each of the main Turkmen tribes. It is often called the most detailed national flag in the world.",
+      "The olive branches at the foot of the stripe were added in 1997 to mark the country’s neutrality.",
+      "The five stars stand for Turkmenistan’s five regions."
+    ]
+  },
+  TLS: {
+    border: [
+      "Oecusse, a district of Timor-Leste, lies on the north coast of Indonesian West Timor, about 70 km from the rest of the country.",
+      "Timor-Leste became independent in 2002, the first new country of the 21st century.",
+      "The line dividing the island of Timor dates from the colonial era, when Portugal held the east and the Netherlands the west. An arbitration court fixed it in 1914."
+    ],
+    flag: [
+      "The flag was first raised in November 1975, when independence was declared. Indonesia invaded nine days later, and the flag did not fly officially again until 2002.",
+      "The black triangle stands for the darkness that must be overcome, the yellow for the traces of colonialism, and the white star for the light that guides."
+    ]
+  },
+  TWN: {
+    border: [
+      "The Kinmen islands, governed by Taiwan, lie within sight of the Chinese city of Xiamen, less than 10 km away, and nearly 200 km from Taiwan itself.",
+      "Taiwan is smaller than Switzerland yet has more than 200 peaks over 3,000 metres.",
+      "The Tropic of Cancer crosses the middle of the island."
+    ],
+    flag: [
+      "The flag’s name describes it: “Blue Sky, White Sun, and a Wholly Red Earth”.",
+      "The sun’s twelve rays stand for the twelve months and the twelve traditional Chinese hours of the day.",
+      "At the Olympics Taiwan competes as “Chinese Taipei” under a different flag, which shows a plum blossom."
+    ]
+  },
+  YEM: {
+    border: [
+      "Yemen was two countries until 1990, when North Yemen and South Yemen united.",
+      "Socotra, a Yemeni island about 350 km off the coast, has hundreds of plants found nowhere else, including the umbrella-shaped dragon’s blood tree.",
+      "The border with Saudi Arabia, which runs through the Empty Quarter desert, was not agreed until 2000."
+    ],
+    flag: [
+      "The plain tricolour was adopted when the two Yemens united in 1990. The north dropped its green star and the south its blue triangle and red star.",
+      "Egypt, Iraq and Sudan fly the same red, white and black, which goes back to the Egyptian revolution of 1952."
     ]
   }
 };

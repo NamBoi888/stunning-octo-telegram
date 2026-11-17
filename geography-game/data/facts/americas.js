@@ -225,11 +225,178 @@ export const AMERICAS = {
   },
   DMA: {
     border: [
-      "Dominica has no land borders. It lies between two French islands: Guadeloupe to the north and Martinique to the south."
+      "Dominica has no land borders. It lies between two French islands: Guadeloupe to the north and Martinique to the south.",
+      "Dominica is the youngest island in its chain and still volcanic. Its Boiling Lake, a flooded vent that bubbles at the centre, is one of the largest hot springs in the world.",
+      "Dominica has the only territory in the eastern Caribbean set aside for the Kalinago, the people who lived on the islands before Europeans arrived."
     ],
     flag: [
       "The bird is the sisserou parrot, which lives only on Dominica. Its feathers make this one of the very few national flags to use purple.",
       "The ten green stars stand for the island’s ten parishes."
+    ]
+  },
+  ATG: {
+    border: [
+      "In 2017 Hurricane Irma forced every person on Barbuda to leave. For the first time in about three hundred years, nobody lived on the island.",
+      "Antigua claims to have 365 beaches, one for every day of the year.",
+      "The country’s third island, Redonda, is an uninhabited rock. Since the 19th century a line of writers has claimed to be its king."
+    ],
+    flag: [
+      "The flag was designed in 1967 by a schoolteacher, Reginald Samuel, who won a competition with several hundred entries.",
+      "The rising sun stands for the dawn of a new era, and the V shape for victory."
+    ]
+  },
+  BHS: {
+    border: [
+      "Columbus first set foot in the Americas on an island in the Bahamas, on 12 October 1492.",
+      "The Bahamas has about 700 islands, of which only around 30 are inhabited. The nearest to the United States is about 80 km from Florida.",
+      "The name probably comes from the Spanish for “shallow sea”."
+    ],
+    flag: [
+      "The stripes show the islands from above: aquamarine sea on either side of golden sand.",
+      "This is one of the flags most often seen at sea. A large share of the world’s cruise ships are registered in the Bahamas."
+    ]
+  },
+  BRB: {
+    border: [
+      "Barbados lies about 160 km east of the rest of the Caribbean island chain, out in the Atlantic.",
+      "In 2021 Barbados became a republic and removed the British monarch as head of state, nearly four centuries after the first English settlers arrived.",
+      "Portuguese sailors named the island “the bearded ones”, probably after its fig trees, which have long hanging roots."
+    ],
+    flag: [
+      "The trident has a broken shaft on purpose. The colonial badge showed Britannia holding a complete trident, and breaking it marked the end of colonial rule.",
+      "The flag was designed by Grantley Prescod, a teacher, who won a competition with more than a thousand entries."
+    ]
+  },
+  CRI: {
+    border: [
+      "Costa Rica abolished its army in 1948 and has not had one since.",
+      "In 2010 Nicaraguan troops occupied a river island claimed by Costa Rica, and their commander said he had been following Google Maps. The International Court of Justice later ruled for Costa Rica.",
+      "The San Juan river, on the border with Nicaragua, belongs entirely to Nicaragua. The border runs along the Costa Rican bank."
+    ],
+    flag: [
+      "The flag was designed in 1848 by Pacífica Fernández, the wife of the president, who was inspired by the French tricolour.",
+      "The coat of arms shows three volcanoes rising between two oceans, with a merchant ship on each.",
+      "Thailand’s flag has the same five stripes with the red and blue swapped."
+    ]
+  },
+  SLV: {
+    border: [
+      "El Salvador is the only country in Central America without a Caribbean coast.",
+      "In 1969 El Salvador and Honduras fought a four-day war after a series of bad-tempered World Cup qualifying matches. It is remembered as the Football War.",
+      "El Salvador is the smallest country on the American mainland and the most densely populated."
+    ],
+    flag: [
+      "The blue and white stripes come from the flag of the United Provinces of Central America, a federation that broke up in 1841.",
+      "The five volcanoes in the coat of arms stand for the five countries that made up that federation."
+    ]
+  },
+  GRD: {
+    border: [
+      "In 1983 the United States invaded Grenada after a coup. Queen Elizabeth II was Grenada’s head of state, and the British government was not consulted beforehand.",
+      "An active underwater volcano called Kick-’em-Jenny lies just off Grenada’s north coast.",
+      "Grenada is known as the Spice Isle. For its size it is one of the world’s biggest producers of nutmeg."
+    ],
+    flag: [
+      "The small yellow and red shape near the flagpole is a nutmeg, the island’s most famous crop.",
+      "The seven stars stand for Grenada’s seven parishes."
+    ]
+  },
+  GTM: {
+    border: [
+      "Guatemala claimed all of neighbouring Belize for more than a century and did not recognise it as a country until 1991.",
+      "Guatemala City was once the capital of a single country covering most of Central America, a federation that lasted from 1823 to 1841."
+    ],
+    flag: [
+      "The bird is a quetzal, a symbol of liberty because it is said to die in captivity. Guatemala’s currency is named after it.",
+      "The scroll gives the date Central America declared independence from Spain: 15 September 1821.",
+      "Sky blue and white stand for a land between two oceans."
+    ]
+  },
+  GUY: {
+    border: [
+      "Both of Guyana’s neighbours claim parts of it. Venezuela claims everything west of the Essequibo river, about two-thirds of the country, and Suriname claims a triangle in the south-east.",
+      "Guyana is the only country in South America whose official language is English.",
+      "The name means “land of many waters”."
+    ],
+    flag: [
+      "The flag is called the Golden Arrowhead. It was designed by Whitney Smith, an American who made the study of flags his life’s work.",
+      "Smith’s design had no black or white. The two thin borders were added in London before independence in 1966."
+    ]
+  },
+  HND: {
+    border: [
+      "Columbus named Honduras in 1502. The word means “depths”, after the deep water off its Caribbean coast.",
+      "Honduras, El Salvador and Nicaragua share the Gulf of Fonseca. In 1992 the International Court of Justice ruled that its waters belong to all three jointly.",
+      "The United States claimed the Swan Islands, off the coast of Honduras, for more than a century under a law about bird droppings used as fertiliser. It gave them up in 1972."
+    ],
+    flag: [
+      "The five stars stand for the five countries of the old Central American federation, and for the hope that they might one day reunite.",
+      "For decades Honduran flags were made in navy blue. In 2022 the government switched to the turquoise that the law had specified since 1949."
+    ]
+  },
+  NIC: {
+    border: [
+      "Lake Nicaragua is home to bull sharks, which swim up a river from the Caribbean to reach it.",
+      "The canal linking the Atlantic and Pacific was nearly built in Nicaragua. In 1902 a lobbyist for Panama sent every United States senator a Nicaraguan stamp showing a volcano in eruption.",
+      "Nicaragua’s Caribbean shore, the Mosquito Coast, was a British protectorate for much of the 19th century."
+    ],
+    flag: [
+      "The rainbow in the coat of arms makes this one of only two national flags to contain purple. The other is Dominica’s.",
+      "The five volcanoes in the triangle stand for the five countries of the old Central American federation."
+    ]
+  },
+  KNA: {
+    border: [
+      "This is the smallest country in the Americas, both in area and in population.",
+      "In 1998 the people of Nevis voted on leaving the federation. About 62% said yes, just short of the two-thirds required.",
+      "Alexander Hamilton, one of the founders of the United States, was born on Nevis."
+    ],
+    flag: [
+      "The two stars do not stand for the two islands. They stand for hope and liberty.",
+      "The flag was designed by a student, Edrice Lewis, who won a national competition before independence in 1983."
+    ]
+  },
+  LCA: {
+    border: [
+      "Saint Lucia changed hands between Britain and France fourteen times before Britain finally kept it in 1814.",
+      "Saint Lucia is named after Saint Lucy of Syracuse. It is usually said to be the only country in the world named after a real woman."
+    ],
+    flag: [
+      "The triangles represent the Pitons, two volcanic peaks that rise straight out of the sea on the island’s west coast.",
+      "The flag was designed by Dunstan St Omer, a Saint Lucian painter.",
+      "Black and white together stand for harmony between the island’s peoples."
+    ]
+  },
+  VCT: {
+    border: [
+      "In 2021 the volcano that forms the northern end of Saint Vincent erupted, and about 20,000 people had to leave their homes.",
+      "In 1797 Britain deported thousands of the island’s Garifuna people, who were descended from Caribs and escaped Africans, to an island off Honduras. Their descendants now live all along the coast of Central America."
+    ],
+    flag: [
+      "The three green diamonds are arranged in a V for Vincent. They stand for the islands as “the gems of the Antilles”.",
+      "This design dates from 1985. The flag it replaced had a breadfruit leaf in the centre."
+    ]
+  },
+  SUR: {
+    border: [
+      "In 1667 the Dutch let England keep New Amsterdam, the settlement that became New York, and took Suriname in return.",
+      "Suriname disputes its borders on both sides: with Guyana over a triangle of rainforest in the south-west, and with French Guiana over land between two rivers in the south-east.",
+      "Suriname is the smallest independent country in South America, and more than nine-tenths of it is rainforest."
+    ],
+    flag: [
+      "The star stands for the unity of the country’s many ethnic groups.",
+      "Before independence in 1975 the flag showed five coloured stars joined by a ring, one for each of the main ethnic groups."
+    ]
+  },
+  TTO: {
+    border: [
+      "Trinidad lies only 11 km from the coast of Venezuela at the closest point.",
+      "Columbus named Trinidad in 1498 after the Holy Trinity, on sighting three hills on its coast.",
+      "Trinidad’s Pitch Lake is the largest natural deposit of asphalt in the world."
+    ],
+    flag: [
+      "The flag was designed by the artist Carlisle Chang for independence in 1962.",
+      "Red stands for the warmth of the sun and the people, black for strength and unity, and the white lines for the sea."
     ]
   }
 };

@@ -29,8 +29,16 @@ const refreshFlags = process.argv.includes("--refresh-flags");
 // two widely recognised states that have their own outline and flag.
 const EXTRA_PLAYABLE = new Set(["VAT", "PSE", "UNK", "TWN"]);
 
-const source = require("world-countries/countries.json");
-const byNumeric = new Map(source.filter(c => c.ccn3).map(c => [c.ccn3, c]));
+// Countries left out of the game altogether. An excluded country has no
+// record, no outline, no flag file, and is dropped from its neighbours' lists
+// of borders, so nothing in the game refers to it.
+const EXCLUDED = new Set(["ISR"]);
+
+const upstream = require("world-countries/countries.json");
+const byNumeric = new Map(upstream.filter(c => c.ccn3).map(c => [c.ccn3, c]));
+const source = upstream
+  .filter(c => !EXCLUDED.has(c.cca3))
+  .map(c => ({ ...c, borders: (c.borders ?? []).filter(code => !EXCLUDED.has(code)) }));
 const isPlayable = c => c.unMember || EXTRA_PLAYABLE.has(c.cca3);
 
 /* ------------------------------------------------------------------ */
@@ -164,7 +172,7 @@ for (const feature of loadFeatures("world-atlas/countries-50m.json")) {
     default: {
       const country = byNumeric.get(feature.id);
       if (!country) throw new Error(`No ISO match for boundary "${label}" (${feature.id})`);
-      addPolygons(country.cca3, polygons);
+      if (!EXCLUDED.has(country.cca3)) addPolygons(country.cca3, polygons);
     }
   }
 }

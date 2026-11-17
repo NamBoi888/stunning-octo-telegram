@@ -58,16 +58,18 @@ Facts come in two categories and each belongs to one mode: **border facts**
 appear in the map game and **flag facts** in the flag game. The two never mix.
 
 - `data/facts.js` (split by region under `data/facts/`) holds hand-written
-  facts for 108 countries on every continent: about 600 in total.
-- `src/factgen.js` writes facts for every other country from the country
-  data: its neighbours, how it ranks in its region, whether it is landlocked,
-  its closest neighbours across the sea, and its flag's proportions. Countries
-  with hand-written trivia only use these to bring a category up to three.
+  facts for every country in the game: just over 1,000 in total, at least two
+  border facts and two flag facts each. They are meant to be worth repeating:
+  history, oddities and records, not statistics.
 - `src/trivia.js` chooses what to show. The first fact for a round is drawn at
   random from the ones you have not seen this session; **Reroll Fact ↻**
   steps through the rest of that category. What you have seen is kept in
   `sessionStorage`, so a country that comes up again in a later game leads
   with a different fact.
+- `src/factgen.js` is a safety net. If a country has no hand-written facts in
+  a category, it writes some from the country data (neighbours, whether the
+  country is landlocked, its closest neighbours across the sea, the flag's
+  proportions). With the bundled data it is never needed.
 
 To add trivia, edit the region files. The schema is:
 
@@ -78,16 +80,23 @@ FRA: {
 }
 ```
 
-Keys are ISO 3166-1 alpha-3 codes. Partial entries are fine. Run `node --test`
-afterwards; the tests check the codes and the minimum counts.
+Keys are ISO 3166-1 alpha-3 codes. Run `node --test` afterwards; the tests
+check that every country has facts in both categories.
 
 ## Data and what differs from a textbook setup
 
-**Countries.** The game asks about 197 countries: the 193 UN members, the two
-UN observer states (Vatican City and Palestine), Kosovo and Taiwan.
+**Countries.** The game asks about 196 countries: 192 of the 193 UN members,
+the two UN observer states (Vatican City and Palestine), Kosovo and Taiwan.
 `data/countries.json` is a snapshot in the REST Countries v3.1 shape, built
 from [mledoze/countries](https://github.com/mledoze/countries), the dataset
 REST Countries itself is based on.
+
+**Excluded countries.** Israel is left out of this game. It has no record,
+outline, flag or trivia, it is not listed as anyone's neighbour, and that part
+of the map shows only the basemap. The list lives in `EXCLUDED` at the top of
+`tools/prepare-data.mjs`; change it and rerun that script to add or remove a
+country. A live refresh from REST Countries cannot bring an excluded country
+back.
 
 **REST Countries is not called by default.** The v3.1 endpoint
 (`restcountries.com/v3.1/all`) has been retired: it now answers with an error
@@ -132,7 +141,7 @@ data/
   countries.json        country snapshot (offline fallback)
   world.topo.json       boundaries, keyed by ISO alpha-3
   facts.js, facts/      hand-written trivia
-flags/                  197 SVG flags
+flags/                  196 SVG flags
 src/
   main.js               start-up and the ten-round game loop
   config.js             rounds, scoring, regions, data sources

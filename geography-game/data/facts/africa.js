@@ -119,7 +119,7 @@ export const AFRICA = {
     border: [
       "Victoria Falls lies on the border with Zimbabwe. The bridge just below it, opened in 1905, carries a road, a railway and a bungee jump from one country to the other.",
       "A wedge of the Democratic Republic of the Congo known as the Congo Pedicle nearly cuts Zambia in two.",
-      "Zambia is landlocked and has eight neighbours."
+      "Zambia is named after the Zambezi, which rises in the far north-west of the country and later forms its entire southern border."
     ],
     flag: [
       "Unusually, the emblems sit at the outer end of the flag instead of next to the flagpole.",
@@ -129,7 +129,7 @@ export const AFRICA = {
   },
   ZWE: {
     border: [
-      "Victoria Falls, on the Zambezi, lies on the border with Zambia.",
+      "Victoria Falls, on the border with Zambia, is known locally as “the smoke that thunders”. The cloud of spray above it can be seen from more than 20 km away.",
       "Lake Kariba, on the border with Zambia, is the largest artificial lake in the world by volume.",
       "The Limpopo river forms the border with South Africa. The crossing at Beitbridge is one of the busiest border posts in Africa."
     ],
@@ -234,6 +234,367 @@ export const AFRICA = {
     flag: [
       "The five bands fan out from the bottom corner next to the flagpole, to suggest a young country moving into the future.",
       "The flag was adopted in 1996 and brings together the colours of the country’s main political parties."
+    ]
+  },
+  DZA: {
+    border: [
+      "From 1848 until independence in 1962, northern Algeria was not officially a colony at all. It was governed as part of France itself.",
+      "Algeria became the largest country in Africa in 2011, when Sudan split in two. More than four-fifths of it is Sahara.",
+      "The land border with Morocco has been closed since 1994."
+    ],
+    flag: [
+      "Algerian law defines the flag’s green and red by the exact wavelength of their light.",
+      "The flag was carried by the independence movement during the war against France and adopted in 1962. Tradition traces its design to the banners of Emir Abdelkader, who resisted the French in the 1830s."
+    ]
+  },
+  AGO: {
+    border: [
+      "Cabinda, the province that produces much of Angola’s oil, is cut off from the rest of the country by a strip of the Democratic Republic of the Congo.",
+      "The Okavango river rises in Angola’s highlands, crosses into Namibia and Botswana, and never reaches the sea. It drains away into a vast inland delta in the Kalahari."
+    ],
+    flag: [
+      "The machete and the half cog-wheel deliberately echo the hammer and sickle.",
+      "In 2003 a commission proposed a new flag with a sun taken from ancient rock paintings. It was never adopted."
+    ]
+  },
+  BEN: {
+    border: [
+      "Until 1975 this country was called Dahomey. Its new name was taken from the bay it faces, not from the historic Kingdom of Benin, which lay in what is now Nigeria.",
+      "Benin’s long, narrow shape is a relic of colonial rivalry: Germany, France and Britain each claimed a strip of this coast side by side and pushed inland."
+    ],
+    flag: [
+      "In 1975 a Marxist government replaced this flag with a plain green one bearing a red star. The original came back in 1990.",
+      "Green, yellow and red are the Pan-African colours. Benin’s national anthem explains them as hope, wealth and the courage of the ancestors."
+    ]
+  },
+  BFA: {
+    border: [
+      "In 1932 France abolished this colony and shared its territory out among its neighbours. It was put back together in 1947.",
+      "Until 1984 the country was called Upper Volta, after the three Volta rivers that rise there: the Black, the White and the Red."
+    ],
+    flag: [
+      "The old flag of Upper Volta had three stripes, black, white and red, one for each of the Volta rivers.",
+      "The flag was adopted in 1984, when the revolutionary leader Thomas Sankara renamed the country Burkina Faso, “land of honest people”."
+    ]
+  },
+  BDI: {
+    border: [
+      "Lake Tanganyika, on Burundi’s western border, is the longest freshwater lake in the world and the second deepest.",
+      "The most distant source of the Nile is a spring in the hills of southern Burundi. A small stone pyramid marks the spot.",
+      "Unlike most African countries, Burundi has borders that roughly follow those of a kingdom that existed long before the colonial era."
+    ],
+    flag: [
+      "The three stars stand for the words of the national motto: unity, work, progress.",
+      "The flag Burundi adopted at independence in 1962 showed a royal drum and a sorghum plant. Both went when the monarchy was overthrown four years later."
+    ]
+  },
+  CMR: {
+    border: [
+      "Cameroon is named after shellfish. Portuguese sailors called its main estuary the Rio dos Camarões, the “river of prawns”.",
+      "Germany’s colony of Kamerun was divided between Britain and France after the First World War. In 1961 the British part voted on its future: the north joined Nigeria and the south joined Cameroon.",
+      "In 2008 Nigeria handed the Bakassi Peninsula to Cameroon, following a ruling by the International Court of Justice."
+    ],
+    flag: [
+      "From 1961 to 1975 the flag had two stars, for the French-speaking and English-speaking states of a federation. The single “star of unity” replaced them.",
+      "Green stands for the forests of the south, yellow for the savannas of the north, and red for the unity of the two."
+    ]
+  },
+  CPV: {
+    border: [
+      "Nobody lived on these islands until Portuguese sailors arrived in the 15th century.",
+      "The country is named after a cape it does not contain. Cap-Vert, the “green cape”, is the westernmost tip of mainland Africa, about 570 km away in Senegal.",
+      "More people of Cape Verdean descent live abroad than on the islands."
+    ],
+    flag: [
+      "The ten stars stand for the ten main islands.",
+      "Until 1992 Cape Verde’s flag was red, yellow and green and almost identical to Guinea-Bissau’s, because the two countries had planned to unite."
+    ]
+  },
+  CAF: {
+    border: [
+      "The point in Africa farthest from any ocean lies in the Central African Republic, near the meeting point of its borders with South Sudan and the Democratic Republic of the Congo.",
+      "As a French colony the territory was called Ubangi-Shari, after two rivers. The Ubangi still forms most of its southern border."
+    ],
+    flag: [
+      "The flag combines the blue, white and red of France with the green, yellow and red of Africa. Its designer, Barthélemy Boganda, believed the two continents had to work together.",
+      "The red stripe crossing all the others stands for the blood that every people shares."
+    ]
+  },
+  COM: {
+    border: [
+      "Comoros claims Mayotte, the fourth island of its archipelago. Mayotte voted to remain French when the others chose independence, and is now a department of France.",
+      "Comoros has seen more than twenty coups or attempted coups since independence in 1975.",
+      "The name comes from the Arabic word for moon: the “islands of the moon”."
+    ],
+    flag: [
+      "The four stars and four stripes stand for four islands, including Mayotte, which France governs.",
+      "The crescent and the green triangle stand for Islam, the religion of nearly everyone on the islands."
+    ]
+  },
+  COG: {
+    border: [
+      "Brazzaville looks across the Congo River at Kinshasa, the capital of the other Congo. One country was a French colony and the other Belgian, which is why two neighbours share a name.",
+      "From 1940 to 1943 Brazzaville was the capital of Free France, the government-in-exile led by Charles de Gaulle."
+    ],
+    flag: [
+      "The flag uses the same green, yellow and red as many African flags, but arranges them as diagonal bands instead of stripes.",
+      "From 1970 to 1991 the country was a People’s Republic, the first Marxist-Leninist state in Africa, and flew a red flag with a crossed hammer and hoe."
+    ]
+  },
+  CIV: {
+    border: [
+      "Since the 1980s the government has asked every country to call it Côte d’Ivoire, whatever language is being spoken.",
+      "Europeans named stretches of the West African coast after what they bought there. The Grain Coast, Gold Coast and Slave Coast have vanished from the map; the Ivory Coast kept its name.",
+      "Côte d’Ivoire meets Guinea and Liberia on the slopes of Mount Nimba, a nature reserve shared by all three."
+    ],
+    flag: [
+      "This flag is a mirror image of Ireland’s. Here the orange stripe is the one next to the flagpole.",
+      "Orange stands for the savannas of the north, green for the forests of the south, and white for peace between them."
+    ]
+  },
+  DJI: {
+    border: [
+      "Lake Assal, in the middle of Djibouti, lies 155 metres below sea level, the lowest point in Africa. Its water is saltier than the Dead Sea’s.",
+      "Djibouti guards the strait that leads to the Suez Canal, which is why the United States, France, China and Japan all keep military bases in a country of about a million people.",
+      "Three of the Earth’s tectonic plates are pulling apart in Djibouti. In time the gap will become a new ocean."
+    ],
+    flag: [
+      "Light blue stands for the Issa people and green for the Afar, the country’s two main communities. The white triangle stands for peace between them.",
+      "The flag was first raised at independence from France in 1977. Djibouti was the last French colony on the African mainland."
+    ]
+  },
+  GNQ: {
+    border: [
+      "The capital, Malabo, is on an island closer to Cameroon than to Equatorial Guinea’s own mainland.",
+      "Despite the name, the Equator does not cross any of the country’s land. The mainland lies just north of the line and one small island just south of it.",
+      "Equatorial Guinea is the only country in Africa where Spanish is an official language."
+    ],
+    flag: [
+      "The tree is a silk-cotton tree. Tradition says the first treaty between a local ruler and Spain was signed under one.",
+      "The six stars stand for the mainland and the country’s five main islands."
+    ]
+  },
+  ERI: {
+    border: [
+      "Eritrea won its independence from Ethiopia in 1993 after a war that lasted thirty years, and left Ethiopia without a coast.",
+      "From 1998 to 2000 Eritrea and Ethiopia fought a war over the dusty border town of Badme that killed tens of thousands. They did not make peace until 2018.",
+      "The country is named after the Red Sea: “Erythra” is the Greek word for red."
+    ],
+    flag: [
+      "The olive wreath has thirty leaves, one for each year of the war of independence.",
+      "The red triangle narrows towards the outer edge, a shape said to echo the outline of the country."
+    ]
+  },
+  SWZ: {
+    border: [
+      "In 2018 the king changed the country’s name from Swaziland to Eswatini. One reason he gave was that people abroad kept confusing it with Switzerland.",
+      "Eswatini is almost surrounded by South Africa. Its only other border is a short one with Mozambique."
+    ],
+    flag: [
+      "The shield is covered in black and white ox hide and belongs to a traditional regiment. It lies on its side with two spears, protecting the country.",
+      "The blue tassels are made from the feathers of the widowbird and the lourie. Tassels of this kind are worn only by the king.",
+      "The design is based on a flag that King Sobhuza II gave to Swazi soldiers serving in the Second World War."
+    ]
+  },
+  GAB: {
+    border: [
+      "In 2025 the International Court of Justice ruled that three tiny islands held by Gabon since 1972 belong to Equatorial Guinea, ending a dispute that had run for half a century.",
+      "The Equator crosses Gabon, and close to nine-tenths of the country is covered in rainforest.",
+      "The name comes from a Portuguese word for a hooded cloak, which the first sailors thought the main estuary resembled."
+    ],
+    flag: [
+      "The flag is a simple picture of the country: green for the forest, yellow for the Equator and blue for the sea.",
+      "The first version, used before independence, had the French tricolour in one corner and a much thinner yellow stripe."
+    ]
+  },
+  GIN: {
+    border: [
+      "Three of West Africa’s great rivers, the Niger, the Senegal and the Gambia, all rise in the highlands of Guinea.",
+      "In 1958 Guinea was the only French colony to vote for immediate independence. France withdrew within weeks, and departing officials are said to have taken everything movable with them, down to the light bulbs.",
+      "Four countries have Guinea in their name: Guinea, Guinea-Bissau, Equatorial Guinea and Papua New Guinea."
+    ],
+    flag: [
+      "Mali uses the same three colours in the opposite order.",
+      "Each colour stands for a word of the national motto: red for work, yellow for justice and green for solidarity."
+    ]
+  },
+  GNB: {
+    border: [
+      "The capital’s name was added to the country’s to tell it apart from the Guinea next door.",
+      "Guinea-Bissau declared independence in 1973 from villages its fighters already held, a year before Portugal accepted it.",
+      "The Bijagós islands, off the coast, are home to hippos that swim in the sea."
+    ],
+    flag: [
+      "The flag is based on the banner of the movement that fought for the independence of both Guinea-Bissau and Cape Verde, led by Amílcar Cabral.",
+      "The black star and the three colours were borrowed from the flag of Ghana, the first country in the region to win independence."
+    ]
+  },
+  MDG: {
+    border: [
+      "Madagascar’s first settlers arrived only about 1,500 years ago, and they came from Borneo, more than 6,000 km away. The Malagasy language is still closely related to languages spoken there.",
+      "Madagascar broke away from India about 88 million years ago. Roughly nine-tenths of its wildlife is found nowhere else.",
+      "Madagascar claims several tiny French islands scattered around its coast, and in 1979 the United Nations General Assembly backed its claim."
+    ],
+    flag: [
+      "Red and white were the colours of the Merina kingdom, which ruled most of the island before France colonised it. They are also the colours of Indonesia, where the first settlers came from.",
+      "The flag was adopted in 1958, two years before independence."
+    ]
+  },
+  MWI: {
+    border: [
+      "Lake Malawi is nicknamed the Calendar Lake, because it is roughly 365 miles long and 52 miles wide.",
+      "Lake Malawi has more species of fish than any other lake in the world.",
+      "Malawi and Tanzania disagree about their border on the lake. Malawi claims the water right up to the Tanzanian shore."
+    ],
+    flag: [
+      "The rising sun has 31 rays, because Malawi was the 31st African country to become independent.",
+      "In 2010 the government changed the flag, replacing the rising red sun with a full white one. The change was unpopular and the old flag returned two years later."
+    ]
+  },
+  MLI: {
+    border: [
+      "Mali takes its name from a medieval empire. Its 14th-century ruler Mansa Musa, who controlled much of the world’s gold supply, is often called the richest person in history.",
+      "At independence in 1960 Mali and Senegal formed a single country, the Mali Federation. It broke up after two months.",
+      "Mali’s northern borders are long straight lines that French officers drew across the Sahara."
+    ],
+    flag: [
+      "The first version of the flag had a black stick figure in the centre. It was removed in 1961, after objections from Muslims who oppose pictures of the human form.",
+      "Guinea uses the same three colours in the opposite order, and Senegal’s flag differs only by a green star."
+    ]
+  },
+  MRT: {
+    border: [
+      "In the 1960s French engineers blasted a two-kilometre tunnel through solid granite so that an iron-ore railway would not have to cross a corner of Spanish territory. It is now abandoned, and the trains take the shortcut.",
+      "The iron-ore trains that run along Mauritania’s northern border can be more than two kilometres long, among the longest in the world."
+    ],
+    flag: [
+      "The two red stripes were added in 2017, after a referendum, to honour those who died resisting French rule.",
+      "Before 2017 this was one of the only national flags in the world with no red, white or blue in it."
+    ]
+  },
+  MUS: {
+    border: [
+      "In 2025 the United Kingdom signed a treaty agreeing to hand the Chagos Islands to Mauritius, which had claimed them ever since independence.",
+      "Mauritius had no people until the Dutch settled it in 1638. They named it after their prince, Maurice of Nassau.",
+      "Mauritius was the only home of the dodo, which was extinct within a century of the first settlers arriving."
+    ],
+    flag: [
+      "Mauritians call the flag “the Four Bands”. Red stands for the struggle for independence, blue for the Indian Ocean, yellow for the light of freedom and green for the island’s vegetation.",
+      "The flag was designed by a schoolteacher, Gurudutt Moher. He was officially credited only decades later."
+    ]
+  },
+  NER: {
+    border: [
+      "Niger is named after the Niger river, which flows through only the far south-western corner of the country.",
+      "Niger and Nigeria are named after the same river. One was colonised by France and the other by Britain.",
+      "A lone acacia in the Sahara in Niger was once the most isolated tree on Earth, 400 km from any other, and a landmark for desert caravans. In 1973 a lorry driver knocked it down."
+    ],
+    flag: [
+      "The orange disc is the sun. The orange band stands for the Sahara in the north and the green for the farmland of the south.",
+      "With its orange, white and green stripes and a disc in the middle, the flag is often mistaken for India’s."
+    ]
+  },
+  RWA: {
+    border: [
+      "The volcanoes on Rwanda’s border with Uganda and the Democratic Republic of the Congo are home to more than half of the world’s mountain gorillas.",
+      "Rwanda is the most densely populated country on the African mainland.",
+      "Rwanda’s borders roughly follow those of a kingdom that existed before the colonial era, which is unusual in Africa."
+    ],
+    flag: [
+      "The flag was adopted in 2001. The previous one had become too closely associated with the genocide of 1994.",
+      "The old flag was red, yellow and green with a large black letter R in the middle.",
+      "The sun’s 24 rays stand for enlightenment, and the blue for happiness and peace."
+    ]
+  },
+  STP: {
+    border: [
+      "In 1919 the astronomer Arthur Eddington photographed a solar eclipse from the island of Príncipe. His pictures were the first proof of Einstein’s general theory of relativity.",
+      "The Equator passes through a tiny islet off the southern tip of São Tomé, where a monument marks the line.",
+      "Both islands were uninhabited until Portuguese sailors arrived around 1470."
+    ],
+    flag: [
+      "The two black stars stand for the two islands.",
+      "The red triangle stands for the struggle for independence from Portugal, which came in 1975."
+    ]
+  },
+  SLE: {
+    border: [
+      "A Portuguese explorer named these shores in 1462. He called the hills above the bay the “Lioness Mountains”, perhaps because of their shape, perhaps because of the thunder that rolls around them.",
+      "The capital, Freetown, was founded as a home for freed slaves. Among the first settlers were Black Americans who had fought for Britain in the American War of Independence."
+    ],
+    flag: [
+      "The blue stripe stands for the harbour of Freetown, one of the largest natural harbours in the world.",
+      "Green stands for the country’s farms and mountains, and white for unity and justice."
+    ]
+  },
+  SOM: {
+    border: [
+      "Somalia has the longest coastline on the African mainland, more than 3,000 km of it.",
+      "The north-western region of Somaliland has governed itself since 1991, with its own currency, elections and army.",
+      "The easternmost point of mainland Africa is in Somalia, at the tip of the Horn."
+    ],
+    flag: [
+      "The light blue is taken from the flag of the United Nations, in thanks for its help on the road to independence.",
+      "The five points of the star stand for the five regions where Somali people live. Only two of them are part of Somalia.",
+      "The flag was designed in 1954 by a Somali scholar, Mohammed Awale Liban."
+    ]
+  },
+  SSD: {
+    border: [
+      "South Sudan is the newest country in the world. It became independent in July 2011 after a referendum in which almost 99% voted to leave Sudan.",
+      "The Sudd, where the White Nile spreads out across South Sudan, is one of the largest wetlands on Earth. Its name means “barrier”, and for centuries it stopped explorers looking for the source of the Nile.",
+      "The Abyei area, on the border with Sudan, is still claimed by both countries."
+    ],
+    flag: [
+      "This was the flag of the rebel movement that fought for independence. It became the regional flag in 2005 and the national flag in 2011.",
+      "The blue triangle stands for the waters of the Nile.",
+      "The gold star is called the Star of Bethlehem and stands for the unity of the country’s states."
+    ]
+  },
+  SDN: {
+    border: [
+      "Sudan was the largest country in Africa until 2011, when South Sudan voted to leave.",
+      "The capital, Khartoum, sits where the Blue Nile and the White Nile meet.",
+      "Bir Tawil, a patch of desert on the border with Egypt, is claimed by neither country. It is one of the only pieces of land on Earth that no state wants."
+    ],
+    flag: [
+      "The flag was chosen in a competition in 1970. It replaced a blue, yellow and green tricolour that stood for the Nile, the desert and the farmland.",
+      "Red, white, black and green are the Pan-Arab colours. The green triangle stands for Islam and for prosperity."
+    ]
+  },
+  TGO: {
+    border: [
+      "The capital, Lomé, sits right on the border with Ghana. Its western suburbs end at the frontier.",
+      "Togo is only about 55 km wide at the coast but stretches more than 500 km inland.",
+      "The German colony of Togoland was divided between Britain and France after the First World War. The British part later joined Ghana, and the French part became Togo."
+    ],
+    flag: [
+      "The flag’s proportions are the golden ratio, a shape almost no other national flag uses.",
+      "The flag was designed by Paul Ahyi, a Togolese artist, and adopted at independence in 1960.",
+      "The five stripes stand for the country’s five regions."
+    ]
+  },
+  TUN: {
+    border: [
+      "The northernmost point of Africa is in Tunisia, at Cape Angela.",
+      "The Italian island of Lampedusa is closer to Tunisia than to Sicily.",
+      "The ruins of Carthage, the city that fought Rome for control of the Mediterranean, lie in the suburbs of the Tunisian capital."
+    ],
+    flag: [
+      "The flag dates from 1831, which makes it one of the oldest in Africa. It was created after the Tunisian fleet was destroyed in battle, so that its ships could be told apart from others.",
+      "Its resemblance to the Turkish flag is no accident: Tunisia was part of the Ottoman Empire for three centuries."
+    ]
+  },
+  UGA: {
+    border: [
+      "The Rwenzori Mountains, on the border with the Democratic Republic of the Congo, have glaciers almost on the Equator. Ancient geographers called them the Mountains of the Moon.",
+      "The White Nile begins its journey at Jinja in Uganda, where it flows out of Lake Victoria.",
+      "Migingo, a rock in Lake Victoria about half the size of a football pitch and covered in fishermen’s huts, has been disputed between Uganda and Kenya."
+    ],
+    flag: [
+      "The bird is a grey crowned crane, known for its gentle nature. Its raised leg shows that the country is moving forward.",
+      "A different flag was planned for independence in 1962. It was dropped weeks beforehand, when the party whose colours it used lost an election.",
+      "The stripes stand for the people of Africa, the sunshine and the brotherhood of all peoples."
     ]
   }
 };
